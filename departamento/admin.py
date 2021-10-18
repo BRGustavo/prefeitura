@@ -8,14 +8,22 @@ class DepartamentoModel(admin.ModelAdmin):
 
 
 class FuncionarioModel(admin.ModelAdmin):
-    list_display = ['id', 'nome', 'sobrenome', 'singla', 'acesso']
+    list_display = ['id', 'nome', 'sobrenome', 'usuario_pc', 'senha_pc' ,'setor', 'acesso']
     list_display_links = ['nome', 'sobrenome']
+    fieldsets = (
+        ('Informações Pessoais', {'fields': ('nome', 'sobrenome', 'sexo', 'departamento')}),
+        ('Acesso Computador', {'fields': ('usuario_pc', 'senha_pc', 'controle_acesso'), }),
+        ('Outras Informações', {'fields': ('descricao',),})
+    )
 
-    def singla(self, object):
+    def setor(self, object):
         try: 
-            return object.departamento.singla_departamento
+            if object.departamento.singla_departamento:
+                return object.departamento.singla_departamento
+            else:
+                return object.departamento.departamento
         except AttributeError:
-            return object.departamento.departamento
+            return '-'
 
     def acesso(self, object):
         return object.controle_acesso
