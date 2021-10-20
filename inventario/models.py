@@ -1,10 +1,9 @@
 from django.db import models
-from django.db.models.deletion import CASCADE, PROTECT
+from django.db.models.deletion import CASCADE, PROTECT, SET_NULL
 from django.db.models.fields import CharField
 from macaddress.fields import MACAddressField
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-
 
 CHOICES_BOLEAN = [
     (True, 'Sim'),
@@ -31,6 +30,10 @@ class Mouse(models.Model):
 
 
 class Monitor(models.Model):
+    
+    class Meta:
+        verbose_name_plural = 'Monitores'
+
     marca = models.CharField(max_length=50, null=False)
     hdmi = models.BooleanField(null=False, default=False, choices=CHOICES_BOLEAN)
     tamanho = models.CharField(max_length=15, blank=True)
@@ -42,6 +45,11 @@ class Monitor(models.Model):
 
 
 class PlacaMae(models.Model):
+    
+    class Meta:
+        verbose_name = 'Placas Mãe'
+        verbose_name_plural = 'Placas Mãe'
+
     marca = models.CharField(max_length=50, null=False)
     modelo = models.CharField(max_length=50)
     hdmi = models.BooleanField(null=False, default=False, choices=CHOICES_BOLEAN)
@@ -59,6 +67,10 @@ class PlacaMae(models.Model):
 
 
 class Processador(models.Model):
+    
+    class Meta:
+        verbose_name_plural = 'Processadores'
+
     marca = models.CharField(max_length=20, null=False, choices=[
         ('Intel', 'Intel'),
         ('AMD', 'AMD')
@@ -69,7 +81,7 @@ class Processador(models.Model):
     descricao = models.TextField(blank=True)
 
     def __str__(self) -> str:
-        return f'Marca: {self.marca} Modelo: {self.modelo} Frequência: {self.frequencia}'
+        return f'{self.marca}- {self.modelo} - {self.frequencia}'
 
 
 class Hd(models.Model):

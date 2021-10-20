@@ -1,6 +1,11 @@
 from django.contrib import admin
 from .models import Departamento, Funcionario
 
+admin.site.site_header = 'Prefeitura Admin'
+admin.site.site_title = 'Prefeitura Inventário'
+
+class MyAdmin(admin.ModelAdmin):
+    change_form_template = 'base_admin.html'
 
 class DepartamentoModel(admin.ModelAdmin):
     list_display = ['id', 'departamento','singla_departamento', 'predio']

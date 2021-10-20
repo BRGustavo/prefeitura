@@ -3,14 +3,14 @@ from django.db.models.deletion import CASCADE
 
 class Departamento(models.Model):
     CHOICES_PREDIOS = [
-        ('Prefeitura Municipal De Arapoti', 'Prefeitura Municipal de Arapoti'),
-        ('Col. Clotário Portual', 'Colégio Clortário Portugal'),
-        ('Col. Telemaco Carneiro', 'Colégio Telemaco Carneiro'),
-        ('Col. Dona Zizi', 'Colégio Dona Zizi'),
-        ('UBS Jardim Aratinga', 'UBS Jardim Aratinga'),
-        ('UBS Jardim Ceres', 'UBS Jardim Ceres'),
+        ('Prefeitura Arapoti', 'Prefeitura Municipal de Arapoti'),
+        ('Col. Clotário', 'Colégio Clortário Portugal'),
+        ('Col. Tel.Carneiro', 'Colégio Telemaco Carneiro'),
+        ('Col. D.Zizi', 'Colégio Dona Zizi'),
+        ('UBS Jd.Aratinga', 'UBS Jardim Aratinga'),
+        ('UBS Jd.Ceres', 'UBS Jardim Ceres'),
         ('UBS Vila Romana', 'UBS Vila Romana'),
-        ('CREAS', 'CREAS'),
+        ('CRAS', 'CRAS'),
         ('CREAS', 'CREAS - Centro de Referência Especializado em Assistência Social')
     ]
 
@@ -21,7 +21,14 @@ class Departamento(models.Model):
 
 
     def __str__(self) -> str:
-        return f'Departamento: {self.departamento} Predio: {self.predio}'
+        return f'{self.sigla_departamento} - {self.predio}'
+
+    @property
+    def sigla_departamento(self) -> str:
+        if len(self.singla_departamento) >= 1:
+            return self.singla_departamento
+        else:
+            return self.departamento
 
 
 class Funcionario(models.Model):
