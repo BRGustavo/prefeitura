@@ -85,8 +85,6 @@ class ComputadorModel(admin.ModelAdmin):
         ('DEPARTAMENTO E FUNCIONARIO', {'fields': ('funcionario', 'departamento', 'sala')}),
         ('COMPONENTES COMPUTADOR', {'fields': ('sistema_op', 'monitor', 'teclado', 'mouse', 'gabinete', 'placa_mae', 'processador', 'hd')})
     )
-    def has_delete_permission(self, request, obj=None):
-        return False
     
 
 admin.site.register(Roteador, RoteadorModel)

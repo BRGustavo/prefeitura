@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block corpo %}
+
+    <main class='conteudo-login'>
+        <div class='container'>
+            <div class="row">
+                <div class="col-dm-auto">
+                    <!-- <img src="{% static 'img/user-icon.jpg' %}" id='user-img' alt="Usuario"> -->
+                    <form method="POST" class='form-inline'>
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                        <button type="submit" class='btn btn-outline-dark'>Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock corpo %}

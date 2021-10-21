@@ -69,7 +69,7 @@ class Impressora(models.Model):
         ('Modelo 03', 'Modelo 03')
     ]
 
-    modelo = models.CharField(max_length=100, default='0' ,null=False, blank=False, verbose_name='Modelo')
+    modelo = models.CharField(max_length=100, null=False, blank=False, verbose_name='Modelo')
     tipo_toner = models.CharField(max_length=100, default=TONER_CHOICES[0], null=False, choices=TONER_CHOICES, verbose_name='Toner')
     sala = models.IntegerField(blank=True, null=True, verbose_name="Número Sala", help_text='Número de refência ao local onde a impressora está.')
 
@@ -106,7 +106,7 @@ class Computador(models.Model):
     teclado = models.OneToOneField(Teclado, blank=True, null=True, on_delete=PROTECT, )
     mouse = models.OneToOneField(Mouse, blank=True, null=True, on_delete=PROTECT, )
     sistema_op = models.CharField(verbose_name='Sistema Operacional', max_length=10, blank=True, choices=CHOICES_SISTEMS)
-    sala = models.IntegerField(blank=True, help_text='Número de referência a sala onde ficará o computador')
+    sala = models.IntegerField(blank=True, null=True, help_text='Número de referência a sala onde ficará o computador')
 
     def meu_id(self):
         return self.id

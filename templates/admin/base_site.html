@@ -1,16 +1,16 @@
 {% extends 'admin/base.html' %}
 {% load static %}
 {% block branding %}
-{% block extrastyle %}
-  <link rel='stylesheet' href="{% static 'base_site.css' %}">
-{% endblock %}
+  {% block extrastyle %}
+    <link rel='stylesheet' href="{% static 'base_site.css' %}">
+  {% endblock %}
 
-  {% block welcome-msg %}
+    {% block welcome-msg %}
 
-  {% endblock welcome-msg %}
+    {% endblock welcome-msg %}
+    
+    {% block userlinks %}
   
-  {% block userlinks%}
-
-  {% endblock userlinks%}
+    {% endblock userlinks %}
 
 {% endblock %}
