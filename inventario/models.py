@@ -37,7 +37,7 @@ class Monitor(models.Model):
     marca = models.CharField(max_length=50, null=False)
     hdmi = models.BooleanField(null=False, default=False, choices=CHOICES_BOLEAN)
     tamanho = models.CharField(max_length=15, blank=True)
-    funciona = models.BooleanField(null=False, default=True, choices=CHOICES_BOLEAN)
+    patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
     descricao = models.TextField(blank=True)
 
     def __str__(self) -> str:
@@ -71,14 +71,14 @@ class Processador(models.Model):
     class Meta:
         verbose_name_plural = 'Processadores'
 
-    marca = models.CharField(max_length=20, null=False, choices=[
+    marca = models.CharField(verbose_name='modelo', max_length=20, null=False, choices=[
         ('Intel', 'Intel'),
         ('AMD', 'AMD')
     ])
     modelo = models.CharField(max_length=50, blank=True)
     frequencia = models.FloatField(blank=True)
     memoria_cache = models.IntegerField(blank=True, default=0)
-    descricao = models.TextField(blank=True)
+    descricao = models.TextField(verbose_name='Descrição', blank=True)
 
     def __str__(self) -> str:
         return f'{self.marca}- {self.modelo} - {self.frequencia}'
@@ -90,8 +90,7 @@ class Hd(models.Model):
         ('Notebook', 'Notebook'),
         ('HD Externo', 'HD Externo')
     ])
-    tamanho_gb = models.IntegerField(null=False)
-    funciona = models.BooleanField(null=False, default=True, choices=CHOICES_BOLEAN)
+    tamanho_gb = models.IntegerField(verbose_name='Tamanho GB', null=False)
     descricao = models.TextField(blank=True)
 
     def __str__(self) -> str:
@@ -116,3 +115,17 @@ class Gabinete(models.Model):
         return f'Modelo: {self.modelo} Tipo: {self.gabinete_tipo} usb frontal: {self.usb_frontal}'
 
 
+class MemoriaRam(models.Model):
+    class Meta:
+        verbose_name = 'Memória RAM'
+        verbose_name_plural = 'Memórias RAM'
+    
+    modelo = models.CharField(max_length=5, default='DDR4', blank=False, choices=(
+        ('DDR', 'DDR'),
+        ('DDR2', 'DDR2'),
+        ('DDR3', 'DDR3'),
+        ('DDR4', 'DDR4'),
+        ('DDR5', 'DDR5'),
+    ))
+    frequencia = models.FloatField(blank=True, null=True, verbose_name='Frequência')
+    descricao = models.TextField(blank=True, null=True, verbose_name='Descrição')

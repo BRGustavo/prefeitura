@@ -35,7 +35,10 @@ class Funcionario(models.Model):
     nome = models.CharField(max_length=255, null=False)
     sobrenome = models.CharField(max_length=255, null=False)
     departamento = models.ForeignKey('Departamento', default='Prefeitura Municipal De Arapoti', null=False, on_delete=CASCADE)
-    sexo = models.CharField(max_length=1, default='M', null=False, choices=(('M', 'Masculino'), ('F', 'Feminino')))
+    admin_rede = models.BooleanField(verbose_name='Administrador Rede', default=False, null=False, choices=(
+        (True, 'Sim'),
+        (False, 'Não')
+    ), help_text='Possui privilégios de administrador na rede.')
     usuario_pc = models.CharField(max_length=50, verbose_name="Usuário PC", null=True, blank=True)
     senha_pc = models.CharField(max_length=50, verbose_name='Senha PC', blank=True, null=True)
     controle_acesso = models.CharField(max_length=20, verbose_name='Acesso Proxy', default='Pessimista', choices=[
@@ -46,6 +49,6 @@ class Funcionario(models.Model):
     descricao = models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
-        return f'{self.nome} {self.sobrenome} {self.departamento.departamento}'
+        return f'{self.nome} {self.sobrenome} - {self.departamento.sigla_departamento}'
     
 

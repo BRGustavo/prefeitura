@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.db.models import fields
 from .models import (
     Teclado, Monitor, Mouse, PlacaMae,
-    Hd, Processador, Gabinete
+    Hd, Processador, Gabinete, MemoriaRam
 )
 
 class TecladoModel(admin.ModelAdmin):
@@ -15,9 +16,8 @@ class MouseModel(admin.ModelAdmin):
     list_editable = ['funciona']
 
 class MonitorModel(admin.ModelAdmin):
-    list_display = ['id', 'marca', 'hdmi', 'tamanho', 'funciona']
+    list_display = ['id', 'marca', 'hdmi', 'tamanho', 'patrimonio']
     list_display_links = ['id', 'marca']
-    list_editable = ['funciona']
 
 class PlacaMaeModel(admin.ModelAdmin):
     list_display = ['id', 'marca', 'modelo', 'hdmi', 'suporte','processador', 'funciona']
@@ -38,9 +38,8 @@ class ProcessadorModel(admin.ModelAdmin):
 
 
 class HdModel(admin.ModelAdmin):
-    list_display = ['id', 'modelo', 'tamanho_gb', 'funciona']
+    list_display = ['id', 'modelo', 'tamanho_gb']
     list_display_links = ['id', 'modelo', 'tamanho_gb']
-    list_editable = ['funciona']
 
 
 class GabineteModel(admin.ModelAdmin):
@@ -51,6 +50,14 @@ class GabineteModel(admin.ModelAdmin):
         return object.gabinete_tipo
 
 
+class MemoriaRamModel(admin.ModelAdmin):
+    list_display = ['id', 'modelo', 'frequencia']
+    list_display_links = ['id', 'modelo', 'frequencia']
+    fieldsets = (
+        ('Acesso Remoto', {'fields': ('modelo', 'frequencia' )}),
+        ('OUTRAS INFORMAÇÕES', {'fields': ('descricao',)})
+    )
+
 admin.site.register(Teclado, TecladoModel)
 admin.site.register(Mouse, MouseModel)
 admin.site.register(Monitor, MonitorModel)
@@ -58,3 +65,4 @@ admin.site.register(PlacaMae, PlacaMaeModel)
 admin.site.register(Processador, ProcessadorModel)
 admin.site.register(Hd, HdModel)
 admin.site.register(Gabinete, GabineteModel)
+admin.site.register(MemoriaRam, MemoriaRamModel)

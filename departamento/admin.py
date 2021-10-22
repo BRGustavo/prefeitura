@@ -16,8 +16,8 @@ class FuncionarioModel(admin.ModelAdmin):
     list_display = ['id', 'nome', 'sobrenome', 'usuario_pc', 'senha_pc' ,'setor', 'acesso']
     list_display_links = ['nome', 'sobrenome']
     fieldsets = (
-        ('Informações Pessoais', {'fields': ('nome', 'sobrenome', 'sexo', 'departamento')}),
-        ('Acesso Computador', {'fields': ('usuario_pc', 'senha_pc', 'controle_acesso'), }),
+        ('Informações Pessoais', {'fields': ('nome', 'sobrenome', 'departamento')}),
+        ('Acesso Computador', {'fields': ('usuario_pc', 'senha_pc', 'admin_rede', 'controle_acesso'), }),
         ('Outras Informações', {'fields': ('descricao',),})
     )
 

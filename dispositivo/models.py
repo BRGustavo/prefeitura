@@ -18,9 +18,9 @@ CHOICES_BOOL = (
 
 class EnderecoMac(models.Model):
     mac_address = MACAddressField(unique=True, blank=True, null=True)
-    parent_content_type = models.ForeignKey(ContentType, blank=True, related_name='mac_parente', on_delete=CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, blank=True, related_name='mac_parente')
     parent_object_id = models.PositiveIntegerField()
-    parent_object = GenericForeignKey("parent_content_type", "parent_object_id")
+    parent_object = GenericForeignKey("content_type", "parent_object_id")
 
     def __str__(self) -> str:
         return str(self.mac_address)
@@ -28,9 +28,9 @@ class EnderecoMac(models.Model):
 class EnderecoIp(models.Model):
     ip_address = models.GenericIPAddressField(verbose_name='Endereço IP',unique=True, blank=True, null=True)
     
-    parente_conteudo_tipo = models.ForeignKey(ContentType, related_name='ip_parente', on_delete=CASCADE)
-    parente_objeto_id = models.PositiveIntegerField()
-    parente_objeto = GenericForeignKey("parente_conteudo_tipo", "parente_objeto_id")
+    content_type = models.ForeignKey(ContentType, related_name='ip_parente', on_delete=CASCADE)
+    parent_object_id = models.PositiveIntegerField()
+    parent_object = GenericForeignKey("content_type", "parent_object_id")
 
     def __str__(self) -> str:
         return str(self.ip_address)
@@ -54,8 +54,8 @@ class Roteador(models.Model):
     ], help_text='Multimodo: Frequência 2.4Ghz e 5Ghz.')
     departamento = models.ForeignKey(Departamento, blank=True, null=True, on_delete=CASCADE)
     descricao = models.TextField(blank=True, verbose_name='Descrição')
-    endereco_mac = GenericRelation(EnderecoMac, content_type_field='mac_parente')
-    endereco_ip = GenericRelation(EnderecoIp, related_query_name='Roteador')
+    mac_roteador = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='roteador')
+    ip_roteador = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='roteador')
 
     def __str__(self) -> str:
         return f'Roteador: {self.ssid}'
@@ -68,9 +68,15 @@ class Impressora(models.Model):
         ('Modelo 02', 'Modelo 02'),
         ('Modelo 03', 'Modelo 03')
     ]
-
+    nome = models.CharField(max_length=100, blank=True, null=True, verbose_name='Nome Impressora')
     modelo = models.CharField(max_length=100, null=False, blank=False, verbose_name='Modelo')
     tipo_toner = models.CharField(max_length=100, default=TONER_CHOICES[0], null=False, choices=TONER_CHOICES, verbose_name='Toner')
+    local = models.CharField(max_length=10, verbose_name='Local Impressora', default='Sala', choices=(
+        ('Sala', 'Sala'),
+        ('Corredor', 'Corredor')
+    ))
+    patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
+
     sala = models.IntegerField(blank=True, null=True, verbose_name="Número Sala", help_text='Número de refência ao local onde a impressora está.')
 
     usando_ip = models.BooleanField(verbose_name='Usando IP', help_text='Está conectada pela rede;usando um ip.', default=True, null=False, choices=CHOICES_BOOL)
@@ -78,13 +84,24 @@ class Impressora(models.Model):
     pertence_gestpar = models.BooleanField(default=False, null=False, choices=CHOICES_BOOL, verbose_name='Impressora Gestpar', help_text='Impressora alugada')
     gestpar_matricula = models.CharField(max_length=20, blank=True, null=True)
     descricao = models.TextField(verbose_name='Descrição', blank=True, null=True)
+    mac_impressora = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='impressora')
 
+    ip_impressora = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='impressora')
 
     def __str__(self) -> str:
+        # print(f'{EnderecoMac.objects.get(impressora__id=1)}')
         return f'{self.modelo}'
 
+    # def delete(self, *args, **kwargs):
+    #     EnderecoMac.objects.filter(content_type='dispositivo | impressora', content_type__id=self.id).delete()
+    #     EnderecoIp.objects.filter(content_type='dispositivo | impressora', content_type__id=self.id)
+    #     return super(Impressora, self).delete(*args, **kwargs)
 
 class Computador(models.Model):
+
+    class Meta:
+        verbose_name = 'Computador'
+        verbose_name_plural = 'Computadores'
 
     CHOICES_SISTEMS = (
 
@@ -107,6 +124,9 @@ class Computador(models.Model):
     mouse = models.OneToOneField(Mouse, blank=True, null=True, on_delete=PROTECT, )
     sistema_op = models.CharField(verbose_name='Sistema Operacional', max_length=10, blank=True, choices=CHOICES_SISTEMS)
     sala = models.IntegerField(blank=True, null=True, help_text='Número de referência a sala onde ficará o computador')
+    anydesk = models.CharField(max_length=120, verbose_name='AnyDesk', blank=True, null=True)
+    mac_computador = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='computador')
+    ip_computador = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='computador')
 
     def meu_id(self):
         return self.id

@@ -10,7 +10,7 @@ class EnderecoMacInline(GenericStackedInline):
     model = EnderecoMac
     min_num = 1
     max_num = 1
-    ct_field = "parent_content_type"
+    ct_field = "content_type"
     ct_fk_field = "parent_object_id"
     fk_name = "parent_object"
 
@@ -18,9 +18,9 @@ class EnderecoMacInline(GenericStackedInline):
 class EnderecoIpInline(GenericStackedInline):
     model = EnderecoIp
     max_num = 1
-    ct_field = "parente_conteudo_tipo"
-    ct_fk_field = "parente_objeto_id"
-    fk_name = "parente_objeto"
+    ct_field = "content_type"
+    ct_fk_field = "parent_object_id"
+    fk_name = "parent_object"
 
 
 
@@ -67,12 +67,12 @@ class ImpressoraModel(admin.ModelAdmin):
     inlines = [EnderecoMacInline, EnderecoIpInline]
 
     fieldsets = (
-        ('INFORMAÇÕES IMPRESSORA', {'fields': ('modelo', 'tipo_toner', 'usando_ip')}),
+        ('INFORMAÇÕES IMPRESSORA', {'fields': ('nome', 'modelo', 'tipo_toner', 'usando_ip', 'patrimonio')}),
         ('GESTPAR INFORMAÇÕES', {'fields': ('pertence_gestpar', 'gestpar_matricula')}),
-        ('LOCAL INFORMAÇÕES', {'fields': ('sala', 'descricao')})
+        ('LOCAL INFORMAÇÕES', {'fields': ('local', 'sala', 'descricao')})
     )
 
-    list_display = ['modelo', 'tipo_toner', 'usando_ip', 'gestpar', 'sala']
+    # list_display = ['nome', 'modelo', 'tipo_toner', 'usando_ip', 'gestpar', 'sala']
 
     def gestpar(self, object):
         return object.pertence_gestpar
@@ -83,6 +83,7 @@ class ComputadorModel(admin.ModelAdmin):
     list_display = ['funcionario', 'departamento', 'processador', 'sistema_op']
     fieldsets = (
         ('DEPARTAMENTO E FUNCIONARIO', {'fields': ('funcionario', 'departamento', 'sala')}),
+        ('Acesso Remoto', {'fields': ('anydesk', )}),
         ('COMPONENTES COMPUTADOR', {'fields': ('sistema_op', 'monitor', 'teclado', 'mouse', 'gabinete', 'placa_mae', 'processador', 'hd')})
     )
     
@@ -91,3 +92,5 @@ admin.site.register(Roteador, RoteadorModel)
 admin.site.register(Impressora, ImpressoraModel)
 admin.site.register(Computador, ComputadorModel)
 
+# admin.site.register(EnderecoIp)
+# admin.site.register(EnderecoMac)
