@@ -22,24 +22,24 @@
 <body>
     <header>
         {% block navbarTop %}
-        <div class="container" id='nav-container'>
-            <nav class='navbar navbar-expand-lg fixed-top'>
+        <div class="container-fluid" id='nav-container'> 
+            <!-- Sem container-fluid. inicialmente -->
+            <nav class='navbar navbar-expand-lg navbar-default fixed-top navbar-dark'>
                 <a href="/" class='navbar-brand'>
                     <img src="{% static 'img/logo.png' %}" id="logo" alt="Logo">Prefeitura Municipal de Arapoti
                 </a>
 
-                <button class='navbar-toggler' type='button' data-toggle='colapse' data-target='#navbar-links' aria-controls="navbar-links" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon">
-                    </span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbar-links" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse  justify-content-end" id='navbar-links'>
+                <div class="collapse navbar-collapse  justify-content-end" id='navbarSupportedContent'>
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link" href='#' id='home-menu'>
+                        <a class="nav-item nav-link" href='/{{ BASE_DIR }}' id='home-menu'>
                             <i class="fas fa-home"></i> Home
                         </a>
                         {% if user.is_authenticated %}
                             <a class="nav-item nav-link" href='#' id='home-menu'>
-                                <i class="fa fa-user" aria-hidden="true"></i> Perfil
+                                <i class="fa fa-user" aria-hidden="true"></i> {{ user.username.capitalize }}
                             </a>
                             {% if user.is_staff %}
 
@@ -69,17 +69,11 @@
         {% endblock navbarTop %}
     </header>
 
-
-    <main>
-        <div class="container-fluid">
-            <div class="meuslide">
-            </div>
-        </div>
-    </main>
     {% block corpo %}
 
     {% endblock corpo %}
 
+    
     <!-- Bootstrap js -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
 

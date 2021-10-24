@@ -8,14 +8,17 @@
 {% block corpo %}
     <style>
         body {
-            background-color:rgb(246, 240, 250);
+            background-color:#FFF;
+        }
+        .form-control:focus {
+            background-color: wheat;
         }
     </style>
     <main>
-        <div class="container mt-5">
+        <div class="container mt-5 mb-5">
             <div class='row'>
-                <div class="col-lg-5 m-auto">
-                    <div class="card mt-5">
+                <div class="col-lg-5 m-auto mt-5">
+                    <div class="card mt-5 rounded border border-light">
                         <div class="card-title text-center mt-4">
                             <i class="fas fa-user-circle fa-5x"></i>
                         </div>
@@ -37,7 +40,7 @@
                                 <div class="input-group mb-4">
                                     {{ form.password }}
                                 </div>
-                                <button class="btn btn-primary mb-3" type="submit">Login</button>
+                                <button class="btn btn-primary mb-3 btn-lg col-12" type="submit">Login</button>
                             </form>
                         </div>
                     </div>
