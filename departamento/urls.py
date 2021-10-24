@@ -2,11 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.views.generic import TemplateView, RedirectView
-
 from sistema.settings import BASE_DIR
+from . import views
 
 urlpatterns = [
-    path('departamento/', TemplateView.as_view(template_name='base.html'), name='departamento'),
+    path('departamento/', views.departamento, name='departamento'),
+    path('departamento/add', views.departamento_insert, name='departamento insert'),
     path('funcionario/', TemplateView.as_view(template_name='base.html'), name='funcionario')
-
 ]

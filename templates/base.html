@@ -38,7 +38,7 @@
                             <i class="fas fa-home"></i> Home
                         </a>
                         {% if user.is_authenticated %}
-                            <a class="nav-item nav-link" href='#' id='home-menu'>
+                            <a class="nav-item nav-link" href='#' id='user-menu'>
                                 <i class="fa fa-user" aria-hidden="true"></i> {{ user.username.capitalize }}
                             </a>
                             {% if user.is_staff %}
@@ -52,11 +52,11 @@
                             <a class="nav-item nav-link" href='{{ BASE_URL }}/accounts/login/'>
                                 <i class="fa fa-sign-in" aria-hidden="true"></i> Login
                             </a>
+                            <a class="nav-item nav-link" href='#' id='home-menu'>
+                                <i class="fas fa-info-circle"></i>
+                                Contato
+                            </a>
                         {% endif %}
-                        <a class="nav-item nav-link" href='#' id='home-menu'>
-                            <i class="fas fa-info-circle"></i>
-                            Contato
-                        </a>
                         {% if user.is_authenticated %}
                         <a class="nav-item nav-link" href='{{ BASE_URL }}/accounts/logout/' id='home-menu'>
                             <i class="fa fa-sign-out" aria-hidden="true"></i> Sair

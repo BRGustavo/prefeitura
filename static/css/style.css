@@ -47,9 +47,18 @@ header .navbar {
 #user-img {
     width: 100px;
 }
+#primeiro {
+    margin-top: 150px;
+    font-family: 'Times New Roman', Times, serif;
+}
 
 /* Responsive */
 
+@media (min-width: 1200px) {
+    #primeiro {
+        margin-top: 100px;
+    }
+}
 
 /* Footer */
 .rodapeText{

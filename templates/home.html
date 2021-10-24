@@ -6,13 +6,6 @@
     body {
         background-color:rgb(235, 232, 232);
     }
-    #primeiro {
-        margin-top: 100px;
-        font-family: 'Times New Roman', Times, serif;
-    }
-    /* .card {
-        background-color: #09928e;
-    } */
     .card:hover {
         border-color:black;
         background-color: rgb(252, 245, 245);
@@ -27,12 +20,24 @@
         text-decoration: none;
         color:black;
     }
+    #primeiro {
+        margin-top: 150px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    /* Responsive */
+
+    @media (min-width: 1200px) {
+        #primeiro {
+            margin-top: 100px;
+        }
+    }
 </style>
 <main>
     <div id="primeiro" class="container">
         <div class="row">
             <!-- Departamentos & Funcionários -->
-            <p class='fs-5 mt-5 mt-sm-5 mt-xs-4 mt-lg-2'>Departamentos & Funcionários</p>
+            <p class='fs-5 mt-0 mt-sm-5 mt-xs-4 mt-lg-2'>Departamentos & Funcionários</p>
                 <div class="col-12 col-md-4 col-lg-4 mt-1 mb-2">
                 <a id="link-clicado" href="{{ BASE_DIR }}/departamento/departamento/">
                     <div class="card">

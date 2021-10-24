@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block corpo %}
+
+<style>
+    body, #search {
+        background-color:rgb(235, 232, 232);
+        border-style:none;
+    }
+    #search {
+        padding-left: 0;
+        margin-left: 0;
+    }
+    #primeiro {
+        margin-top: 100px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+</style>
+<main>
+    <div class="container" id="primeiro">
+        <div class="card mt-5">
+            <div class="card-header">
+                <div class="d-flex justify-content-end">
+                    <a href='{{ BASE_DIR }}/departamento/departamento/add' class="btn btn-primary">Adicionar</a>
+                </div>
+            </div>
+            <div class="card-body bg-light">
+                <table class="table table-sm text-center table table-striped">
+                    <thead>
+                        <th scope="col">ID</th>
+                        <th scope="col">Departamento</th>
+                        <th scope="col">Sigla</th>
+                        <th scope="col">Prédio</th>
+                        <th scope='col'>Editar</th>
+                    </thead>
+                    <tbody>
+                        {% for departamento in departamentos %}
+                        <tr>
+                            <th scope="row">{{ departamento.id }}</th>
+                            <td>{{ departamento.departamento }}</td>
+                            <td>{{ departamento.sigla_departamento }}</td>
+                            <td>{{ departamento.predio }}</td>
+                            <td><a href="#"><i class="fas fa-edit"></i></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+{% endblock %}

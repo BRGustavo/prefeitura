@@ -16,7 +16,7 @@ class Departamento(models.Model):
 
     predio = models.CharField(max_length=255, null=False, choices=CHOICES_PREDIOS)
     departamento = models.CharField(max_length=255, null=False)
-    singla_departamento = models.CharField(max_length=5, blank=True, null=True)
+    singla_departamento = models.CharField(max_length=5, default='-', blank=True, null=True)
     descricao = models.TextField(blank=True, null=True)
 
 
