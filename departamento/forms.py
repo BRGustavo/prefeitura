@@ -22,6 +22,6 @@ class DepartamentoForm(forms.ModelForm):
     ]
 
     predio = forms.ChoiceField(choices=CHOICES_PREDIOS, widget=Select(attrs={'class': 'form-control'}))
-    departamento = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control'}))
-    singla_departamento = forms.CharField(max_length=5, widget=TextInput(attrs={'class': 'form-control'}), required=False)
-    descricao = forms.CharField(max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control'}), required=False)
+    departamento = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
+    singla_departamento = forms.CharField(max_length=5, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}), required=False)
+    descricao = forms.CharField(max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off'}), required=False)

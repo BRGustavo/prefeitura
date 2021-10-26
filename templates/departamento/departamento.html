@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+    Departamentos
+{% endblock title %}
 
 {% block corpo %}
 
@@ -16,6 +19,7 @@
         margin-top: 100px;
         font-family: 'Times New Roman', Times, serif;
     }
+
 </style>
 <main>
     <div class="container" id="primeiro">
@@ -25,7 +29,7 @@
                     <form>
                         <div class="input-group">
                             <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
-                            aria-describedby="search-addon" />
+                            aria-describedby="search-addon" autocomplete="off"/>
                             <button type="submit" class="btn btn-primary">Procurar</button>
                           </div>
                     </form>
