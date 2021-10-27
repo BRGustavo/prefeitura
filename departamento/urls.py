@@ -8,5 +8,5 @@ from . import views
 urlpatterns = [
     path('departamento/', views.departamento, name='departamento'),
     path('departamento/add', views.departamento_insert, name='departamento insert'),
-    path('funcionario/', TemplateView.as_view(template_name='base.html'), name='funcionario')
+    path('funcionario/', views.funcionario, name='funcionario')
 ]

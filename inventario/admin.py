@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import fields
 from .models import (
     Teclado, Monitor, Mouse, PlacaMae,
-    Hd, Processador, Gabinete, MemoriaRam
+    Hd, Processador, Gabinete
 )
 
 class TecladoModel(admin.ModelAdmin):
@@ -50,13 +50,13 @@ class GabineteModel(admin.ModelAdmin):
         return object.gabinete_tipo
 
 
-class MemoriaRamModel(admin.ModelAdmin):
-    list_display = ['id', 'modelo', 'frequencia']
-    list_display_links = ['id', 'modelo', 'frequencia']
-    fieldsets = (
-        ('Acesso Remoto', {'fields': ('modelo', 'frequencia' )}),
-        ('OUTRAS INFORMAÇÕES', {'fields': ('descricao',)})
-    )
+# class MemoriaRamModel(admin.ModelAdmin):
+#     list_display = ['id', 'modelo', 'frequencia']
+#     list_display_links = ['id', 'modelo', 'frequencia']
+#     fieldsets = (
+#         ('Acesso Remoto', {'fields': ('modelo', 'frequencia' )}),
+#         ('OUTRAS INFORMAÇÕES', {'fields': ('descricao',)})
+#     )
 
 admin.site.register(Teclado, TecladoModel)
 admin.site.register(Mouse, MouseModel)
@@ -65,4 +65,3 @@ admin.site.register(PlacaMae, PlacaMaeModel)
 admin.site.register(Processador, ProcessadorModel)
 admin.site.register(Hd, HdModel)
 admin.site.register(Gabinete, GabineteModel)
-admin.site.register(MemoriaRam, MemoriaRamModel)

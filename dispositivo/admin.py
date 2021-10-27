@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.db import models
 from django.forms import forms
-from .models import EnderecoMac, EnderecoIp, Roteador, Impressora, Computador
+from .models import EnderecoMac, EnderecoIp, MemoriaRam, Roteador, Impressora, Computador
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.db.models import Q
 from django import forms
@@ -23,6 +24,10 @@ class EnderecoIpInline(GenericStackedInline):
     fk_name = "parent_object"
 
 
+class MemoriaRamInline(admin.StackedInline):
+    model = MemoriaRam
+    extra = 1
+    
 
 class EnderecoMacModel(admin.ModelAdmin):
     list_display = ['mac_address']
@@ -78,8 +83,9 @@ class ImpressoraModel(admin.ModelAdmin):
         return object.pertence_gestpar
 
 
+
 class ComputadorModel(admin.ModelAdmin):
-    inlines = [EnderecoMacInline, EnderecoIpInline]
+    inlines = [MemoriaRamInline, EnderecoMacInline, EnderecoIpInline]
     list_display = ['funcionario', 'departamento', 'processador', 'sistema_op']
     fieldsets = (
         ('DEPARTAMENTO E FUNCIONARIO', {'fields': ('funcionario', 'departamento', 'sala')}),

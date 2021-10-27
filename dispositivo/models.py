@@ -6,9 +6,9 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django import forms
-from inventario.models import *
 from django.db.models import Q
 
+from inventario.models import PlacaMae, Processador, Teclado, Mouse, Monitor, Hd, Gabinete
 
 
 CHOICES_BOOL = (
@@ -142,3 +142,20 @@ class Computador(models.Model):
         # except AttributeError: departamento = ''
 
         return f'{modelo} {funcionario} {departamento}'
+
+
+class MemoriaRam(models.Model):
+    class Meta:
+        verbose_name = 'Memória RAM'
+        verbose_name_plural = 'Memórias RAM'
+    
+    modelo = models.CharField(max_length=5, default='DDR4', blank=False, choices=(
+        ('DDR', 'DDR'),
+        ('DDR2', 'DDR2'),
+        ('DDR3', 'DDR3'),
+        ('DDR4', 'DDR4'),
+        ('DDR5', 'DDR5'),
+    ))
+    frequencia = models.FloatField(blank=True, null=True, verbose_name='Frequência')
+    descricao = models.TextField(blank=True, null=True, verbose_name='Descrição')
+    computador = models.ForeignKey('Computador', related_name='memoria', null=True, on_delete=models.SET_NULL)

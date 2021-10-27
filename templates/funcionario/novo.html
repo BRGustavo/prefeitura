@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    Novo Departamento
+{% endblock title %}
+
+{% block corpo %}
+<style>
+    body {
+        background-color:rgb(235, 232, 232);
+    }
+    #primeiro {
+        margin-top: 150px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    /* Responsive */
+    @media (min-width: 992px) {
+        #primeiro {
+            margin-top: 100px;
+        }
+    }
+    @media (min-width: 1200px) {
+        #primeiro {
+            margin-top: 100px;
+        }
+    }
+</style>
+<main>
+    <div class="container" id='primeiro'>
+        <div class="container-fluid" >
+            {% if mensagens %}
+            <div class="alert alert-danger" role='alert'>
+                {% for value in mensagens %}
+                    {{ value }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class='form-label' for="id_predio">Prédio *</label>
+                    {{ form.predio }}
+                </div>
+                <div class="form-group mt-2">
+                    <label class='form-label' for="id_predio">Departamento *</label>
+                    {{ form.departamento }}
+                </div>
+                <div class="form-group mt-2">
+                    <label class='form-label' for="id_predio">Sigla departamento</label>
+                    {{ form.singla_departamento }}
+                </div>
+                <div class="form-group mt-2">
+                    <label class='form-label' for="id_predio">Complemento</label>
+
+                    <p>{{ form.descricao }}</p>
+                </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock corpo %}

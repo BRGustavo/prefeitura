@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
-from .models import Departamento
+from .models import Departamento, Funcionario
 from .forms import DepartamentoForm
-from django.db.models import Q
+from django.db.models import Q, F
 
 
 @login_required
@@ -35,4 +35,18 @@ def departamento_insert(request):
 
             context['mensagens'].append('Você fez alguma mrd, tente de novo!')
 
-    return render(request, 'departamento/novo_departamento.html', context=context)
+    return render(request, 'departamento/novo.html', context=context)
+
+@login_required
+@permission_required('departamento.view_funcionario', raise_exception=True)
+def funcionario(request):
+    pesquisa = request.GET.get('query')
+    funcionarios = Funcionario.objects.all()
+    if pesquisa != '' and pesquisa is not None:
+        funcionarios = funcionarios.filter(
+            Q(nome__icontains=pesquisa) | Q(sobrenome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(controle_acesso__icontains=pesquisa) | Q(id__iexact=pesquisa) | Q(usuario_pc__icontains=pesquisa)
+        )
+    content = {
+        'funcionarios': funcionarios
+    }
+    return render(request, template_name='funcionario/funcionario.html', context=content)

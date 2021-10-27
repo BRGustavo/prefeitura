@@ -5,6 +5,7 @@ from macaddress.fields import MACAddressField
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
+
 CHOICES_BOLEAN = [
     (True, 'Sim'),
     (False, "Não")
@@ -115,17 +116,3 @@ class Gabinete(models.Model):
         return f'Modelo: {self.modelo} Tipo: {self.gabinete_tipo} usb frontal: {self.usb_frontal}'
 
 
-class MemoriaRam(models.Model):
-    class Meta:
-        verbose_name = 'Memória RAM'
-        verbose_name_plural = 'Memórias RAM'
-    
-    modelo = models.CharField(max_length=5, default='DDR4', blank=False, choices=(
-        ('DDR', 'DDR'),
-        ('DDR2', 'DDR2'),
-        ('DDR3', 'DDR3'),
-        ('DDR4', 'DDR4'),
-        ('DDR5', 'DDR5'),
-    ))
-    frequencia = models.FloatField(blank=True, null=True, verbose_name='Frequência')
-    descricao = models.TextField(blank=True, null=True, verbose_name='Descrição')

@@ -1,0 +1,32 @@
+{% extends 'departamento/departamento.html' %}
+
+{% block tabela %}
+<div class="card-body table-responsive bg-light">
+    <table class="table table-sm text-center table table-striped">
+        <thead>
+            <th scope="col">ID</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Sobrenome</th>
+            <th scope="col">Departamento</th>
+            <th scope='col'>Usuário PC</th>
+            <th scope='col'>Acesso</th>
+            <th scope='col'>Adm Rede</th>
+            <th scope='col'>Editar</th>
+        </thead>
+        <tbody>
+            {% for funcionario in funcionarios %}
+            <tr>
+                <th scope="row">{{ funcionario.id }}</th>
+                <td>{{ funcionario.nome }}</td>
+                <td>{{ funcionario.sobrenome }}</td>
+                <td>{{ funcionario.departamento }}</td>
+                <td>{{ funcionario.usuario_pc }}</td>
+                <td>{{ funcionario.controle_acesso }}</td>
+                <td>{{ funcionario.admin_rede }}</td>
+                <td><a href="#"><i class="fas fa-edit"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock tabela %}
