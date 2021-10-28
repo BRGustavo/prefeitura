@@ -88,7 +88,7 @@ class ComputadorModel(admin.ModelAdmin):
     inlines = [MemoriaRamInline, EnderecoMacInline, EnderecoIpInline]
     list_display = ['funcionario', 'departamento', 'processador', 'sistema_op']
     fieldsets = (
-        ('DEPARTAMENTO E FUNCIONARIO', {'fields': ('funcionario', 'departamento', 'sala')}),
+        ('DEPARTAMENTO E FUNCIONARIO', {'fields': ('nome_rede', 'patrimonio', 'funcionario', 'departamento', 'sala')}),
         ('Acesso Remoto', {'fields': ('anydesk', )}),
         ('COMPONENTES COMPUTADOR', {'fields': ('sistema_op', 'monitor', 'teclado', 'mouse', 'gabinete', 'placa_mae', 'processador', 'hd')})
     )

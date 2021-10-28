@@ -40,23 +40,72 @@
             <form method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label class='form-label' for="id_predio">Prédio *</label>
-                    {{ form.predio }}
+                    <div class="row">
+                        <div class='mt-2'>
+                            <h5 class='text-muted'>Informações Básicas</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-12 col-lg-6">
+                            <label class='form-label' for="id_predio">Nome *</label><br>
+                            {{ form.nome }}
+                        </div>
+                        <div class="col-12 col-lg-6">
+                    
+                            <label class='form-label' for="id_predio">Sobrenome *</label><br>
+                            {{ form.sobrenome }}
+                        
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label class='form-label' for="id_predio">Departamento *</label><br>
+                            {{ form.departamento }}
+                        </div>
+                    </div>
+                    <div class="row">
+        
+                        <div class='mt-4'>
+                            <h5 class='text-muted'>Acesso Rede</h5>
+                            <hr>
+                        </div>
+                        <div class="col-12 col-lg-6 mt-2">
+                            <label class='form-label' for="id_predio">Usuário PC</label><br>
+                            {{ form.usuario_pc }}
+                        </div>
+                        <div class="col-12 col-lg-6 mt-2">
+                    
+                            <label class='form-label' for="id_predio">Senha PC</label><br>
+                            {{ form.senha_pc }}
+                        
+                        </div>
+                        <div class="col-12 col-lg-6 mt-2">
+                            <label class='form-label' for="id_predio">Acesso Proxy</label><br>
+                            {{ form.controle_acesso }}
+                        </div>
+                        <div class="col-12 col-lg-6 mt-2">
+                            <label class='form-label' for="id_predio">Administrador Rede</label><br>
+                            {{ form.admin_rede }}
+                        </div>
+                    </div>
+                    <div class="row">
+        
+                        <div class='mt-4'>
+                            <h5 class='text-muted'>Informações Complementares</h5>
+                            <hr>
+                        </div>
+                        <div class="col-12 mt-0">
+                            <label class='form-label' for="id_predio">Anotação</label><br>
+                            {{ form.descricao }}
+                        
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mt-2">
-                    <label class='form-label' for="id_predio">Departamento *</label>
-                    {{ form.departamento }}
-                </div>
-                <div class="form-group mt-2">
-                    <label class='form-label' for="id_predio">Sigla departamento</label>
-                    {{ form.singla_departamento }}
-                </div>
-                <div class="form-group mt-2">
+                <!-- <div class="form-group mt-2">
                     <label class='form-label' for="id_predio">Complemento</label>
 
                     <p>{{ form.descricao }}</p>
-                </div>
-                <div class="d-flex justify-content-end mt-3">
+                    {{ form.as_p }}
+                </div> -->
+                <div class="d-flex justify-content-end mt-3 mb-3">
                     <button class="btn btn-primary">Adicionar</button>
                 </div>
             </form>

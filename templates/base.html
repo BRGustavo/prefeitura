@@ -11,7 +11,10 @@
     <link rel="shortcut icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
     <!-- BootStrap5 -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
+
+    {% block script_css %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% endblock script_css %}
 
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
     
 </head>
-<body>
+<body class='d-flex flex-column min-vh-100'>
     <header>
         {% block navbarTop %}
         <div class="container-fluid" id='nav-container'> 
@@ -34,31 +37,30 @@
                 </button>
                 <div class="collapse navbar-collapse  justify-content-end" id='navbarSupportedContent'>
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link" href='/{{ BASE_DIR }}' id='home-menu'>
-                            <i class="fas fa-home"></i> Home
-                        </a>
+                        
                         {% if user.is_authenticated %}
+                            <a class="nav-item nav-link" href='{% url "home" %}' id='home-menu'>
+                                <i class="fas fa-home"></i> Home
+                            </a>
+                            
                             <a class="nav-item nav-link" href='#' id='user-menu'>
                                 <i class="fa fa-user" aria-hidden="true"></i> {{ user.username.capitalize }}
                             </a>
                             {% if user.is_staff %}
 
                             <a class="nav-item nav-link" href='{{ BASE_URL }}/admin/'>
-                                <i class="fas fa-user-cog" aria-hidden="true"></i> Admin
+                                <i class="fas fa-user-cog" aria-hidden="true"></i> Administração
                             </a>
                             {% endif %}
                         {% endif %}
-                        {% if not user.is_authenticated %}
-                            <a class="nav-item nav-link" href='{{ BASE_URL }}/accounts/login/'>
+                        <!-- {% if not user.is_authenticated %}
+                            <a class="nav-item nav-link" href='{% url "login" %}'>
                                 <i class="fa fa-sign-in" aria-hidden="true"></i> Login
                             </a>
-                            <a class="nav-item nav-link" href='#' id='home-menu'>
-                                <i class="fas fa-info-circle"></i>
-                                Contato
-                            </a>
-                        {% endif %}
+                
+                        {% endif %} -->
                         {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href='{{ BASE_URL }}/accounts/logout/' id='home-menu'>
+                        <a class="nav-item nav-link" href='{% url "logout" %}' id='home-menu'>
                             <i class="fa fa-sign-out" aria-hidden="true"></i> Sair
                         </a>
                         {% endif %}
@@ -73,6 +75,12 @@
 
     {% endblock corpo %}
 
+    <footer class='mt-auto bg-dark'>
+        <div class="container p-4 text-center">
+            <p class='text-light'>:P</p>
+        </div>
+ 
+    </footer>
     
     <!-- Bootstrap js -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -82,6 +90,10 @@
     <script src="{% static 'js/javascript.js' %}"></script>
     <!-- Font Awensome -->
     <script src="https://kit.fontawesome.com/6953b3b378.js" crossorigin="anonymous"></script>
+    
+    <!-- Scripts JS -->
+    {% block scripts %}
 
+    {% endblock scripts %}
 </body>
 </html>

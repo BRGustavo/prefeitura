@@ -1,74 +1,26 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base_listagem.html' %}
 
-{% block title %}
-    Departamentos
-{% endblock title %}
-
-{% block corpo %}
-
-<style>
-    body {
-        background-color:rgb(235, 232, 232);
-        border-style:none;
-    }
-    #search {
-        border-radius: 10px;
-    }
-    #primeiro {
-        margin-top: 100px;
-        font-family: 'Times New Roman', Times, serif;
-    }
-
-</style>
-<main>
-    <div class="container" id="primeiro">
-        <div class="row">
-            <div id="search" class="card mt-5 mt-lg-3">
-                <div class="card-body">
-                    <form>
-                        <div class="input-group">
-                            <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
-                            aria-describedby="search-addon" autocomplete="off"/>
-                            <button type="submit" class="btn btn-primary">Procurar</button>
-                          </div>
-                    </form>
-                </div>
-            </div>
-            <div class="card mt-2">
-                <div class="card-header">
-                    <div class="d-flex justify-content-end">
-                        <a href='{{ BASE_DIR }}/departamento/departamento/add' class="btn btn-success">Adicionar</a>
-                    </div>
-                </div>
-                {% block tabela %}
-                <div class="card-body bg-light">
-                    <table class="table table-sm text-center table table-striped">
-                        <thead>
-                            <th scope="col">ID</th>
-                            <th scope="col">Departamento</th>
-                            <th scope="col">Sigla</th>
-                            <th scope="col">Prédio</th>
-                            <th scope='col'>Editar</th>
-                        </thead>
-                        <tbody>
-                            {% for departamento in departamentos %}
-                            <tr>
-                                <th scope="row">{{ departamento.id }}</th>
-                                <td>{{ departamento.departamento }}</td>
-                                <td>{{ departamento.sigla_departamento }}</td>
-                                <td>{{ departamento.predio }}</td>
-                                <td><a href="#"><i class="fas fa-edit"></i></a></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% endblock tabela %}
-            </div>
-        </div>
-
-    </div>
-</main>
-
-{% endblock %}
+{% block tabela %}
+<div class="card-body bg-light">
+    <table class="table table-sm text-center table table-striped">
+        <thead>
+            <th scope="col">ID</th>
+            <th scope="col">Departamento</th>
+            <th scope="col">Sigla</th>
+            <th scope="col">Prédio</th>
+            <th scope='col'>Editar</th>
+        </thead>
+        <tbody>
+            {% for departamento in departamentos %}
+            <tr>
+                <th scope="row">{{ departamento.id }}</th>
+                <td>{{ departamento.departamento }}</td>
+                <td>{{ departamento.sigla_departamento }}</td>
+                <td>{{ departamento.predio }}</td>
+                <td><a href="#"><i class="fas fa-edit"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock tabela %}

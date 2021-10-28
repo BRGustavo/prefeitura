@@ -12,6 +12,7 @@ urlpatterns = [
     path('accounts/', include('account.urls')),
     path('departamento/', include('departamento.urls')),
     path('dispositivo/', include('dispositivo.urls')),
+    path('inventario/', include('inventario.urls')),
     path('', home_index, name='home'),
 
 ]

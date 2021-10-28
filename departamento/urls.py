@@ -6,7 +6,8 @@ from sistema.settings import BASE_DIR
 from . import views
 
 urlpatterns = [
-    path('departamento/', views.departamento, name='departamento'),
-    path('departamento/add', views.departamento_insert, name='departamento insert'),
-    path('funcionario/', views.funcionario, name='funcionario')
+    path('departamento/', views.departamento_view, name='departamento'),
+    path('departamento/add', views.departamento_create, name='departamento_add'),
+    path('funcionario/', views.funcionario_view, name='funcionario'),
+    path('funcionario/add', views.funcionario_create, name='funcionario_add')
 ]

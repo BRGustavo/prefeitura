@@ -1,0 +1,43 @@
+{% extends 'base_listagem.html' %}
+
+{% block tabela %}
+<div class="card-body table-responsive bg-light">
+    <table class="table table-sm text-center table table-striped">
+        <thead>
+            <th scope="col">ID</th>
+            <th scope='col'>Nome</th>
+            <th scope='col'>Patrimônio</th>
+            <th scope="col">Departamento</th>
+            <th scope="col">Funcionario</th>
+            <th scope="col">Processador</th>
+            <th scope='col'>OS</th>
+            <th scope='col'>IP</th>
+            <th scope='col'>MAC</th>
+        </thead>
+        <tbody>
+            {% for computador in computadores %}
+            <tr>
+                <th scope="row">{{ computador.id }}</th>
+                <td>{{ computador.nome_rede }}</td>
+                <th>{{ computador.patrimonio }}</th>
+                <td>{{ computador.departamento }}</td>
+                <td>{{ computador.funcionario.nome }}</td>
+                <td>{{ computador.processador.modelo }}</td>
+                <td>{{ computador.sistema_op }}</td>
+                <td>
+                    {% for ip in computador.ip_computador.all %}
+                        {{ ip }}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for mac in computador.mac_computador.all %}
+                        {{ mac }}
+                    {% endfor %}
+                </td>
+                <td><a href="#"><i class="fas fa-edit"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock tabela %}

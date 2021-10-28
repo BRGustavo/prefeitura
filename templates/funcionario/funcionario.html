@@ -1,5 +1,10 @@
 {% extends 'departamento/departamento.html' %}
 
+{% block button_adicionar %}
+<a href='{% url "funcionario_add" %}' class="btn btn-success">Adicionar</a>
+
+{% endblock %}
+
 {% block tabela %}
 <div class="card-body table-responsive bg-light">
     <table class="table table-sm text-center table table-striped">

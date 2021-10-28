@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.deletion import CASCADE, PROTECT
+from django.db.models.fields import CharField
 from departamento.models import Departamento, Funcionario
 from macaddress.fields import MACAddressField
 from django.contrib.contenttypes.fields import GenericRelation
@@ -24,6 +25,7 @@ class EnderecoMac(models.Model):
 
     def __str__(self) -> str:
         return str(self.mac_address)
+    
 
 class EnderecoIp(models.Model):
     ip_address = models.GenericIPAddressField(verbose_name='Endereço IP',unique=True, blank=True, null=True)
@@ -115,6 +117,8 @@ class Computador(models.Model):
     help_text='Departamento ao qual o computador pertence.')
     funcionario = models.ForeignKey(Funcionario, blank=True, null=True, on_delete=PROTECT,
     help_text='Funcionário que utilizará o computador.')
+    nome_rede = CharField(verbose_name='Nome na Rede', max_length=15, blank=True, null=True)
+    patrimonio = CharField(verbose_name='Patrimônio', max_length=50, blank=True, null=True)
     gabinete = models.OneToOneField(Gabinete, blank=True, null=True, on_delete=PROTECT, )
     placa_mae = models.OneToOneField(PlacaMae, verbose_name='Placa Mãe', blank=True, null=True, on_delete=PROTECT, )
     processador = models.OneToOneField(Processador, blank=True, null=True, on_delete=PROTECT)

@@ -1,13 +1,13 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Departamento, Funcionario
-from .forms import DepartamentoForm
+from .forms import DepartamentoForm, FuncionarioForm
 from django.db.models import Q, F
 
 
 @login_required
 @permission_required('departamento.view_departamento', raise_exception=True)
-def departamento(request):
+def departamento_view(request):
     pesquisa = request.GET.get('query')
     departamentos = Departamento.objects.all()
     if pesquisa != '' and pesquisa is not None:
@@ -21,7 +21,7 @@ def departamento(request):
 
 @login_required
 @permission_required('departamento.add_departamento', raise_exception=True)
-def departamento_insert(request):
+def departamento_create(request):
     context = {
         'form': DepartamentoForm(),
         'mensagens': []
@@ -39,7 +39,7 @@ def departamento_insert(request):
 
 @login_required
 @permission_required('departamento.view_funcionario', raise_exception=True)
-def funcionario(request):
+def funcionario_view(request):
     pesquisa = request.GET.get('query')
     funcionarios = Funcionario.objects.all()
     if pesquisa != '' and pesquisa is not None:
@@ -50,3 +50,22 @@ def funcionario(request):
         'funcionarios': funcionarios
     }
     return render(request, template_name='funcionario/funcionario.html', context=content)
+
+
+@login_required
+@permission_required('departamento.add_funcionario', raise_exception=True)
+def funcionario_create(request):
+    context = {
+        'form': FuncionarioForm,
+        'mensagens': []
+    }
+
+    if request.method == 'POST':
+        formulario = FuncionarioForm(request.POST)
+        if formulario.is_valid:
+            formulario.save()
+            return redirect('/departamento/funcionario')
+        else:
+            context['mensagens'] = formulario.append('Você fez alguma mrd, tente de novo!')
+    
+    return render(request, 'funcionario/novo.html', context=context)
