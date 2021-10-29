@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Departamento, Funcionario
 from .forms import DepartamentoForm, FuncionarioForm
@@ -24,7 +24,7 @@ def departamento_view(request):
 def departamento_create(request):
     context = {
         'form': DepartamentoForm(),
-        'mensagens': []
+        'mensagens': [],
     }
     if request.method == 'POST':
         formulario = DepartamentoForm(request.POST)
@@ -32,10 +32,35 @@ def departamento_create(request):
             formulario.save()
             return redirect(f'/departamento/departamento')
         else:
-
-            context['mensagens'].append('Você fez alguma mrd, tente de novo!')
+                for valores in formulario.errors.values():
+                    context['mensagens'].append(valores)
+                    
+                context['field_erros'] = formulario.errors.keys()
 
     return render(request, 'departamento/novo.html', context=context)
+
+@login_required
+@permission_required('departamento.change_departamento', raise_exception=True)
+def departamento_edit(request, id):
+    departamento_db = get_object_or_404(Departamento, pk=id)
+    form = DepartamentoForm(instance=departamento_db)
+
+    context = {
+        'form': form,
+        'mensagens': []
+    }
+    if request.method == 'POST':
+        form = DepartamentoForm(request.POST, instance=departamento_db)
+        if form.is_valid():
+            form.save()
+            return redirect(f'/departamento/departamento')
+        else:
+                for valores in form.errors.values():
+                    context['mensagens'].append(valores)
+                    
+                context['field_erros'] = form.errors.keys()
+    return render(request, 'departamento/editar.html', context=context)
+
 
 @login_required
 @permission_required('departamento.view_funcionario', raise_exception=True)
@@ -62,10 +87,36 @@ def funcionario_create(request):
 
     if request.method == 'POST':
         formulario = FuncionarioForm(request.POST)
-        if formulario.is_valid:
+        if formulario.is_valid():
             formulario.save()
             return redirect('/departamento/funcionario')
         else:
-            context['mensagens'] = formulario.append('Você fez alguma mrd, tente de novo!')
+                for valores in formulario.errors.values():
+                    context['mensagens'].append(valores)
+                    
+                context['field_erros'] = formulario.errors.keys()
     
     return render(request, 'funcionario/novo.html', context=context)
+
+
+@login_required
+@permission_required('departamento.change_funcionario', raise_exception=True)
+def funcionario_edit(request, id):
+    funcionario_db = get_object_or_404(Funcionario, pk=id)
+    form = FuncionarioForm(instance=funcionario_db)
+
+    context = {
+        'form': form,
+        'mensagens': []
+    }
+    if request.method == 'POST':
+        form = FuncionarioForm(request.POST, instance=funcionario_db)
+        if form.is_valid():
+            form.save()
+            return redirect(f'/funcionario/funcionario')
+        else:
+                for valores in form.errors.values():
+                    context['mensagens'].append(valores)
+                    
+                context['field_erros'] = form.errors.keys()
+    return render(request, 'funcionario/editar.html', context=context)

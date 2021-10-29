@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    Novo Departamento
+    Editar Departamento
 {% endblock title %}
 
 {% block corpo %}
@@ -19,7 +19,6 @@
         border-color:red;
     }
     {% endfor %}
-
     /* Responsive */
     @media (min-width: 992px) {
         #primeiro {
@@ -39,11 +38,10 @@
             <div class="alert alert-danger" role='alert'>
                 {% for value in mensagens %}
                     {{ value }}
+                    
                 {% endfor %}
             </div>
             {% endif %}
-
-
             <form method="post">
                 {% csrf_token %}
                 <div class="form-group">
@@ -64,13 +62,11 @@
                     <p>{{ form.descricao }}</p>
                 </div>
                 <div class="d-flex justify-content-end mt-3">
-                    <button class="btn btn-primary">Adicionar</button>
+                    <button class="btn btn-primary">Editar</button>
                 </div>
             </form>
         </div>
     </div>
-
 </main>
-
 
 {% endblock corpo %}

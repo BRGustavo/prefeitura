@@ -28,7 +28,7 @@
                 <td>{{ funcionario.usuario_pc }}</td>
                 <td>{{ funcionario.controle_acesso }}</td>
                 <td>{{ funcionario.admin_rede }}</td>
-                <td><a href="#"><i class="fas fa-edit"></i></a></td>
+                <td><a href="{% url 'funcionario_edit' funcionario.id %}"><i class="fas fa-edit"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>
