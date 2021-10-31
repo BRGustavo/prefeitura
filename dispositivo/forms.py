@@ -1,11 +1,15 @@
+from typing import Text
 from django import forms
+from django.db.models.base import Model
 from django.db.models.query import QuerySet
 from django.forms import widgets
-from django.forms.fields import IntegerField 
+from django.forms.fields import IntegerField
+from django.forms.models import ModelForm 
 from django.forms.widgets import CheckboxSelectMultiple, Input, NumberInput, Select, SelectMultiple, TextInput
+from macaddress.fields import MACAddressFormField
 
 from inventario.models import Hd, Monitor, Mouse, PlacaMae, Processador, Teclado
-from .models import Computador, Gabinete
+from .models import Computador, EnderecoIp, Gabinete, MemoriaRam
 from departamento.models import Departamento, Funcionario
 from django.db.models import Q 
 
@@ -36,8 +40,20 @@ class ComputadorForm(forms.ModelForm):
         self.fields['mouse'].queryset = (
             Mouse.objects.all().filter(computador__isnull=True) | (Mouse.objects.filter(computador=self.instance))
         )
+        self.fields['hd'].queryset = (
+            Hd.objects.all().filter(computador__isnull=True) | (Hd.objects.filter(computador=self.instance))
+        )
 
+    CHOICES_SISTEMS = (
 
+        ('Win7', 'Windows 7'),
+        ('Win8', 'Windows 8'),
+        ('Win10', 'Windows 10'),
+        ('Ubuntu', 'Ubuntu'),
+        ('WinServer', 'Windows Server')
+    )
+    sistema_op = forms.ChoiceField(choices=CHOICES_SISTEMS, widget=Select(attrs={'class': 'form-control'}))
+    
     departamento = forms.ModelChoiceField(required=False, queryset=(Departamento.objects.all()), widget=Select(attrs={'class': 'form-control'}))
     funcionario = forms.ModelChoiceField(required=False, queryset=(Funcionario.objects.all()), widget=Select(attrs={'class': 'form-control'}))
     nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control'}))
@@ -51,4 +67,21 @@ class ComputadorForm(forms.ModelForm):
     mouse = forms.ModelChoiceField(required=False, queryset=Mouse.objects.all(), widget=Select(attrs={'class': 'form-control'}))
     teclado = forms.ModelChoiceField(required=False, queryset=Teclado.objects.all(), widget=Select(attrs={'class': 'form-control'}))
 
-    monitor = forms.ModelMultipleChoiceField(queryset=Monitor.objects.all().filter(computador__isnull=True), widget=forms.SelectMultiple())
+    monitor = forms.ModelMultipleChoiceField(required=False, queryset=Monitor.objects.all().filter(computador__isnull=True), widget=forms.SelectMultiple(attrs={'class': 'form-control'}))
+
+    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+
+class EndereoIpForm(forms.ModelForm):
+    class Meta:
+        model = EnderecoIp
+        fields = ('ip_address',)
+        exclude = ()
+    
+    ip_address = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+
+
+class MemoriaRamForm(forms.ModelForm):
+    class Meta:
+        model = MemoriaRam
+        fields = ('modelo', 'frequencia', 'descricao')

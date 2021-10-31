@@ -45,3 +45,15 @@
     </table>
 </div>
 {% endblock tabela %}
+
+{% block nav_paginacao %}
+    {% if computadores.has_previous %}
+    <li class="page-item"><a class="page-link" href="{% url 'funcionario' computadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    {% endif %}
+    {% if computadores.has_other_pages %}
+    <li class="page-item active"><a class="page-link"  href="#">{{ computadores.number }}</a></li>
+    {% endif %}
+    {% if computadores.has_next %}
+    <li class="page-item"><a class="page-link" href="{% url 'funcionario' computadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    {% endif %}
+{% endblock nav_paginacao %}

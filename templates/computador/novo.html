@@ -5,6 +5,42 @@
     Novo Computador
 {% endblock title %}
 
+{% block scripts %}
+<script>
+    function Requisicao(seletor, input, marca=false) {
+        let selectorSelecionado = $(`${seletor}`);
+        $.ajax({
+            url: '{% url "computador_add_ajax" %}',
+            data: {
+                'tipoValue': `${input}`
+            },
+            dataType: 'json',
+            success: function(data){
+                $(`${seletor}`).empty();
+                if(data.length >= 1){
+                    if(marca == true){
+                        selectorSelecionado.append($(`<option value selected'>---------</option>`));
+                    }
+                }
+                for(let item in data){
+                    var elemento = $(`<option value='${data[item][0]}'>${data[item][1]}</option>`)
+                    selectorSelecionado.append(elemento);
+                }
+            }
+        });
+    }
+    $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
+    $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
+    $('#refresh-teclado').click(()=>{ Requisicao('#id_teclado', 'selectTeclado', marca=true)});
+    $('#refresh-monitor').click(()=>{ Requisicao('#id_monitor', 'selectMonitor')});
+    $('#refresh-gabinete').click(()=>{ Requisicao('#id_gabinete', 'selectGabinete', marca=true)});
+    $('#refresh-processador').click(()=>{ Requisicao('#id_processador', 'selectProcessador', marca=true)});
+    $('#refresh-placamae').click(()=>{ Requisicao('#id_placa_mae', 'selectPlacamae', marca=true)});
+    $('#refresh-hd').click(()=>{ Requisicao('#id_hd', 'selectHd', marca=true)});
+
+</script>
+{% endblock scripts %}
+
 {% block corpo %}
 <style>
     body {
@@ -19,6 +55,12 @@
         border-color:red;
     }
     {% endfor %}
+    .icon-a {
+        color:green;
+    }
+    .icon-b {
+        color:rgb(0, 67, 168);
+    }
     /* Responsive */
     @media (min-width: 992px) {
         #primeiro {
@@ -31,6 +73,7 @@
         }
     }
 </style>
+
 <main>
     <div class="container" id='primeiro'>
         <div class="container-fluid" >
@@ -44,14 +87,167 @@
             <form method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    {{ form.as_p }}
-                </div>
-                <!-- <div class="form-group mt-2">
-                    <label class='form-label' for="id_predio">Complemento</label>
+                    <div class="row">
+                        <div class='mt-2'>
+                            <h5 class='text-muted'>Informações Básicas</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-12 col-lg-4 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">Nome Rede *</label><br>
+                            {{ form.nome_rede }}
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">Patrimônio Gabinete</label><br>
+                            {{ form.patrimonio }}
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">OS *</label><br>
+                            {{ form.sistema_op }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class='mt-4'>
+                            <h5 class='text-muted'>Departamento & Funcionário</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-12 col-lg-4 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">Departamento</label><br>
+                            {{ form.departamento }}
+                            
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2 mt-lg-0">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Funcionário</label>
+                                <div class="pe-2">
+                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <i id='refresh-funcionario' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            {{ form.funcionario }}
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            <label class='form-label' for="id_predio">Sala</label><br>
+                            {{ form.sala }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class='mt-4'>
+                            <h5 class='text-muted'>Componentes</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Teclado</label>
+                                <div class="pe-2">
+                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                    <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <i id='refresh-teclado' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            {{ form.teclado }}
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Mouse</label>
+                                <div class="pe-2">
+                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                        
+                                        <i id='refresh-mouse' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            {{ form.mouse }}
+                        </div>
 
-                    <p>{{ form.descricao }}</p>
-                    {{ form.as_p }}
-                </div> -->
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Gabinete</label>
+                                <div class="pe-2">
+                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                        
+                                        <i id='refresh-gabinete' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            {{ form.gabinete }}
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Placa Mãe</label>
+                                <div class="pe-2">
+                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                        
+                                        <i id='refresh-placamae' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            {{ form.placa_mae }}
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Processadores</label>
+                                <div class="pe-2">
+                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                        
+                                        <i id='refresh-processador' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            {{ form.processador }}
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">HD</label>
+                                <div class="pe-2">
+                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                        
+                                        <i id='refresh-hd' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            {{ form.hd }}
+                        </div>
+                        <div class="col-12 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Monitor</label>
+                                <div class="pe-2">
+                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+
+                                    <i id='refresh-monitor' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            {{ form.monitor }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class='mt-4'>
+                            <h5 class='text-muted'>Endereco IP e MAC</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Enderço IP</label>
+                            </div>
+                            {{ form.endereco_ip }}
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">Enderço MAC</label>
+                            </div>
+                            {{ form.endereco_mac }}
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2">
+                            <div class="d-flex justify-content-between">
+                                <label class='form-label' for="id_predio">AnyDesk</label>
+                            </div>
+                            {{ form.anydesk }}
+                        </div>
                 <div class="d-flex justify-content-end mt-3 mb-3">
                     <button class="btn btn-primary">Adicionar</button>
                 </div>

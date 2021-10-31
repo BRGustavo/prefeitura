@@ -29,8 +29,9 @@
 {% if departamentos.has_previous %}
     <li class="page-item"><a class="page-link" href="{% url 'departamento' departamentos.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
-    <li class="page-item active"><a class="page-link"  href="#">{{ departamentos.number }}</a></li>
-
+    {% if departamento.has_other_pages %}
+    <li class="page-item active"><a class="page-link"  href="#">{{ departamento.number }}</a></li>
+    {% endif %}
     {% if departamentos.has_next %}
     <li class="page-item"><a class="page-link" href="{% url 'departamento' departamentos.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}

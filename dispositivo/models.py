@@ -123,11 +123,12 @@ class Computador(models.Model):
     placa_mae = models.OneToOneField(PlacaMae, related_name='computador', verbose_name='Placa Mãe', blank=True, null=True, on_delete=PROTECT, )
     processador = models.OneToOneField(Processador, related_name='computador', blank=True, null=True, on_delete=PROTECT)
     hd = models.OneToOneField(Hd, blank=True, related_name='computador', null=True, on_delete=PROTECT, )
-    monitor = models.ManyToManyField(Monitor, related_name='computador')
+    monitor = models.ManyToManyField(Monitor, blank=True, related_name='computador')
     teclado = models.OneToOneField(Teclado, related_name='computador', blank=True, null=True, on_delete=PROTECT, )
     mouse = models.OneToOneField(Mouse, related_name='computador', blank=True, null=True, on_delete=PROTECT, )
     sistema_op = models.CharField(verbose_name='Sistema Operacional', max_length=10, blank=True, choices=CHOICES_SISTEMS)
     sala = models.IntegerField(blank=True, null=True, help_text='Número de referência a sala onde ficará o computador')
+
     anydesk = models.CharField(max_length=120, verbose_name='AnyDesk', blank=True, null=True)
     mac_computador = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='computador')
     ip_computador = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='computador')

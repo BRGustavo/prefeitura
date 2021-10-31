@@ -58,11 +58,12 @@
 {% endblock tabela %}
 
 {% block nav_paginacao %}
-{% if funcionarios.has_previous %}
+    {% if funcionarios.has_previous %}
     <li class="page-item"><a class="page-link" href="{% url 'funcionario' funcionarios.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
+    {% if funcionarios.has_other_pages %}
     <li class="page-item active"><a class="page-link"  href="#">{{ funcionarios.number }}</a></li>
-
+    {% endif %}
     {% if funcionarios.has_next %}
     <li class="page-item"><a class="page-link" href="{% url 'funcionario' funcionarios.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}
