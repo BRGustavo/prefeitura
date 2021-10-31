@@ -1,5 +1,9 @@
 {% extends 'base_listagem.html' %}
 
+{% block button_adicionar %}
+<a href='{% url "computador_add" %}' class="btn btn-success">Adicionar</a>
+{% endblock %}
+
 {% block tabela %}
 <div class="card-body table-responsive bg-light">
     <table class="table table-sm text-center table table-striped">
@@ -34,7 +38,7 @@
                         {{ mac }}
                     {% endfor %}
                 </td>
-                <td><a href="#"><i class="fas fa-edit"></i></a></td>
+                <td><a href="{% url 'computador_add' %}"><i class="fas fa-edit"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>

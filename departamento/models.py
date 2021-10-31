@@ -51,4 +51,3 @@ class Funcionario(models.Model):
     def __str__(self) -> str:
         return f'{self.nome} {self.sobrenome} - {self.departamento.sigla_departamento}'
     
-

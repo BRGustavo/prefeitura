@@ -1,27 +1,34 @@
+from django.core import paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
+
+import departamento
 from .models import Departamento, Funcionario
 from .forms import DepartamentoForm, FuncionarioForm
 from django.db.models import Q, F
-
+from django.core.paginator import Paginator
 
 @login_required
 @permission_required('departamento.view_departamento', raise_exception=True)
-def departamento_view(request):
+def departamento_view(request, pagina=1):
+    """Função Responsavel pelo template de listar os departamentos. """
     pesquisa = request.GET.get('query')
-    departamentos = Departamento.objects.all()
+    departamentos_list = Departamento.objects.all()
     if pesquisa != '' and pesquisa is not None:
-        departamentos = departamentos.filter(
+        departamentos_list = departamentos_list.filter(
             Q(departamento__icontains=pesquisa) | Q(predio__icontains=pesquisa) | Q(singla_departamento__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
+    departamentos = Paginator(departamentos_list.order_by('id'), 10).get_page(pagina)
     content = {
-        'departamentos': departamentos
+        'departamentos': departamentos,
+        'pesquisa': pesquisa
     }
     return render(request, template_name='departamento/departamento.html', context=content)
 
 @login_required
 @permission_required('departamento.add_departamento', raise_exception=True)
 def departamento_create(request):
+    """Função responsável pelo templete de adicionar outro departamento."""
     context = {
         'form': DepartamentoForm(),
         'mensagens': [],
@@ -42,6 +49,7 @@ def departamento_create(request):
 @login_required
 @permission_required('departamento.change_departamento', raise_exception=True)
 def departamento_edit(request, id):
+    """Função chamada quando o usuário clica em editar o departamento."""
     departamento_db = get_object_or_404(Departamento, pk=id)
     form = DepartamentoForm(instance=departamento_db)
 
@@ -53,7 +61,7 @@ def departamento_edit(request, id):
         form = DepartamentoForm(request.POST, instance=departamento_db)
         if form.is_valid():
             form.save()
-            return redirect(f'/departamento/departamento')
+            return redirect(departamento_view, 1)
         else:
                 for valores in form.errors.values():
                     context['mensagens'].append(valores)
@@ -64,15 +72,22 @@ def departamento_edit(request, id):
 
 @login_required
 @permission_required('departamento.view_funcionario', raise_exception=True)
-def funcionario_view(request):
+def funcionario_view(request, pagina=1):
+    """Função responsável pelo template de listar os usuários """
     pesquisa = request.GET.get('query')
-    funcionarios = Funcionario.objects.all()
+    
+    funcionarios_lista = Funcionario.objects.all()
     if pesquisa != '' and pesquisa is not None:
-        funcionarios = funcionarios.filter(
+
+        funcionarios_lista = funcionarios_lista.filter(
             Q(nome__icontains=pesquisa) | Q(sobrenome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(controle_acesso__icontains=pesquisa) | Q(id__iexact=pesquisa) | Q(usuario_pc__icontains=pesquisa)
         )
+
+    funcionarios = Paginator(funcionarios_lista.order_by('id'), 10).get_page(pagina)
+
     content = {
-        'funcionarios': funcionarios
+        'funcionarios': funcionarios,
+        'pesquisa':pesquisa,
     }
     return render(request, template_name='funcionario/funcionario.html', context=content)
 
@@ -80,6 +95,7 @@ def funcionario_view(request):
 @login_required
 @permission_required('departamento.add_funcionario', raise_exception=True)
 def funcionario_create(request):
+    """Função responsável por cuidar da criação de um novo usuário"""
     context = {
         'form': FuncionarioForm,
         'mensagens': []
@@ -89,7 +105,7 @@ def funcionario_create(request):
         formulario = FuncionarioForm(request.POST)
         if formulario.is_valid():
             formulario.save()
-            return redirect('/departamento/funcionario')
+            return redirect(funcionario_view, 1)
         else:
                 for valores in formulario.errors.values():
                     context['mensagens'].append(valores)
@@ -102,6 +118,7 @@ def funcionario_create(request):
 @login_required
 @permission_required('departamento.change_funcionario', raise_exception=True)
 def funcionario_edit(request, id):
+    """Função responsável por exibir formulário de alteração funcionário."""
     funcionario_db = get_object_or_404(Funcionario, pk=id)
     form = FuncionarioForm(instance=funcionario_db)
 

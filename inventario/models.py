@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.deletion import CASCADE, PROTECT, SET_NULL
-from django.db.models.fields import CharField
+from django.db.models.fields import CharField, reverse_related
 from macaddress.fields import MACAddressField
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType

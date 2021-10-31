@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title%}Prefeitura Municipal{% endblock title %}</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
     <!-- BootStrap5 -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
 
@@ -75,12 +75,17 @@
 
     {% endblock corpo %}
 
-    <footer class='mt-auto bg-dark'>
-        <div class="container p-4 text-center">
-            <p class='text-light'>:P</p>
+    {% block footer %}
+    <footer class='mt-auto bg-black'>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center text-light">
+                    :p
+                </div>
+            </div>
         </div>
- 
     </footer>
+    {% endblock footer %}
     
     <!-- Bootstrap js -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

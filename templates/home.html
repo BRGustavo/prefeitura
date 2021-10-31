@@ -9,7 +9,10 @@
     .card:hover {
         border-color:black;
         background-color: rgb(252, 245, 245);
-        transition: 1.5s;
+        transition: 1.3s;
+        transform: scale(1.04);
+        color:black;
+        
     }
     #plus-icon {
         color:green;
@@ -26,7 +29,16 @@
     }
 
     /* Responsive */
-
+    @media (min-width: 576px) { 
+        #primeiro {
+            margin-top:60px;
+        }
+    }
+    @media (min-width: 768px) { 
+        #primeiro {
+            margin-top: 50px;
+        }
+    }
     @media (min-width: 1200px) {
         #primeiro {
             margin-top: 100px;
@@ -39,7 +51,7 @@
             <!-- Departamentos & Funcionários -->
             <p class='fs-5 mt-0 mt-sm-5 mt-xs-4 mt-lg-2'>Departamentos & Funcionários</p>
             <div class="col-12 col-md-4 col-lg-4 mt-1 mb-2">
-                <a class="link-clicado" href="{% url 'departamento' %}">
+                <a class="link-clicado" href="{% url 'departamento' pagina=1 %}">
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body p-4">
@@ -61,7 +73,7 @@
                 </a>
             </div>
             <div class="col-12 col-md-4 col-lg-4 mt-1 mb-2">
-                <a class="link-clicado" href="{% url 'funcionario' %}">
+                <a class="link-clicado" href="{% url 'funcionario' pagina=1 %}">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body p-4">

@@ -23,7 +23,9 @@
                         <div class="input-group">
                             <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
                             aria-describedby="search-addon" autocomplete="off"/>
+                            {% block botao_pesquisa %}
                             <button type="submit" class="btn btn-primary">Procurar</button>
+                            {% endblock botao_pesquisa%}
                           </div>
                     </form>
                 </div>
@@ -41,6 +43,14 @@
                 {% block tabela %}
 
                 {% endblock tabela %}
+                <div class="container d-flex justify-content-center">
+                    <nav aria-label='Paginador navegação'>
+                        <ul class="pagination">
+                        {% block nav_paginacao %}
+                        {% endblock nav_paginacao %}
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
