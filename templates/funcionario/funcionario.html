@@ -28,6 +28,7 @@
 {% endblock scripts %}
 {% block tabela %}
 <div class="card-body table-responsive bg-light">
+    {% if funcionarios %}
     <table class="table table-sm text-center table table-striped">
         <thead>
             <th scope="col">ID</th>
@@ -54,6 +55,11 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <div class='text-center'>
+        <p>Nada Encontrado</p>
+    </div>
+    {% endif %}
 </div>
 {% endblock tabela %}
 

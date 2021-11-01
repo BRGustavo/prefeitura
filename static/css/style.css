@@ -2,6 +2,7 @@ body {
     font-family: 'Roboto', sans-serif;
     margin:0;
 }
+
 .row {
     margin: 0;
 }
@@ -53,7 +54,6 @@ header .navbar {
     font-family: 'Times New Roman', Times, serif;
 }
 /* Responsive */
-
 @media (min-width: 1200px) {
     #primeiro {
         margin-top: 100px;

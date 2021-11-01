@@ -44,7 +44,7 @@ class Monitor(models.Model):
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)
 
     def __str__(self) -> str:
-        return f'{self.marca} {self.hdmi}'
+        return f'Patrimônio: {self.patrimonio} ({self.marca} {self.tamanho})'
 
 
 class PlacaMae(models.Model):
@@ -112,6 +112,7 @@ class Gabinete(models.Model):
         ('Normal', 'Normal'),
         ('Gabinete Horizontal', 'Gabinete Horizontal')
     ]
+    patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
     modelo = models.CharField(max_length=50, null=False, choices=CHOICES_MODELS)
     gabinete_tipo = models.CharField(max_length=100, default='Normal', null=False, choices=GABINETE_TIPO)
     usb_frontal = models.BooleanField(default=True, choices=[(True, 'Sim'), (False, 'Não')])
@@ -120,6 +121,6 @@ class Gabinete(models.Model):
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)
 
     def __str__(self) -> str:
-        return f'Modelo: {self.modelo} Tipo: {self.gabinete_tipo} usb frontal: {self.usb_frontal}'
+        return f'Patrimônio: {self.patrimonio} ({self.modelo})'
 
 

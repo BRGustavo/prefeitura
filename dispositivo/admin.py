@@ -98,5 +98,5 @@ admin.site.register(Roteador, RoteadorModel)
 admin.site.register(Impressora, ImpressoraModel)
 admin.site.register(Computador, ComputadorModel)
 
-# admin.site.register(EnderecoIp)
-# admin.site.register(EnderecoMac)
+admin.site.register(EnderecoIp)
+admin.site.register(EnderecoMac)

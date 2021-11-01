@@ -118,7 +118,6 @@ class Computador(models.Model):
     funcionario = models.ForeignKey(Funcionario, blank=True, null=True, on_delete=PROTECT,
     help_text='Funcionário que utilizará o computador.')
     nome_rede = CharField(verbose_name='Nome na Rede', max_length=15, blank=True, null=True)
-    patrimonio = CharField(verbose_name='Patrimônio', max_length=50, blank=True, null=True)
     gabinete = models.OneToOneField(Gabinete, related_name='computador', blank=True, null=True, on_delete=PROTECT, )
     placa_mae = models.OneToOneField(PlacaMae, related_name='computador', verbose_name='Placa Mãe', blank=True, null=True, on_delete=PROTECT, )
     processador = models.OneToOneField(Processador, related_name='computador', blank=True, null=True, on_delete=PROTECT)

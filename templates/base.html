@@ -53,12 +53,7 @@
                             </a>
                             {% endif %}
                         {% endif %}
-                        <!-- {% if not user.is_authenticated %}
-                            <a class="nav-item nav-link" href='{% url "login" %}'>
-                                <i class="fa fa-sign-in" aria-hidden="true"></i> Login
-                            </a>
-                
-                        {% endif %} -->
+
                         {% if user.is_authenticated %}
                         <a class="nav-item nav-link" href='{% url "logout" %}' id='home-menu'>
                             <i class="fa fa-sign-out" aria-hidden="true"></i> Sair
@@ -79,8 +74,13 @@
     <footer class='mt-auto bg-black'>
         <div class="container">
             <div class="row">
-                <div class="col-12 text-center text-light">
-                    :p
+                <div class="col-12 p-3 pb-0 text-light text-center">
+                    Rua Placídio Leite, 148 - Centro Cívico CEP: 84.990-000 - Tel: (43) 3512-3000
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 text-light text-center">
+                    :-P
                 </div>
             </div>
         </div>

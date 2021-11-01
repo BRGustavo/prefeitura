@@ -7,6 +7,11 @@
 
 {% block scripts %}
 <script>
+    $(window).ready(function(){
+
+         $('#id_endereco_ip').val('{{ form_ip.first|default_if_none:"" }}')
+    });
+
     function Requisicao(seletor, input, marca=false) {
         let selectorSelecionado = $(`${seletor}`);
         $.ajax({

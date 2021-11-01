@@ -6,6 +6,7 @@
 
 {% block tabela %}
 <div class="card-body table-responsive bg-light">
+    {% if computadores %}
     <table class="table table-sm text-center table table-striped">
         <thead>
             <th scope="col">ID</th>
@@ -38,22 +39,27 @@
                         {{ mac }}
                     {% endfor %}
                 </td>
-                <td><a href="{% url 'computador_add' %}"><i class="fas fa-edit"></i></a></td>
+                <td><a href="{% url 'computador_edit' computador.id %}"><i class="fas fa-edit"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <div class='text-center'>
+        <p>Nada Encontrado</p>
+    </div>
+    {% endif %}
 </div>
 {% endblock tabela %}
 
 {% block nav_paginacao %}
     {% if computadores.has_previous %}
-    <li class="page-item"><a class="page-link" href="{% url 'funcionario' computadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    <li class="page-item"><a class="page-link" href="{% url 'computador' computadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
     {% if computadores.has_other_pages %}
     <li class="page-item active"><a class="page-link"  href="#">{{ computadores.number }}</a></li>
     {% endif %}
     {% if computadores.has_next %}
-    <li class="page-item"><a class="page-link" href="{% url 'funcionario' computadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    <li class="page-item"><a class="page-link" href="{% url 'computador' computadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}
 {% endblock nav_paginacao %}

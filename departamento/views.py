@@ -37,7 +37,7 @@ def departamento_create(request):
         formulario = DepartamentoForm(request.POST)
         if formulario.is_valid():
             formulario.save()
-            return redirect(f'/departamento/departamento')
+            return redirect(departamento_view, 1)
         else:
                 for valores in formulario.errors.values():
                     context['mensagens'].append(valores)
