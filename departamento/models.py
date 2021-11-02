@@ -1,18 +1,28 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 
+# Choices models e forms 
+
+CHOICES_PREDIOS = [
+    ('Prefeitura Arapoti', 'Prefeitura Municipal de Arapoti'),
+    ('Col. Clotário', 'Colégio Clortário Portugal'),
+    ('Col. Tel.Carneiro', 'Colégio Telemaco Carneiro'),
+    ('Col. D.Zizi', 'Colégio Dona Zizi'),
+    ('Col. Romana Kluppel', 'Colégio Romana Carneiro Kluppel'),
+    ('Col. Dezidério', 'Colégio Deziderio J. Correa'),
+    ('Col. Orlando Pinto', 'Colégio Orlando Pinto - Calógeras'),
+    ('PACAA Guarda Mirim', 'PACAA - Guarda Mirim'),
+    ('UBS Jd.Aratinga', 'UBS Aratinga Santa Rita'),
+    ('UBS Jd.Ceres', 'UBS Jardim Ceres'),
+    ('UBS Vila Romana', 'UBS Vila Romana'),
+    ('UBS Alphaville', 'UBS Alphaville'),
+    ('UBS Calogeras', 'UBS Calógeras'),
+    ('CRAS', 'CRAS'),
+    ('CAPS', 'CAPS - Centro de Atenção Psicossocial'),
+    ('CREAS', 'CREAS - Centro de Referência Especializado em Assistência Social')
+]
+
 class Departamento(models.Model):
-    CHOICES_PREDIOS = [
-        ('Prefeitura Arapoti', 'Prefeitura Municipal de Arapoti'),
-        ('Col. Clotário', 'Colégio Clortário Portugal'),
-        ('Col. Tel.Carneiro', 'Colégio Telemaco Carneiro'),
-        ('Col. D.Zizi', 'Colégio Dona Zizi'),
-        ('UBS Jd.Aratinga', 'UBS Jardim Aratinga'),
-        ('UBS Jd.Ceres', 'UBS Jardim Ceres'),
-        ('UBS Vila Romana', 'UBS Vila Romana'),
-        ('CRAS', 'CRAS'),
-        ('CREAS', 'CREAS - Centro de Referência Especializado em Assistência Social')
-    ]
 
     predio = models.CharField(max_length=255, null=False, choices=CHOICES_PREDIOS)
     departamento = models.CharField(max_length=255, null=False)

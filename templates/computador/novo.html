@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block title %}
     Novo Computador
@@ -7,38 +7,11 @@
 
 {% block scripts %}
 <script>
-    function Requisicao(seletor, input, marca=false) {
-        let selectorSelecionado = $(`${seletor}`);
-        $.ajax({
-            url: '{% url "computador_add_ajax" %}',
-            data: {
-                'tipoValue': `${input}`
-            },
-            dataType: 'json',
-            success: function(data){
-                $(`${seletor}`).empty();
-                if(data.length >= 1){
-                    if(marca == true){
-                        selectorSelecionado.append($(`<option value selected'>---------</option>`));
-                    }
-                }
-                for(let item in data){
-                    var elemento = $(`<option value='${data[item][0]}'>${data[item][1]}</option>`)
-                    selectorSelecionado.append(elemento);
-                }
-            }
-        });
-    }
-    $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
-    $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
-    $('#refresh-teclado').click(()=>{ Requisicao('#id_teclado', 'selectTeclado', marca=true)});
-    $('#refresh-monitor').click(()=>{ Requisicao('#id_monitor', 'selectMonitor')});
-    $('#refresh-gabinete').click(()=>{ Requisicao('#id_gabinete', 'selectGabinete', marca=true)});
-    $('#refresh-processador').click(()=>{ Requisicao('#id_processador', 'selectProcessador', marca=true)});
-    $('#refresh-placamae').click(()=>{ Requisicao('#id_placa_mae', 'selectPlacamae', marca=true)});
-    $('#refresh-hd').click(()=>{ Requisicao('#id_hd', 'selectHd', marca=true)});
+    var computador_form_url_ajax = '{% url "computador_add_ajax" %}';
+    var ip_form_url_ajax = '{% url "verificar_ip_ajax" %}';
 
 </script>
+
 {% endblock scripts %}
 
 {% block corpo %}
@@ -231,6 +204,7 @@
                                 <label class='form-label' for="id_predio">Enderço IP</label>
                             </div>
                             {{ form.endereco_ip }}
+                            <span id="enderecoiphelp" class="form-text text-danger"></span>
                         </div>
                         <div class="col-12 col-lg-4 mt-2">
                             <div class="d-flex justify-content-between">
@@ -256,7 +230,7 @@
                         </div>
                     </div>
                 <div class="d-flex justify-content-end mt-3 mb-3">
-                    <button class="btn btn-primary">Adicionar</button>
+                    <button id='btnenviar' class="btn btn-primary">Adicionar</button>
                 </div>
             </form>
         </div>

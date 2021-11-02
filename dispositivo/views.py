@@ -28,7 +28,7 @@ def computador_view(request, pagina):
 
 
 @login_required
-@permission_required('departamento.add_departamento', raise_exception=True)
+@permission_required('dispositivo.add_computador', raise_exception=True)
 def computador_create(request):
     form = ComputadorForm()
     context = {

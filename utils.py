@@ -25,3 +25,5 @@ def VerificarMac(mac_valor):
             return novo_mac
     else:
         return None
+    
+

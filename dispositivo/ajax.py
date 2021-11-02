@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_ipv4_address
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
@@ -5,7 +7,7 @@ from .models import *
 from dispositivo.models import *
 
 @login_required
-@permission_required('departamento.add_departamento', raise_exception=True)
+@permission_required('dispositivo.add_computador', raise_exception=True)
 def computador_create_ajax(request):
     if request.is_ajax():
         data = []
@@ -40,4 +42,29 @@ def computador_create_ajax(request):
             data.append((f'{item.id}', str(item)))
         return JsonResponse(data, safe=False)
 
+    return render(request, 'base.html')
+
+
+@login_required
+@permission_required('dispositivo.add_computador', raise_exception=True)
+def verificar_ip_ajax(request):
+    if request.is_ajax():
+        ip = request.GET.get('enderecoip')
+        data = {
+            'ip': ip,
+            'valido': False,
+            'mensagem': ''
+        }
+        ip_db = EnderecoIp.objects.filter(ip_address=ip)
+        if ip_db.count() >= 1:
+            data['valido'] = False
+            data['mensagem'] = 'Parece que algo já está usando esse endereço ip.'
+        else:
+            try:
+                validador = validate_ipv4_address(ip)
+                data['valido'] = True
+            except ValidationError: 
+                data['valido'] = False
+                data['mensagem'] = 'Esse endereço não está no padrão IPV4.'
+        return JsonResponse(data, safe=True)
     return render(request, 'base.html')

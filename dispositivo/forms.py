@@ -55,9 +55,9 @@ class ComputadorForm(forms.ModelForm):
     sistema_op = forms.ChoiceField(choices=CHOICES_SISTEMS, widget=Select(attrs={'class': 'form-control'}))
     
     departamento = forms.ModelChoiceField(required=False, queryset=(Departamento.objects.all()), widget=Select(attrs={'class': 'form-control'}))
-    funcionario = forms.ModelChoiceField(required=False, queryset=(Funcionario.objects.all()), widget=Select(attrs={'class': 'form-control'}))
-    nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control'}))
-    anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    funcionario = forms.ModelChoiceField(required=False, queryset=(Funcionario.objects.all()), widget=Select(attrs={'class': 'form-control', 'autocomplete':'off'}))
+    nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
+    anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
     sala = forms.IntegerField(required=False, widget=NumberInput(attrs={'class': 'form-control'}))
     gabinete = forms.ModelChoiceField(queryset=Gabinete.objects.all(), widget=Select(attrs={'class': 'form-control'})) 
     placa_mae = forms.ModelChoiceField(required=False, queryset=PlacaMae.objects.all(), widget=Select(attrs={'class': 'form-control'}))      
@@ -68,8 +68,8 @@ class ComputadorForm(forms.ModelForm):
 
     monitor = forms.ModelMultipleChoiceField(required=False, queryset=Monitor.objects.all().filter(computador__isnull=True), widget=forms.SelectMultiple(attrs={'class': 'form-control'}))
 
-    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
-    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
+    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp'}))
+    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
 
     descricao = forms.CharField(required=False, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off'}))
 
