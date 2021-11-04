@@ -1,7 +1,9 @@
 let timer = null;
 $('#id_endereco_ip').keyup(function(){
-    clearTimeout(timer);
-    timer = setTimeout(VerificarEnderecoIp, 1000);
+    if(validador == true){
+        clearTimeout(timer);
+        timer = setTimeout(VerificarEnderecoIp, 1000);
+    }
 });
 function VerificarEnderecoIp(){
     var ip_valor = window.document.querySelector('#id_endereco_ip').value;

@@ -8,13 +8,28 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django import forms
 from django.db.models import Q
-
 from inventario.models import PlacaMae, Processador, Teclado, Mouse, Monitor, Hd, Gabinete
 
 
 CHOICES_BOOL = (
     (True, 'Sim'),
     (False, 'Não')
+)
+CHOICES_ROTEADORES = [
+    ('TP-LINK', 'TP-Link'),
+    ('D-Link', 'D-Link'),
+    ('Huawei', 'Huawei'),
+    ('Asus', 'Asus'),
+    ('Outro', 'Outro')
+]
+CHOICES_SISTEMS = (
+
+    ('Win7', 'Windows 7'),
+    ('WinXP', 'Windows XP'),
+    ('Win8', 'Windows 8'),
+    ('Win10', 'Windows 10'),
+    ('Ubuntu', 'Ubuntu'),
+    ('WinServer', 'Windows Server')
 )
 
 class EnderecoMac(models.Model):
@@ -44,12 +59,7 @@ class Roteador(models.Model):
         
     ssid = models.CharField(max_length=100, verbose_name="SSID", null=False, help_text="Nome visivel da rede.")
     senha = models.CharField(max_length=100, null=True, blank=True)
-    modelo = models.CharField(max_length=50, null=False, choices=[
-        ('TP-LINK', 'TP-Link'),
-        ('D-Link', 'D-Link'),
-        ('Huawei', 'Huawei'),
-        ('Outro', 'Outro')
-    ])
+    modelo = models.CharField(max_length=50, null=False, choices=CHOICES_ROTEADORES)
     multimodo = models.CharField(max_length=1, default='N', choices=[
         ('N', 'Não'),
         ('S', 'Sim')
@@ -78,7 +88,7 @@ class Impressora(models.Model):
         ('Corredor', 'Corredor')
     ))
     patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
-
+    departamento = models.ForeignKey(Departamento, blank=True, null=True, on_delete=CASCADE)
     sala = models.IntegerField(blank=True, null=True, verbose_name="Número Sala", help_text='Número de refência ao local onde a impressora está.')
 
     usando_ip = models.BooleanField(verbose_name='Usando IP', help_text='Está conectada pela rede;usando um ip.', default=True, null=False, choices=CHOICES_BOOL)
@@ -105,14 +115,6 @@ class Computador(models.Model):
         verbose_name = 'Computador'
         verbose_name_plural = 'Computadores'
 
-    CHOICES_SISTEMS = (
-
-        ('Win7', 'Windows 7'),
-        ('Win8', 'Windows 8'),
-        ('Win10', 'Windows 10'),
-        ('Ubuntu', 'Ubuntu'),
-        ('WinServer', 'Windows Server')
-    )
     departamento = models.ForeignKey(Departamento, blank=True, null=True, on_delete=PROTECT,
     help_text='Departamento ao qual o computador pertence.')
     funcionario = models.ForeignKey(Funcionario, blank=True, null=True, on_delete=PROTECT,

@@ -25,11 +25,11 @@ class FuncionarioForm(forms.ModelForm):
             'controle_acesso', 'descricao'
         ]
 
-    nome = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
-    sobrenome = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
+    nome = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: Fulano'}))
+    sobrenome = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: Silva'}))
     departamento = forms.ModelChoiceField(queryset=(Departamento.objects.all()), widget=Select(attrs={'class': 'form-control'}))
-    usuario_pc = forms.CharField(widget=TextInput(attrs={'class': 'form-control'}), required=False)
-    senha_pc = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}), required=False)
+    usuario_pc = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: fulano.silva'}), required=False)
+    senha_pc = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: Brasil2021'}), required=False)
     
     controle_acesso = forms.ChoiceField(choices=(
         ('Pessimista', 'Pessimista'),
@@ -41,4 +41,4 @@ class FuncionarioForm(forms.ModelForm):
         (True,'Sim')
         ),widget=Select(attrs={'class': 'form-control'}))
     
-    descricao = forms.CharField(max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off'}), required=False)
+    descricao = forms.CharField(max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off', 'placeholder': 'Informações complementares sobre o usuário.'}), required=False)

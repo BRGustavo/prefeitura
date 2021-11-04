@@ -9,9 +9,10 @@ from django.forms.widgets import CheckboxSelectMultiple, Input, NumberInput, Sel
 from macaddress.fields import MACAddressFormField
 
 from inventario.models import Hd, Monitor, Mouse, PlacaMae, Processador, Teclado
-from .models import Computador, EnderecoIp, Gabinete, MemoriaRam
+from .models import Computador, EnderecoIp, Gabinete, MemoriaRam, Roteador, CHOICES_ROTEADORES, CHOICES_SISTEMS
 from departamento.models import Departamento, Funcionario
 from django.db.models import Q 
+
 
 class ComputadorForm(forms.ModelForm):
     class Meta:
@@ -44,21 +45,13 @@ class ComputadorForm(forms.ModelForm):
             Hd.objects.all().filter(computador__isnull=True) | (Hd.objects.filter(computador=self.instance))
         )
 
-    CHOICES_SISTEMS = (
-
-        ('Win7', 'Windows 7'),
-        ('Win8', 'Windows 8'),
-        ('Win10', 'Windows 10'),
-        ('Ubuntu', 'Ubuntu'),
-        ('WinServer', 'Windows Server')
-    )
     sistema_op = forms.ChoiceField(choices=CHOICES_SISTEMS, widget=Select(attrs={'class': 'form-control'}))
     
     departamento = forms.ModelChoiceField(required=False, queryset=(Departamento.objects.all()), widget=Select(attrs={'class': 'form-control'}))
     funcionario = forms.ModelChoiceField(required=False, queryset=(Funcionario.objects.all()), widget=Select(attrs={'class': 'form-control', 'autocomplete':'off'}))
-    nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
-    anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
-    sala = forms.IntegerField(required=False, widget=NumberInput(attrs={'class': 'form-control'}))
+    nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: PRE-01'}))
+    anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: 0000000'}))
+    sala = forms.IntegerField(required=False, widget=NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 01'}))
     gabinete = forms.ModelChoiceField(queryset=Gabinete.objects.all(), widget=Select(attrs={'class': 'form-control'})) 
     placa_mae = forms.ModelChoiceField(required=False, queryset=PlacaMae.objects.all(), widget=Select(attrs={'class': 'form-control'}))      
     processador = forms.ModelChoiceField(required=False, queryset=Processador.objects.all(), widget=Select(attrs={'class': 'form-control'}))
@@ -68,10 +61,26 @@ class ComputadorForm(forms.ModelForm):
 
     monitor = forms.ModelMultipleChoiceField(required=False, queryset=Monitor.objects.all().filter(computador__isnull=True), widget=forms.SelectMultiple(attrs={'class': 'form-control'}))
 
-    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp'}))
-    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
+    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Ex: 192.168.5.20'}))
+    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: AA-AA-AA-AA-AA-AA'}))
 
-    descricao = forms.CharField(required=False, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off'}))
+    descricao = forms.CharField(required=False, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off', 'placeholder': 'Descreve mais sobre o dispositivo.'}))
+
+
+class RoteadorForm(forms.ModelForm):
+    class Meta:
+        model = Roteador
+        fields = ('ssid', 'senha', 'modelo', 'departamento', 'descricao')
+        exclude = ()
+
+    ssid = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Exemplo: Sala do Empreendedor'}))
+    senha = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 12345'}))
+    modelo = forms.ChoiceField(required=True, choices=CHOICES_ROTEADORES, widget=forms.Select(attrs={'class': 'form-control'}))
+    departamento = forms.ModelChoiceField(required=False, queryset=Departamento.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    descricao = forms.CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva melhor o dispositivo.'}))
+    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Exemplo: 192.168.4.20'}))
+    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: AA-AA-AA-AA-AA-AA'}))
+
 
 class EndereoIpForm(forms.ModelForm):
     class Meta:

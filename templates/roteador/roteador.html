@@ -1,7 +1,7 @@
 {% extends 'departamento/departamento.html' %}
 
 {% block button_adicionar %}
-<a href='{% url "funcionario_add" %}' class="btn btn-success">Adicionar</a>
+<a href='{% url "roteador_add" %}' class="btn btn-success">Adicionar</a>
 
 {% endblock %}
 
@@ -21,7 +21,7 @@
     $('#pesquisa_btn').click(function(e){
         e.preventDefault();
         $('input[name="query"]').each(function(){
-            $(location).prop('href', `{% url "roteador" 1 %}?query=${this.value}`)
+            $(location).prop('href', `{% url "roteador_view" 1 %}?query=${this.value}`)
         })
     });
 </script>
@@ -35,8 +35,8 @@
             <th scope="col">SSID</th>
             <th scope="col">Modelo</th>
             <th scope="col">Departamento</th>
-            <th scope='col'>MAC</th>
             <th scope='col'>IP</th>
+            <th scope='col'>MAC</th>
             <th scope='col'>Editar</th>
         </thead>
         <tbody>
@@ -56,7 +56,7 @@
                         {{ mac }}
                     {% endfor %}
                 </td>
-                <td><a href="{% url 'funcionario_edit' roteador.id %}"><i class="fas fa-edit"></i></a></td>
+                <td><a href="{% url 'roteador_edit' roteador.id %}"><i class="fas fa-edit"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -71,12 +71,12 @@
 
 {% block nav_paginacao %}
     {% if roteadores.has_previous %}
-    <li class="page-item"><a class="page-link" href="{% url 'roteador' roteadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    <li class="page-item"><a class="page-link" href="{% url 'roteador_view' roteadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
     {% if roteadores.has_other_pages %}
     <li class="page-item active"><a class="page-link"  href="#">{{ roteadores.number }}</a></li>
     {% endif %}
     {% if roteadores.has_next %}
-    <li class="page-item"><a class="page-link" href="{% url 'roteador' roteadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    <li class="page-item"><a class="page-link" href="{% url 'roteador_view' roteadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}
 {% endblock nav_paginacao %}

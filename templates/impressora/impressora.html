@@ -1,0 +1,59 @@
+{% extends 'base_listagem.html' %}
+
+{% block button_adicionar %}
+<a href='{% url "computador_add" %}' class="btn btn-success">Adicionar</a>
+{% endblock %}
+
+{% block tabela %}
+<div class="card-body table-responsive bg-light">
+    {% if impressoras %}
+    <table class="table table-sm text-center table table-striped">
+        <thead>
+            <th scope="col">ID</th>
+            <th scope='col'>Nome</th>
+            <th scope='col'>Patrimônio</th>
+            <th scope="col">Departamento</th>
+            <th scope='col'>IP</th>
+            <th scope='col'>MAC</th>
+        </thead>
+        <tbody>
+            {% for impressora in impressoras %}
+            <tr>
+                <th scope="row">{{ impressora.id }}</th>
+                <td>{{ impressora.nome }}</td>
+                <th>{{ impressora.patrimonio }}</th>
+                <td>{{ impressora.departamento }}</td>
+                <td>
+                    {% for ip in impressora.ip_impressora.all %}
+                        {{ ip }}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for mac in impressora.mac_impressora.all %}
+                        {{ mac }}
+                    {% endfor %}
+                </td>
+                <td><a href="{% url 'computador_edit' impressora.id %}"><i class="fas fa-edit"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class='text-center'>
+        <p>Nada Encontrado</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock tabela %}
+
+{% block nav_paginacao %}
+    {% if impressoras.has_previous %}
+    <li class="page-item"><a class="page-link" href="{% url 'impressora_view' impressoras.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    {% endif %}
+    {% if impressoras.has_other_pages %}
+    <li class="page-item active"><a class="page-link"  href="#">{{ impressoras.number }}</a></li>
+    {% endif %}
+    {% if impressoras.has_next %}
+    <li class="page-item"><a class="page-link" href="{% url 'impressora_view' impressoras.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    {% endif %}
+{% endblock nav_paginacao %}

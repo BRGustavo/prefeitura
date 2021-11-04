@@ -7,11 +7,18 @@ from . import ajax
 from sistema.settings import BASE_DIR
 
 urlpatterns = [
+    # URLs Model Computador
     path('computador/<int:pagina>/', views.computador_view, name='computador'),
     path('computador/add/', views.computador_create, name='computador_add'),
     path('computador/edit/<int:id>/', views.computador_edit, name='computador_edit'),
-    path('roteador/<int:pagina>/', views.roteador_view, name='roteador'),
-    path('impressora/', TemplateView.as_view(template_name='base.html'), name='impressora'),
+
+    # URLs Model Roteador
+    path('roteador/<int:pagina>/', views.roteador_view, name='roteador_view'),
+    path('roteador/add/', views.roteador_add, name='roteador_add'),
+    path('roteador/edit/<int:id>/', views.roteador_edit, name='roteador_edit'),
+
+    # URLs Model Impressora
+    path('impressora/<int:pagina>/', views.impressora_view, name='impressora_view'),
 
     # Ajax
     path('computador/add/ajax', ajax.computador_create_ajax, name='computador_add_ajax'),
