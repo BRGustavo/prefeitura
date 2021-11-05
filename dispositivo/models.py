@@ -32,6 +32,13 @@ CHOICES_SISTEMS = (
     ('WinServer', 'Windows Server')
 )
 
+TONER_CHOICES = [
+    ('Modelo 01', 'Modelo 01'),
+    ('Modelo 02', 'Modelo 02'),
+    ('Modelo 03', 'Modelo 03')
+]
+
+
 class EnderecoMac(models.Model):
     mac_address = MACAddressField(unique=True, blank=True, null=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, blank=True, related_name='mac_parente')
@@ -75,11 +82,6 @@ class Roteador(models.Model):
 
 class Impressora(models.Model):
 
-    TONER_CHOICES = [
-        ('Modelo 01', 'Modelo 01'),
-        ('Modelo 02', 'Modelo 02'),
-        ('Modelo 03', 'Modelo 03')
-    ]
     nome = models.CharField(max_length=100, blank=True, null=True, verbose_name='Nome Impressora')
     modelo = models.CharField(max_length=100, null=False, blank=False, verbose_name='Modelo')
     tipo_toner = models.CharField(max_length=100, default=TONER_CHOICES[0], null=False, choices=TONER_CHOICES, verbose_name='Toner')

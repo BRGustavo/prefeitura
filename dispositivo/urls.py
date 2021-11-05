@@ -19,6 +19,8 @@ urlpatterns = [
 
     # URLs Model Impressora
     path('impressora/<int:pagina>/', views.impressora_view, name='impressora_view'),
+    path('impressora/add/', views.impressora_add, name='impressora_add'),
+    path('impressora/edit/<int:id>/', views.impressora_edit, name='impressora_edit'),
 
     # Ajax
     path('computador/add/ajax', ajax.computador_create_ajax, name='computador_add_ajax'),

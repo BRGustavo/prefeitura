@@ -1,7 +1,7 @@
 {% extends 'base_listagem.html' %}
 
 {% block button_adicionar %}
-<a href='{% url "computador_add" %}' class="btn btn-success">Adicionar</a>
+<a href='{% url "impressora_add" %}' class="btn btn-success">Adicionar</a>
 {% endblock %}
 
 {% block tabela %}
@@ -33,7 +33,7 @@
                         {{ mac }}
                     {% endfor %}
                 </td>
-                <td><a href="{% url 'computador_edit' impressora.id %}"><i class="fas fa-edit"></i></a></td>
+                <td><a href="{% url 'impressora_edit' impressora.id %}"><i class="fas fa-edit"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>

@@ -6,16 +6,19 @@
     <style>
         body {
             background-color:#FFF;
+            background-image: url('{%  static "img/background.jpg" %}');
+            background-repeat: no-repeat;
+            background-size: cover;
         }
         .form-control:focus {
             background-color: wheat;
         }
     </style>
-    <main>
+    <main class=''>
         <div class="container mt-5 mb-5">
             <div class='row'>
                 <div class="col-lg-5 m-auto mt-5">
-                    <div class="card mt-5 rounded border border-light">
+                    <div style="background-color: transparent;" class="card mt-5 border-0">
                         <div class="card-title text-center mt-4">
                             <i class="fas fa-user-circle fa-5x"></i>
                         </div>

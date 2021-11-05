@@ -18,11 +18,11 @@ def VerificarIp(ip_valor):
 def VerificarMac(mac_valor):
     """Verifica se há um mac igual no banco de dados"""
     if mac_valor:
-        novo_mac = EnderecoMac.objects.filter(mac_address=mac_valor)
-        if novo_mac.count() >=1:
+        novo_mac_pesquisa = EnderecoMac.objects.filter(mac_address=mac_valor)
+        if novo_mac_pesquisa.count() >=1:
             raise IndexError('Valor já existe no db')
         else:
-            return novo_mac
+            return mac_valor
     else:
         return None
     

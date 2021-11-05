@@ -1,6 +1,7 @@
 from typing import Text
 from django import forms
 from django.db.models.base import Model
+from django.db.models.fields import CharField, TextField
 from django.db.models.query import QuerySet
 from django.forms import widgets
 from django.forms.fields import IntegerField
@@ -9,7 +10,7 @@ from django.forms.widgets import CheckboxSelectMultiple, Input, NumberInput, Sel
 from macaddress.fields import MACAddressFormField
 
 from inventario.models import Hd, Monitor, Mouse, PlacaMae, Processador, Teclado
-from .models import Computador, EnderecoIp, Gabinete, MemoriaRam, Roteador, CHOICES_ROTEADORES, CHOICES_SISTEMS
+from .models import Computador, EnderecoIp, Gabinete, Impressora, MemoriaRam, Roteador, CHOICES_ROTEADORES, CHOICES_SISTEMS, TONER_CHOICES
 from departamento.models import Departamento, Funcionario
 from django.db.models import Q 
 
@@ -80,6 +81,24 @@ class RoteadorForm(forms.ModelForm):
     descricao = forms.CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva melhor o dispositivo.'}))
     endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Exemplo: 192.168.4.20'}))
     endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: AA-AA-AA-AA-AA-AA'}))
+
+
+class ImpressoraForm(forms.ModelForm):
+    class Meta:
+        model = Impressora
+        fields = ('nome', 'modelo', 'tipo_toner', 'patrimonio', 'pertence_gestpar', 'gestpar_matricula', 'departamento', 'sala')
+
+    nome = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Corredor Informática.'}))
+    modelo = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Samsung'}))
+    tipo_toner = forms.ChoiceField(required=True, choices=TONER_CHOICES, widget=forms.Select(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Samsung'}))
+    patrimonio = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Ex: 123456'}))
+    pertence_gestpar = forms.BooleanField(required=False, widget=Select(attrs={'class':'form-control'}))
+    gestpar_matricula = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: GEST-123'}))
+    departamento = forms.ModelChoiceField(required=False, queryset=Departamento.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    sala = forms.IntegerField(required=False, widget=NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 10'}))
+    descricao = forms.CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva melhor o dispositivo.'}))
+    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Ex: 192.168.4.20'}))
+    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: AA-AA-AA-AA-AA-AA'}))
 
 
 class EndereoIpForm(forms.ModelForm):

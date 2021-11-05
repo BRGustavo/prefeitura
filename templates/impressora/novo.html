@@ -1,20 +1,31 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block title %}
-    Editar Roteador
+    Nova Impressora
 {% endblock title %}
 
 {% block scripts %}
 <script>
-    $(window).ready(function(){
+    var ip_form_url_ajax = '{% url "verificar_ip_ajax" %}';
+    var validador=true;
 
-         $('#id_endereco_ip').val('{{ form_ip.first|default_if_none:"" }}')
-         $('#id_endereco_mac').val('{{ form_mac.first|default_if_none:"" }}')
-    });
-    var validador=false;
-
+    $(document).ready(function(){
+        gestparselect('Sim');
+    })
+    function gestparselect(valor){
+        if(valor == 'Sim'){
+            $("#id_patrimonio").attr('disabled', 'readpmçy')
+            $("#id_gestpar_matricula").removeAttr('disabled');
+            $('#id_patrimonio').val('')
+        }else{
+            $('#id_gestpar_matricula').attr('disabled', 'readonly');
+            $('#id_patrimonio').removeAttr('disabled');
+            $('#id_gestpar_matricula').val('')
+        }
+    }
 </script>
+
 {% endblock scripts %}
 
 {% block corpo %}
@@ -70,23 +81,55 @@
                         </div>
                         
                         <div class="col-12 col-lg-4 mt-2 mt-lg-0">
-                            <label class='form-label' for="id_predio">SSID *</label><br>
-                            {{ form.ssid }}
-                        </div>
-                        <div class="col-12 col-lg-4 mt-2 mt-lg-0">
-                            <label class='form-label' for="id_predio">Senha</label><br>
-                            {{ form.senha }}
+                            <label class='form-label' for="id_predio">Nome</label><br>
+                            {{ form.nome }}
                         </div>
                         <div class="col-12 col-lg-4 mt-2 mt-lg-0">
                             <label class='form-label' for="id_predio">Modelo</label><br>
                             {{ form.modelo }}
                         </div>
-                        <div class="col-12 mt-lg-3 mt-2 mt-lg-0">
-                            <label class='form-label' for="id_predio">Departamento</label><br>
-                            {{ form.departamento }}
+                        <div class="col-12 col-lg-4 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">Tipo Toner</label><br>
+                            {{ form.tipo_toner }}
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class='mt-4'>
+                            <h5 class='text-muted'>Patrimônio e Locação</h5>
+                            <hr>
+                        </div>
+                        <div class="col-12 col-lg-4 mt-2  mt-lg-0">
+                            <label class='form-label' for="id_predio">Pertence a Gestpar?</label><br>
+                            <select onchange="gestparselect(this.value)" class='form-select' name="gestpar" id="gestpar-select">
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                            </select>
+                        </div>
+                        <div id='matricula-gestpar' class="col-12 col-lg-4 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">Gestpar Matricula</label><br>
+                            {{ form.gestpar_matricula }}
+                        </div>
+                        <div id='patrimonio' class="col-12 col-lg-4 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">Número Patrimônio</label><br>
+                            {{ form.patrimonio }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class='mt-4'>
+                            <h5 class='text-muted'>Local</h5>
+                            <hr>
+                        </div>
+
+                        <div id='matricula-gestpar' class="col-12 col-lg-6 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">Departamento</label><br>
+                            {{ form.departamento }}
+                        </div>
+                        <div id='patrimonio' class="col-12 col-lg-6 mt-2 mt-lg-0">
+                            <label class='form-label' for="id_predio">Sala</label><br>
+                            {{ form.sala }}
+                        </div>
+                    </div>
                     <div class="row">
                         <div class='mt-4'>
                             <h5 class='text-muted'>Endereco IP e MAC</h5>
@@ -118,7 +161,7 @@
                         </div>
                     </div>
                 <div class="d-flex justify-content-end mt-3 mb-3">
-                    <button id='btnenviar' class="btn btn-primary">Editar</button>
+                    <button id='btnenviar' class="btn btn-primary">Adicionar</button>
                 </div>
             </form>
         </div>
