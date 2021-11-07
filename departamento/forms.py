@@ -41,4 +41,4 @@ class FuncionarioForm(forms.ModelForm):
         (True,'Sim')
         ),widget=Select(attrs={'class': 'form-control'}))
     
-    descricao = forms.CharField(max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off', 'placeholder': 'Informações complementares sobre o usuário.'}), required=False)
+    descricao = forms.CharField(label="Descrição", max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off', 'placeholder': 'Informações complementares sobre o usuário.'}), required=False)

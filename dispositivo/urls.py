@@ -25,4 +25,7 @@ urlpatterns = [
     # Ajax
     path('computador/add/ajax', ajax.computador_create_ajax, name='computador_add_ajax'),
     path('ip/verificador/ajax/', ajax.verificar_ip_ajax, name='verificar_ip_ajax'),
+
+    path('',views.teste_view, name='teste')
+
 ]

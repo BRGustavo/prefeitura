@@ -56,6 +56,55 @@ function Requisicao(seletor, input, marca=false) {
         }
     });
 }
+
+function FormularioFuncionario(){
+    AdicionarNovoItem('funcionario');
+}
+function FormularioTeclado(){
+    AdicionarNovoItem('teclado');
+}
+function FormularioMouse(){
+    AdicionarNovoItem('mouse');
+}
+function FormularioGabinete(){
+    AdicionarNovoItem('gabinete');
+}
+function FormularioPlacaMae(){
+    AdicionarNovoItem('placa_mae');
+}
+function FormularioProcessador(){
+    AdicionarNovoItem('processador');
+}
+function FormularioHd(){
+    AdicionarNovoItem('hd');
+}
+function FormularioMonitor(){
+    AdicionarNovoItem('monitor');
+}
+
+function AdicionarNovoItem(tipo){
+    let lower = tipo.toLowerCase();
+    let capitalize  = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+    const csrftoken = document.querySelector(`#form-${lower} [name=csrfmiddlewaretoken]`).value;
+    var serialize = $(`#form-${lower}`).serialize();
+    var form_ = $(`#modal${capitalize}`)
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls[`${lower}`],
+        data: serialize,
+        success: function(data){
+            form_.modal('hide');
+            $(`#form-${lower}`).trigger('reset');
+            Requisicao(`#id_${lower}`, `select${capitalize}`, marca=true);
+        },
+        error: function(data){
+            alert('Algo deu errado, verifique os campos novamente!');
+        }
+    });
+}
+
+
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
 $('#refresh-teclado').click(()=>{ Requisicao('#id_teclado', 'selectTeclado', marca=true)});

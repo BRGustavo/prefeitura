@@ -10,6 +10,18 @@
     var computador_form_url_ajax = '{% url "computador_add_ajax" %}';
     var ip_form_url_ajax = '{% url "verificar_ip_ajax" %}';
     var validador=true;
+
+    var forms_urls = {
+        funcionario: '{% url "funcionario_ajax_add" %}',
+        teclado: '{% url "teclado_ajax_add" %}',
+        mouse: '{% url "mouse_ajax_add" %}',
+        gabinete: '{% url "gabinete_ajax_add" %}',
+        placa_mae: '{% url "placamae_ajax_add" %}',
+        monitor: '{% url "monitor_ajax_add" %}',
+        processador: '{% url "processador_ajax_add" %}',
+        hd: '{% url "hd_ajax_add" %}',
+    }
+
 </script>
 
 {% endblock scripts %}
@@ -90,8 +102,10 @@
                             <div class="d-flex justify-content-between">
                                 <label class='form-label' for="id_predio">Funcionário</label>
                                 <div class="pe-2">
-                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
-                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <!-- <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
+                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a>  -->
+                                        <i class="fa fa-plus fa-xs icon-a" data-bs-toggle='modal' data-bs-target='#modalFuncionario' aria-hidden="true">
+                                        </i>
                                     <i id='refresh-funcionario' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
                                 </div>
                             </div>
@@ -112,8 +126,8 @@
                             <div class="d-flex justify-content-between">
                                 <label class='form-label' for="id_predio">Teclado</label>
                                 <div class="pe-2">
-                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
-                                    <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <i class="fa fa-plus fa-xs icon-a" data-bs-toggle='modal' data-bs-target='#modalTeclado' aria-hidden="true">
+                                    </i> 
                                     <i id='refresh-teclado' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
                                 </div>
                             </div>
@@ -123,10 +137,9 @@
                             <div class="d-flex justify-content-between">
                                 <label class='form-label' for="id_predio">Mouse</label>
                                 <div class="pe-2">
-                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
-                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
-                                        
-                                        <i id='refresh-mouse' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
+                                    <i class="fa fa-plus fa-xs icon-a" data-bs-toggle='modal' data-bs-target='#modalMouse' aria-hidden="true">
+                                    </i> 
+                                    <i id='refresh-mouse' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
                                 </div>
                             </div>
                             {{ form.mouse }}
@@ -136,8 +149,8 @@
                             <div class="d-flex justify-content-between">
                                 <label class='form-label' for="id_predio">Gabinete *</label>
                                 <div class="pe-2">
-                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
-                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <i class="fa fa-plus fa-xs icon-a" data-bs-toggle='modal' data-bs-target='#modalGabinete' aria-hidden="true">
+                                    </i>  
                                         
                                         <i id='refresh-gabinete' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
                                 </div>
@@ -148,8 +161,8 @@
                             <div class="d-flex justify-content-between">
                                 <label class='form-label' for="id_predio">Placa Mãe</label>
                                 <div class="pe-2">
-                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
-                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <i class="fa fa-plus fa-xs icon-a" data-bs-toggle='modal' data-bs-target='#modalPlaca_mae' aria-hidden="true">
+                                    </i> 
                                         
                                         <i id='refresh-placamae' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
                                 </div>
@@ -160,8 +173,8 @@
                             <div class="d-flex justify-content-between">
                                 <label class='form-label' for="id_predio">Processadores</label>
                                 <div class="pe-2">
-                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
-                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <i class="fa fa-plus fa-xs icon-a" data-bs-toggle='modal' data-bs-target='#modalProcessador' aria-hidden="true">
+                                    </i> 
                                         
                                         <i id='refresh-processador' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
                                 </div>
@@ -172,8 +185,8 @@
                             <div class="d-flex justify-content-between">
                                 <label class='form-label' for="id_predio">HD</label>
                                 <div class="pe-2">
-                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
-                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <i class="fa fa-plus fa-xs icon-a" data-bs-toggle='modal' data-bs-target='#modalHd' aria-hidden="true">
+                                    </i> 
                                         
                                         <i id='refresh-hd' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
                                 </div>
@@ -184,8 +197,8 @@
                             <div class="d-flex justify-content-between">
                                 <label class='form-label' for="id_predio">Monitor</label>
                                 <div class="pe-2">
-                                    <a class='me-2' href="{% url 'funcionario_add' %}" target='_blank'>
-                                        <i class="fa fa-plus fa-xs icon-a" aria-hidden="true"></i></a> 
+                                    <i class="fa fa-plus fa-xs icon-a" data-bs-toggle='modal' data-bs-target='#modalMonitor' aria-hidden="true">
+                                    </i> 
 
                                     <i id='refresh-monitor' class="fa fa-refresh fa-xs icon-b" aria-hidden="true"></i>
                                 </div>
@@ -233,6 +246,192 @@
                     <button id='btnenviar' class="btn btn-primary">Adicionar</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+
+    {% comment %}
+    <p>
+        Seção de Modals Formulários
+    </p>
+    {% endcomment%}
+
+    <div class="modal fade" tabindex="-1" id='modalFuncionario'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Funcionário</h5>
+                    <span data-bs-dismiss='modal'><i class="fas fa-times"></i></span>
+                    
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form id='form-funcionario' method="POST">
+                            {% csrf_token %}
+                            {{formFuncionario.as_p}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='FormularioFuncionario()' class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id='modalTeclado'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Teclado</h5>
+                    <span data-bs-dismiss='modal'><i class="fas fa-times"></i></span>
+                    
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form id='form-teclado' method="POST">
+                            {% csrf_token %}
+                            {{formTeclado.as_p}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='FormularioTeclado()' class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id='modalMouse'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Mouse</h5>
+                    <span data-bs-dismiss='modal'><i class="fas fa-times"></i></span>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form id='form-mouse' method="POST">
+                            {% csrf_token %}
+                            {{formMouse.as_p}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='FormularioMouse()' class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id='modalGabinete'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Gabinete</h5>
+                    <span data-bs-dismiss='modal'><i class="fas fa-times"></i></span>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form id='form-gabinete' method="POST">
+                            {% csrf_token %}
+                            {{formGabinete.as_p}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='FormularioGabinete()' class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id='modalPlaca_mae'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Placa Mãe</h5>
+                    <span data-bs-dismiss='modal'><i class="fas fa-times"></i></span>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form id='form-placa_mae' method="POST">
+                            {% csrf_token %}
+                            {{formPlacaMae.as_p}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='FormularioPlacaMae()' class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id='modalProcessador'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Processador</h5>
+                    <span data-bs-dismiss='modal'><i class="fas fa-times"></i></span>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form id='form-processador' method="POST">
+                            {% csrf_token %}
+                            {{formProcessador.as_p}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='FormularioProcessador()' class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id='modalHd'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Hd</h5>
+                    <span data-bs-dismiss='modal'><i class="fas fa-times"></i></span>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form id='form-hd' method="POST">
+                            {% csrf_token %}
+                            {{formHd.as_p}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='FormularioHd()' class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id='modalMonitor'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Monitor</h5>
+                    <span data-bs-dismiss='modal'><i class="fas fa-times"></i></span>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form id='form-monitor' method="POST">
+                            {% csrf_token %}
+                            {{formMonitor.as_p}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='FormularioMonitor()' class="btn btn-success">Salvar</button>
+                </div>
+            </div>
         </div>
     </div>
 </main>

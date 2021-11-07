@@ -4,9 +4,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.validators import validate_ipv4_address
 from django.forms import inlineformset_factory
-from departamento.models import Funcionario
+from departamento.forms import FuncionarioForm
 from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
 from .forms import ComputadorForm, RoteadorForm, ImpressoraForm
+from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
 from utils import VerificarIp, VerificarMac
@@ -36,6 +37,14 @@ def computador_create(request):
     form = ComputadorForm()
     context = {
         'form': form,
+        'formFuncionario': FuncionarioForm(),
+        'formTeclado': TecladoForm(),
+        'formMouse': MouseForm(),
+        'formGabinete': GabineteForm(),
+        'formPlacaMae': PlacaMae(),
+        'formProcessador': ProcessadorForm(),
+        'formHd': HdForm(),
+        'formMonitor': MonitorForm(),
         'computador': Computador,
         'mensagens': []
     }
@@ -500,3 +509,7 @@ def impressora_edit(request, id):
                 
                 context['field_erros'] = form.errors.keys()       
     return render(request, template_name='impressora/editar.html', context=context)
+
+
+def teste_view(request):
+    return render(request, template_name='teste.html')

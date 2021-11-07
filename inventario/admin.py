@@ -43,8 +43,8 @@ class HdModel(admin.ModelAdmin):
 
 
 class GabineteModel(admin.ModelAdmin):
-    list_display = ['id', 'modelo', 'tipo', 'usb_frontal']
-    list_display_links = ['id', 'modelo', 'tipo']
+    list_display = ['id', 'modelo']
+    list_display_links = ['id', 'modelo']
 
     def tipo(self, object):
         return object.gabinete_tipo

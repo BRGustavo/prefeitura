@@ -9,6 +9,11 @@ CHOICES_BOLEAN = [
     (True, 'Sim'),
     (False, "Não")
 ]
+CHOICES_MODELS = [
+    ('Positivo', 'Positivo'),
+    ('Daten', 'Daten'),
+    ('Outro', 'Outro')
+]
 
 class Teclado(models.Model):
     marca = models.CharField(max_length=50, null=False)
@@ -103,19 +108,9 @@ class Hd(models.Model):
         return f'Modelo: {self.modelo} GB: {self.tamanho_gb} Modelo: {self.modelo}'
 
 class Gabinete(models.Model):
-    CHOICES_MODELS = [
-        ('Positivo', 'Positivo'),
-        ('Daten', 'Daten'),
-        ('Outro', 'Outro')
-    ]
-    GABINETE_TIPO = [
-        ('Normal', 'Normal'),
-        ('Gabinete Horizontal', 'Gabinete Horizontal')
-    ]
+
     patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
     modelo = models.CharField(max_length=50, null=False, choices=CHOICES_MODELS)
-    gabinete_tipo = models.CharField(max_length=100, default='Normal', null=False, choices=GABINETE_TIPO)
-    usb_frontal = models.BooleanField(default=True, choices=[(True, 'Sim'), (False, 'Não')])
     descricao = models.TextField(blank=True)
 
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)

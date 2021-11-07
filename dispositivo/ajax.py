@@ -15,7 +15,7 @@ def computador_create_ajax(request):
         tipo_data = request.GET.get('tipoValue')
 
         if tipo_data == 'selectFuncionario':
-            lista_item = Funcionario.objects.all()
+            lista_item = Funcionario.objects.all().order_by('nome')
 
         elif tipo_data == 'selectMouse':
             lista_item = Mouse.objects.all().filter(computador__isnull=True).order_by('criado_data')

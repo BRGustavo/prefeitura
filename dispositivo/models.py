@@ -23,12 +23,14 @@ CHOICES_ROTEADORES = [
     ('Outro', 'Outro')
 ]
 CHOICES_SISTEMS = (
-
-    ('Win7', 'Windows 7'),
-    ('WinXP', 'Windows XP'),
-    ('Win8', 'Windows 8'),
-    ('Win10', 'Windows 10'),
-    ('Ubuntu', 'Ubuntu'),
+    ('WinXP/32', 'Windows XP 32 bits'),
+    ('Win7/32', 'Windows 7 32 bits'),
+    ('Win8/32', 'Windows 8 32 bits'),
+    ('Win10/32', 'Windows 10 32 bits'),
+    ('WinXP/64', 'Windows XP 64 bits'),
+    ('Win7/64', 'Windows 7 64 bits'),
+    ('Win8/64', 'Windows 8 64 bits'),
+    ('Win10/64', 'Windows 10 64 bits'),
     ('WinServer', 'Windows Server')
 )
 

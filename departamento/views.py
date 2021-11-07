@@ -1,4 +1,5 @@
 from django.core import paginator
+from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 
@@ -137,3 +138,4 @@ def funcionario_edit(request, id):
                     
                 context['field_erros'] = form.errors.keys()
     return render(request, 'funcionario/editar.html', context=context)
+
