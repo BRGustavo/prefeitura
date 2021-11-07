@@ -9,12 +9,20 @@ CHOICES_BOLEAN = [
     (True, 'Sim'),
     (False, "Não")
 ]
+CHOICES_SIM_NAO = [
+    ('Sim', 'Sim'),
+    ('Não', 'Não')
+]
 CHOICES_MODELS = [
     ('Positivo', 'Positivo'),
     ('Daten', 'Daten'),
     ('Outro', 'Outro')
 ]
-
+CHOICES_TIPO_HD = [
+    ('Normal', 'Normal'),
+    ('Notebook', 'Notebook'),
+    ('HD Externo', 'HD Externo')
+]
 class Teclado(models.Model):
     marca = models.CharField(max_length=50, null=False)
     usb = models.BooleanField(null=False, default=True, choices=CHOICES_BOLEAN)
@@ -42,10 +50,10 @@ class Monitor(models.Model):
         verbose_name_plural = 'Monitores'
 
     marca = models.CharField(max_length=50, null=False)
-    hdmi = models.BooleanField(null=False, default=False, choices=CHOICES_BOLEAN)
-    tamanho = models.CharField(max_length=15, blank=True)
+    hdmi = models.CharField(max_length=10, null=False, blank=True, default='Não', choices=CHOICES_SIM_NAO)
+    tamanho = models.CharField(max_length=15, blank=True, null=True)
     patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
-    descricao = models.TextField(blank=True)
+    descricao = models.TextField(blank=True, null=True)
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)
 
     def __str__(self) -> str:
@@ -53,22 +61,19 @@ class Monitor(models.Model):
 
 
 class PlacaMae(models.Model):
-    
     class Meta:
         verbose_name = 'Placas Mãe'
         verbose_name_plural = 'Placas Mãe'
 
     marca = models.CharField(max_length=50, null=False)
     modelo = models.CharField(max_length=50)
-    hdmi = models.BooleanField(null=False, default=False, choices=CHOICES_BOLEAN)
+    hdmi = models.CharField(max_length=10, null=False, default='Não', choices=CHOICES_SIM_NAO)
     processador_suporte = models.CharField(max_length=10, null=False, choices=[
         ('Intel', 'Intel'),
         ('AMD', 'AMD')
     ])
     socket = models.CharField(max_length=50, blank=True)
-    funciona = models.BooleanField(null=False, default=True, choices=CHOICES_BOLEAN)
     descricao = models.TextField(blank=True)
-    pl_processador = models.OneToOneField('Processador', blank=True, null=True, on_delete=CASCADE)
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)
 
     def __str__(self) -> str:
@@ -85,8 +90,8 @@ class Processador(models.Model):
         ('AMD', 'AMD')
     ])
     modelo = models.CharField(max_length=50, blank=True)
-    frequencia = models.FloatField(blank=True)
-    memoria_cache = models.IntegerField(blank=True, default=0)
+    frequencia = models.FloatField(blank=True, null=True)
+    memoria_cache = models.IntegerField(blank=True, null=True, default=0)
     descricao = models.TextField(verbose_name='Descrição', blank=True)
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)
 
@@ -95,11 +100,7 @@ class Processador(models.Model):
 
 
 class Hd(models.Model):
-    modelo = models.CharField(max_length=50, null=False, default='Normal', choices=[
-        ('Normal', 'Normal'),
-        ('Notebook', 'Notebook'),
-        ('HD Externo', 'HD Externo')
-    ])
+    modelo = models.CharField(max_length=50, null=False, default='Normal', choices=CHOICES_TIPO_HD)
     tamanho_gb = models.IntegerField(verbose_name='Tamanho GB', null=False)
     descricao = models.TextField(blank=True)
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)

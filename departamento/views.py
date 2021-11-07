@@ -131,7 +131,7 @@ def funcionario_edit(request, id):
         form = FuncionarioForm(request.POST, instance=funcionario_db)
         if form.is_valid():
             form.save()
-            return redirect(f'/funcionario/funcionario')
+            return redirect(funcionario_view, 1)
         else:
                 for valores in form.errors.values():
                     context['mensagens'].append(valores)

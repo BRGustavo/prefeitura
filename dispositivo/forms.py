@@ -45,7 +45,9 @@ class ComputadorForm(forms.ModelForm):
         self.fields['hd'].queryset = (
             Hd.objects.all().filter(computador__isnull=True) | (Hd.objects.filter(computador=self.instance))
         )
-
+        self.fields['monitor'].queryset = (
+            Monitor.objects.all().filter(computador__isnull=True) | (Monitor.objects.filter(computador=self.instance))
+        )
     sistema_op = forms.ChoiceField(choices=CHOICES_SISTEMS, widget=Select(attrs={'class': 'form-control'}))
     
     departamento = forms.ModelChoiceField(required=False, queryset=(Departamento.objects.all()), widget=Select(attrs={'class': 'form-control'}))

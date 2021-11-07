@@ -20,7 +20,7 @@ class MonitorModel(admin.ModelAdmin):
     list_display_links = ['id', 'marca']
 
 class PlacaMaeModel(admin.ModelAdmin):
-    list_display = ['id', 'marca', 'modelo', 'hdmi', 'suporte','processador', 'funciona']
+    list_display = ['id', 'marca', 'modelo', 'hdmi', 'suporte','processador']
     list_display_links = ['id', 'marca', 'modelo']
 
     def suporte(self, object):

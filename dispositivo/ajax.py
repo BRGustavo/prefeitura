@@ -32,7 +32,7 @@ def computador_create_ajax(request):
         elif tipo_data == 'selectProcessador':
             lista_item = Processador.objects.all().filter(computador__isnull=True).order_by('criado_data')
 
-        elif tipo_data == 'selectPlacamae':
+        elif tipo_data == 'selectPlacamae' or tipo_data == 'selectPlaca_mae':
             lista_item = PlacaMae.objects.all().filter(computador__isnull=True).order_by('criado_data')
 
         elif tipo_data == 'selectHd':

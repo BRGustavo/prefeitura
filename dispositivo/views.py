@@ -41,7 +41,7 @@ def computador_create(request):
         'formTeclado': TecladoForm(),
         'formMouse': MouseForm(),
         'formGabinete': GabineteForm(),
-        'formPlacaMae': PlacaMae(),
+        'formPlacaMae': PlacaMaeForm(),
         'formProcessador': ProcessadorForm(),
         'formHd': HdForm(),
         'formMonitor': MonitorForm(),

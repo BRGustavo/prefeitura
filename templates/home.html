@@ -49,7 +49,7 @@
     <div id="primeiro" class="container">
         <div class="row">
             <!-- Departamentos & Funcionários -->
-            <p class='fs-5 mt-0 mt-sm-5 mt-xs-4 mt-lg-2'>Departamentos & Funcionários</p>
+            <p class='fs-5 mt-0 mt-sm-5 mt-xs-4 mt-lg-4'>Departamentos & Funcionários</p>
             <div class="col-12 col-md-4 col-lg-4 mt-1 mb-2">
                 <a class="link-clicado" href="{% url 'departamento' pagina=1 %}">
                     <div class="card">
@@ -161,7 +161,7 @@
             <!-- Inventário -->
             <p class='fs-5 mt-4 mt-lg-3'>Inventário</p>
             <div class="col-12 col-lg-6 mb-2">
-                <a href="{% url 'gabinete' %}" class="link-clicado">
+                <a href="{% url 'gabinete_view' 1 %}" class="link-clicado">
                     <div class="card">
                         <div class="card-header">
                             <i class="fas fa-hdd"></i>
@@ -173,17 +173,18 @@
                 </a>
             </div>
             <div class="col-12 col-lg-6 mb-2">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-desktop"></i>
-                        Monitores
-                        <i id='plus-icon' class="fas fa-plus d-flex justify-content-end"></i>
+                <a href="{% url 'monitor_view' 1 %}" class="link-clicado">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-desktop"></i>
+                            Monitores
+                            <i id='plus-icon' class="fas fa-plus d-flex justify-content-end"></i>
+                        </div>
                     </div>
-                    <!--  -->
-                </div>
+                </a>
             </div>
             <div class="col-12 col-lg-6 mb-2">
-                <a href="{% url 'processador' %}" class="link-clicado">
+                <a href="{% url 'processador_view' 1 %}" class="link-clicado">
                     <div class="card">
                         <div class="card-header">
                             <i class="fas fa-microchip"></i>
@@ -195,19 +196,18 @@
                 </a>
             </div>
             <div class="col-12 col-lg-6 mb-2">
-                <a href="{% url 'placamae' %}" class="link-clicado">
+                <a href="{% url 'placamae_view' 1 %}" class="link-clicado">
                     <div class="card">
                         <div class="card-header">
                             <i class='fas fa-stream'></i>
                             Placas Mãe
                             <i id='plus-icon' class="fas fa-plus d-flex justify-content-end"></i>
                         </div>
-                    
                     </div>
                 </a>
             </div>
             <div class="col-12 col-lg-6 mb-2">
-                <a href="{% url 'teclado' %}" class="link-clicado">
+                <a href="{% url 'teclado_view' 1 %}" class="link-clicado">
                     <div class="card">
                         <div class="card-header">
                             <i class="fas fa-keyboard"></i>
@@ -219,7 +219,7 @@
                 </a>
             </div>
             <div class="col-12 col-lg-6 mb-2">
-                <a href="{% url 'mouse' %}" class="link-clicado">
+                <a href="{% url 'mouse_view' 1 %}" class="link-clicado">
                     <div class="card">
                         <div class="card-header">
                             <i class="fas fa-mouse"></i>
@@ -231,7 +231,7 @@
                 </a>
             </div>
             <div class="col-12 col-lg-6 mb-2">
-                <a href="{% url 'hd' %}" class="link-clicado">
+                <a href="{% url 'hd_view' 1 %}" class="link-clicado">
                     <div class="card">
                         <div class="card-header">
                             <i class="fas fa-compact-disc"></i>

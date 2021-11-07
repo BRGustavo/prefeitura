@@ -1,0 +1,74 @@
+{% extends 'departamento/departamento.html' %}
+
+{% block button_adicionar %}
+<a href='{% url "placamae_add" %}' class="btn btn-success">Adicionar</a>
+
+{% endblock %}
+
+<!-- Titulo Página -->
+{% block title %}
+    Placas Mãe
+{% endblock title %}
+<!--  -->
+
+<!-- Search Bar  -->
+{% block botao_pesquisa %}
+<button type="submit" class="btn btn-primary" id='pesquisa_btn'>Pesquisa</button>
+{% endblock botao_pesquisa %}
+
+{% block scripts %}
+<script>
+    $('#pesquisa_btn').click(function(e){
+        e.preventDefault();
+        $('input[name="query"]').each(function(){
+            $(location).prop('href', `{% url "placamae_view" 1 %}?query=${this.value}`)
+        })
+    });
+</script>
+{% endblock scripts %}
+{% block tabela %}
+<div class="card-body table-responsive bg-light">
+    {% if placasmae %}
+    <table class="table table-sm text-center table table-striped">
+        <thead>
+            <th scope="col">ID</th>
+            <th scope="col">Modelo</th>
+            <th scope="col">Marca</th>
+            <th scope="col">Hdmi</th>
+            <th scope="col">Suporte</th>
+            <th scope="col">Socket</th>
+            <th scope='col'>Editar</th>
+        </thead>
+        <tbody>
+            {% for placamae in placasmae %}
+            <tr>
+                <th scope="row">{{ placamae.id }}</th>
+                <td>{{ placamae.modelo }}</td>
+                <td>{{ placamae.marca }}</td>
+                <td>{{ placamae.hdmi }}</td>
+                <td>{{ placamae.processador_suporte }}</td>
+                <td>{{ placamae.socket }}</td>
+                <td><a href="{% url 'placamae_edit' placamae.id %}"><i class="fas fa-edit"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class='text-center'>
+        <p>Nada Encontrado</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock tabela %}
+
+{% block nav_paginacao %}
+    {% if placasmae.has_previous %}
+    <li class="page-item"><a class="page-link" href="{% url 'placamae_view' placasmae.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    {% endif %}
+    {% if placasmae.has_other_pages %}
+    <li class="page-item active"><a class="page-link"  href="#">{{ placasmae.number }}</a></li>
+    {% endif %}
+    {% if placasmae.has_next %}
+    <li class="page-item"><a class="page-link" href="{% url 'placamae_view' placasmae.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    {% endif %}
+{% endblock nav_paginacao %}
