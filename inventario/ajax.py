@@ -103,6 +103,8 @@ def placamae_add_ajax(request):
 @permission_required('inventario.add_processador', raise_exception=True)
 def processador_add_ajax(request):
     mensagens = []
+    campo_erros = []
+    
     if request.method == 'POST':
         form = ProcessadorForm(request.POST)
         if form.is_valid():
@@ -115,7 +117,12 @@ def processador_add_ajax(request):
         else:
                 for valores in form.errors.values():
                     mensagens.append(valores)
-    return JsonResponse(status=404, data={'status':'false','messagem': mensagens})
+                for campo in form:
+                    if campo.errors:
+                        campo_erros.append(campo.id_for_label)
+                        print(f'{campo.id_for_label}')
+
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'campo_erros': campo_erros})
 
 @login_required
 @permission_required('inventario.add_monitor', raise_exception=True)

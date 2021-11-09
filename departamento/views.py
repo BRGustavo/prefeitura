@@ -22,7 +22,8 @@ def departamento_view(request, pagina=1):
     departamentos = Paginator(departamentos_list.order_by('id'), 10).get_page(pagina)
     content = {
         'departamentos': departamentos,
-        'pesquisa': pesquisa
+        'pesquisa': pesquisa,
+        'form': DepartamentoForm
     }
     return render(request, template_name='departamento/departamento.html', context=content)
 

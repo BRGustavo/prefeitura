@@ -18,6 +18,7 @@ urlpatterns = [
     path('funcionario/edit/<int:id>', views.funcionario_edit, name='funcionario_edit'),
 
     #Ajax URL
-    path('funcionario/ajax/add/',ajax.funcionario_add_ajax, name='funcionario_ajax_add')
+    path('funcionario/ajax/add/',ajax.funcionario_add_ajax, name='funcionario_ajax_add'),
+    path('departamento/ajax/add/',ajax.departamento_add_ajax, name='departamento_ajax_add'),
 
 ]

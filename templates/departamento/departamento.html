@@ -1,9 +1,24 @@
 {% extends 'base_listagem.html' %}
 
+{% block scripts %}
+<script>
+    forms_urls = {
+        'departamento': '{% url "departamento_ajax_add" %}',
+    }
+</script>
+{% endblock scripts %}
+
+
+{% block button_adicionar %}
+<button class="btn btn-success" data-bs-toggle='modal' data-bs-target='#modalDepartamento'>
+    Adicionar
+</button>
+{% endblock button_adicionar %}
+
 {% block tabela %}
-<div class="card-body bg-light">
+<div class="card-body bg-light ">
     {% if departamentos %}
-    <table class="table table-sm text-center table table-striped">
+    <table class="table table-sm table table-striped text-center">
         <thead>
             <th scope="col">ID</th>
             <th scope="col">Departamento</th>
@@ -29,6 +44,30 @@
     </div>
     {% endif %}
 </div>
+
+<div class="modal fade" tabindex="-1" id='modalDepartamento'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <h5 class='text-muted'>Adicionar Novo Departamento</h5>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form id='form-departamento' method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p}}
+                </form>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button class="btn btn-success" onclick="FormularioDepartamento()">Adicionar</button>
+                </div>
+            </div>
+        </div>        
+    </div>
+
+</div>
+
 {% endblock tabela %}
 
 {% block nav_paginacao %}
