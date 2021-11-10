@@ -11,6 +11,7 @@ urlpatterns = [
     path('departamento/<int:pagina>/', views.departamento_view, name='departamento'),
     path('departamento/add/', views.departamento_create, name='departamento_add'),
     path('departamento/edit/<int:id>', views.departamento_edit, name='departamento_edit'),
+    path('departamento/visualizar/<int:id>/', views.departamento_visualizar, name='departamento_visualizar'),
 
     #URLs Model Funcionario
     path('funcionario/<int:pagina>/', views.funcionario_view, name='funcionario'),
@@ -20,5 +21,5 @@ urlpatterns = [
     #Ajax URL
     path('funcionario/ajax/add/',ajax.funcionario_add_ajax, name='funcionario_ajax_add'),
     path('departamento/ajax/add/',ajax.departamento_add_ajax, name='departamento_ajax_add'),
-
+    path('departamento/ajax/edit/<int:id>',ajax.departamento_edit_ajax, name='departamento_ajax_edit'),
 ]

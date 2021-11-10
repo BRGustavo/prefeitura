@@ -8,6 +8,7 @@ from .models import Departamento, Funcionario
 from .forms import DepartamentoForm, FuncionarioForm
 from django.db.models import Q, F
 from django.core.paginator import Paginator
+from dispositivo.models import Computador, Impressora
 
 @login_required
 @permission_required('departamento.view_departamento', raise_exception=True)
@@ -26,6 +27,25 @@ def departamento_view(request, pagina=1):
         'form': DepartamentoForm
     }
     return render(request, template_name='departamento/departamento.html', context=content)
+
+@login_required
+@permission_required('departamento.view_departamento', raise_exception=True)
+def departamento_visualizar(request, id):
+    departamento = get_object_or_404(Departamento, pk=id)
+    form = DepartamentoForm(instance=departamento)
+    impressoras = Impressora.objects.filter(departamento=departamento)
+    funcionarios = Funcionario.objects.filter(departamento=departamento)
+    computadores = Computador.objects.filter(Q(departamento=departamento, funcionario__isnull=True) | Q(funcionario__in=funcionarios))
+
+    context = {
+        'form': form,
+        'departamento': departamento,
+        'funcionarios': funcionarios,
+        'impressoras': impressoras,
+        'computadores': computadores
+    }
+    return render(request, template_name='departamento/visualizar.html', context=context)
+
 
 @login_required
 @permission_required('departamento.add_departamento', raise_exception=True)

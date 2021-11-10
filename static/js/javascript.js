@@ -84,6 +84,36 @@ function FormularioMonitor(){
 function FormularioDepartamento(){
     AdicionarNovoItem('departamento', false);
 }
+function EditarDepartamento(){
+    const csrftoken = document.querySelector(`#form-departamento [name=csrfmiddlewaretoken]`).value;
+    var serialize = $(`#form-departamento`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls['editar_departamento'],
+        data: serialize,
+        success: function(data){
+            $('#modalEditDepartamento').modal('hide');
+            $(`#form-departamento`).trigger('reset');
+            location.reload();
+        },
+        error: function (request, status, error) {
+            let info = $.parseJSON(request.responseText);
+            let erros = info['campo_erros'];
+            
+            for(let erro in erros){
+                $(`#${erros[erro]}`).css('border-color', 'red');
+            }
+            if(erros.length >= 1){
+                alert("Verifique os campos novamente!");
+            }else {
+                alert("Ocorreu um erro na verificação.");
+                
+            }
+        }
+    })
+}
+
 function AdicionarNovoItem(tipo, requisicao=true){
     let lower = tipo.toLowerCase();
     let capitalize  = tipo.charAt(0).toUpperCase() + tipo.slice(1);
@@ -102,7 +132,7 @@ function AdicionarNovoItem(tipo, requisicao=true){
             if(requisicao == true){
                 Requisicao(`#id_${lower}`, `select${capitalize}`, marca=true);
             }else {
-                location.reload()
+                location.reload();
             }
         },
         error: function (request, status, error) {

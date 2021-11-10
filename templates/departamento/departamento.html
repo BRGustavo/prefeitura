@@ -24,7 +24,7 @@
             <th scope="col">Departamento</th>
             <th scope="col">Sigla</th>
             <th scope="col">Prédio</th>
-            <th scope='col'>Editar</th>
+            <th scope='col'>Visualizar</th>
         </thead>
         <tbody>
             {% for departamento in departamentos %}
@@ -33,7 +33,7 @@
                 <td>{{ departamento.departamento }}</td>
                 <td>{{ departamento.sigla_departamento }}</td>
                 <td>{{ departamento.predio }}</td>
-                <td><a href="{% url 'departamento_edit' departamento.id %}"><i class="fas fa-edit"></i></a></td>
+                <td><a href="{% url 'departamento_visualizar' departamento.id %}"><i class="fas fa-eye"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>

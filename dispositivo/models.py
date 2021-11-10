@@ -92,7 +92,7 @@ class Impressora(models.Model):
         ('Corredor', 'Corredor')
     ))
     patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
-    departamento = models.ForeignKey(Departamento, blank=True, null=True, on_delete=CASCADE)
+    departamento = models.ForeignKey(Departamento, related_name='impressora', blank=True, null=True, on_delete=CASCADE)
     sala = models.IntegerField(blank=True, null=True, verbose_name="Número Sala", help_text='Número de refência ao local onde a impressora está.')
 
     usando_ip = models.BooleanField(verbose_name='Usando IP', help_text='Está conectada pela rede;usando um ip.', default=True, null=False, choices=CHOICES_BOOL)
