@@ -1,13 +1,27 @@
 {% extends 'base_listagem.html' %}
 
+<!-- Titulo Página -->
+{% block title %}
+    Computadores
+{% endblock title %}
+
+{% block titulo_lista %}
+    Computadores
+{% endblock %}
+
+<!-- Search Bar  -->
+{% block botao_pesquisa %}
+<button type="submit" class="btn btn-outline-primary" id='pesquisa_btn'>Pesquisa</button>
+{% endblock botao_pesquisa %}
+
 {% block button_adicionar %}
-<a href='{% url "computador_add" %}' class="btn btn-success">Adicionar</a>
+<a href='{% url "computador_add" %}' class="btn btn-outline-success">Adicionar</a>
 {% endblock %}
 
 {% block tabela %}
-<div class="card-body table-responsive bg-light">
+<div class="card-body table-responsive bg-dark">
     {% if computadores %}
-    <table class="table table-sm text-center table table-striped">
+    <table class="table table-sm table bg-dark text-light text-muted text-center">
         <thead>
             <th scope="col">ID</th>
             <th scope='col'>Nome</th>

@@ -10,15 +10,15 @@
 
 
 {% block button_adicionar %}
-<button class="btn btn-success" data-bs-toggle='modal' data-bs-target='#modalDepartamento'>
+<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalDepartamento'>
     Adicionar
 </button>
 {% endblock button_adicionar %}
 
 {% block tabela %}
-<div class="card-body bg-light ">
+<div class="card-body bg-dark table-responsive ">
     {% if departamentos %}
-    <table class="table table-sm table table-striped text-center">
+    <table class="table table-sm table bg-dark text-light text-muted text-center">
         <thead>
             <th scope="col">ID</th>
             <th scope="col">Departamento</th>
@@ -71,11 +71,11 @@
 {% endblock tabela %}
 
 {% block nav_paginacao %}
-{% if departamentos.has_previous %}
+    {% if departamentos.has_previous %}
     <li class="page-item"><a class="page-link" href="{% url 'departamento' departamentos.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
-    {% if departamento.has_other_pages %}
-    <li class="page-item active"><a class="page-link"  href="#">{{ departamento.number }}</a></li>
+    {% if departamentos.has_other_pages %}
+    <li class="page-item active"><a class="page-link"  href="#">{{ departamentos.number }}</a></li>
     {% endif %}
     {% if departamentos.has_next %}
     <li class="page-item"><a class="page-link" href="{% url 'departamento' departamentos.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>

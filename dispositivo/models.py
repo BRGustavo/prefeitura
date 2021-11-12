@@ -121,7 +121,7 @@ class Computador(models.Model):
 
     departamento = models.ForeignKey(Departamento, blank=True, null=True, on_delete=PROTECT,
     help_text='Departamento ao qual o computador pertence.')
-    funcionario = models.ForeignKey(Funcionario, blank=True, null=True, on_delete=PROTECT,
+    funcionario = models.ForeignKey(Funcionario, blank=True, null=True, on_delete=models.SET_NULL,
     help_text='Funcionário que utilizará o computador.')
     nome_rede = CharField(verbose_name='Nome na Rede', max_length=15, blank=True, null=True)
     gabinete = models.OneToOneField(Gabinete, related_name='computador', blank=True, null=True, on_delete=PROTECT, )

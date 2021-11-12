@@ -148,7 +148,34 @@ function AdicionarNovoItem(tipo, requisicao=true){
         }
     });
 }
+function visualizarModalApagar(id){
 
+    $.ajax({
+        type:'GET',
+        url: forms_urls['apagarDepartamento'],
+        data: {
+            'id': parseInt(id),
+        },
+        success: function(data){
+            corpo = $('#modalDeletar .alerta');
+            corpo.hide();
+            for(let item in data){
+                if(data[item] >= 1){
+                    corpo.show();
+                    elemento = $(`<span>- Você vai apagar ${data[item]} ${item} vinculados a esse departamento;</span><br>`);
+                    corpo.append(elemento);
+                }             
+            }
+            $('#modalDeletar').modal('show');
+
+        },
+        error: function (request, status, error) {
+            let info = $.parseJSON(request.responseText);
+            alert(info);
+        }
+    });
+    $('#modalDeletar').modal('show');
+}
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});

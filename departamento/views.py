@@ -8,7 +8,7 @@ from .models import Departamento, Funcionario
 from .forms import DepartamentoForm, FuncionarioForm
 from django.db.models import Q, F
 from django.core.paginator import Paginator
-from dispositivo.models import Computador, Impressora
+from dispositivo.models import Computador, Impressora, Roteador
 
 @login_required
 @permission_required('departamento.view_departamento', raise_exception=True)
@@ -20,7 +20,7 @@ def departamento_view(request, pagina=1):
         departamentos_list = departamentos_list.filter(
             Q(departamento__icontains=pesquisa) | Q(predio__icontains=pesquisa) | Q(singla_departamento__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    departamentos = Paginator(departamentos_list.order_by('id'), 10).get_page(pagina)
+    departamentos = Paginator(departamentos_list.order_by('id'), 5).get_page(pagina)
     content = {
         'departamentos': departamentos,
         'pesquisa': pesquisa,
@@ -48,27 +48,6 @@ def departamento_visualizar(request, id):
 
 
 @login_required
-@permission_required('departamento.add_departamento', raise_exception=True)
-def departamento_create(request):
-    """Função responsável pelo templete de adicionar outro departamento."""
-    context = {
-        'form': DepartamentoForm(),
-        'mensagens': [],
-    }
-    if request.method == 'POST':
-        formulario = DepartamentoForm(request.POST)
-        if formulario.is_valid():
-            formulario.save()
-            return redirect(departamento_view, 1)
-        else:
-                for valores in formulario.errors.values():
-                    context['mensagens'].append(valores)
-                    
-                context['field_erros'] = formulario.errors.keys()
-
-    return render(request, 'departamento/novo.html', context=context)
-
-@login_required
 @permission_required('departamento.change_departamento', raise_exception=True)
 def departamento_edit(request, id):
     """Função chamada quando o usuário clica em editar o departamento."""
@@ -91,6 +70,16 @@ def departamento_edit(request, id):
                 context['field_erros'] = form.errors.keys()
     return render(request, 'departamento/editar.html', context=context)
 
+@login_required
+@permission_required('departamento.delete_departamento', raise_exception=True)
+def departamento_remover(request, id):
+    departamento = get_object_or_404(Departamento, pk=id)
+    funcionarios = Funcionario.objects.all().filter(departamento=departamento).delete()
+    impressoras = Impressora.objects.all().filter(departamento=departamento).delete()
+    roteadores = Roteador.objects.all().filter(departamento=departamento).delete()
+    computadores = Computador.objects.all().filter(departamento=departamento, funcionario__isnull=True).delete()
+    departamento.delete()
+    return redirect(departamento_view, 1)
 
 @login_required
 @permission_required('departamento.view_funcionario', raise_exception=True)

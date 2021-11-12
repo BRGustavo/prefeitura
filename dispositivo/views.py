@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.validators import validate_ipv4_address
 from django.forms import inlineformset_factory
 from departamento.forms import FuncionarioForm
-from departamento.models import Funcionario
+from departamento.models import Departamento, Funcionario
 from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
 from .forms import ComputadorForm, RoteadorForm, ImpressoraForm
 from inventario.forms import *
@@ -513,7 +513,6 @@ def impressora_edit(request, id):
 
 
 def teste_view(request):
-    funcionarios = Funcionario.objects.all()
-    computadores = Computador.objects.all()
-    impressoras = Impressora.objects.all()
-    return render(request, template_name='teste.html', context={'funcionarios': funcionarios, 'computadores': computadores, 'impressoras': impressoras})
+    departamento_list = Departamento.objects.all()
+    departamentos = Paginator(departamento_list.order_by('id'), 20).get_page(1)
+    return render(request, template_name='teste.html', context={'departamentos': departamentos})

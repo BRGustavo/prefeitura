@@ -1,7 +1,7 @@
 {% extends 'departamento/departamento.html' %}
 
 {% block button_adicionar %}
-<a href='{% url "roteador_add" %}' class="btn btn-success">Adicionar</a>
+<a href='{% url "roteador_add" %}' class="btn btn-outline-success">Adicionar</a>
 
 {% endblock %}
 
@@ -9,11 +9,16 @@
 {% block title %}
     Roteadores
 {% endblock title %}
+
+{% block titulo_lista %}
+    Roteadores
+{% endblock %}
+<!--  -->
 <!--  -->
 
 <!-- Search Bar  -->
 {% block botao_pesquisa %}
-<button type="submit" class="btn btn-primary" id='pesquisa_btn'>Pesquisa</button>
+<button type="submit" class="btn btn-outline-primary" id='pesquisa_btn'>Pesquisa</button>
 {% endblock botao_pesquisa %}
 
 {% block scripts %}
@@ -27,9 +32,9 @@
 </script>
 {% endblock scripts %}
 {% block tabela %}
-<div class="card-body table-responsive bg-light">
+<div class="card-body table-responsive bg-dark">
     {% if roteadores %}
-    <table class="table table-sm text-center table table-striped">
+    <table class="table table-sm table bg-dark text-light text-muted text-center">
         <thead>
             <th scope="col">ID</th>
             <th scope="col">SSID</th>

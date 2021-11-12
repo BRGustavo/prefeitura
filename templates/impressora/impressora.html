@@ -1,13 +1,22 @@
 {% extends 'base_listagem.html' %}
 
 {% block button_adicionar %}
-<a href='{% url "impressora_add" %}' class="btn btn-success">Adicionar</a>
+<a href='{% url "impressora_add" %}' class="btn btn-outline-success">Adicionar</a>
+{% endblock %}
+
+<!-- Titulo Página -->
+{% block title %}
+    Impressoras
+{% endblock title %}
+
+{% block titulo_lista %}
+    Impressoras
 {% endblock %}
 
 {% block tabela %}
-<div class="card-body table-responsive bg-light">
+<div class="card-body table-responsive bg-dark">
     {% if impressoras %}
-    <table class="table table-sm text-center table table-striped">
+    <table class="table table-sm table bg-dark text-light text-muted text-center">
         <thead>
             <th scope="col">ID</th>
             <th scope='col'>Nome</th>
