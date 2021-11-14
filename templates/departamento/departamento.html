@@ -45,6 +45,9 @@
     {% endif %}
 </div>
 
+{% endblock tabela %}
+
+{% block modals %}
 <div class="modal fade" tabindex="-1" id='modalDepartamento'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -52,11 +55,14 @@
                 <span class="modal-title">
                     <h5 class='text-muted'>Adicionar Novo Departamento</h5>
                 </span>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times"></i>
+                </span>
             </div>
             <div class="modal-body">
                 <form id='form-departamento' method="POST">
                     {% csrf_token %}
-                    {{ form.as_p}}
+                    {{ form.as_p }}
                 </form>
                 <div class="modal-footer">
                     <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
@@ -65,10 +71,8 @@
             </div>
         </div>        
     </div>
-
 </div>
-
-{% endblock tabela %}
+{% endblock modals %}
 
 {% block nav_paginacao %}
     {% if departamentos.has_previous %}

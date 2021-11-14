@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.deletion import CASCADE, PROTECT
+from django.db.models.deletion import CASCADE, PROTECT, SET_NULL
 from django.db.models.fields import CharField
 from departamento.models import Departamento, Funcionario
 from macaddress.fields import MACAddressField
@@ -119,9 +119,9 @@ class Computador(models.Model):
         verbose_name = 'Computador'
         verbose_name_plural = 'Computadores'
 
-    departamento = models.ForeignKey(Departamento, blank=True, null=True, on_delete=PROTECT,
+    departamento = models.ForeignKey(Departamento, blank=True, null=True, on_delete=SET_NULL,
     help_text='Departamento ao qual o computador pertence.')
-    funcionario = models.ForeignKey(Funcionario, blank=True, null=True, on_delete=models.SET_NULL,
+    funcionario = models.ForeignKey(Funcionario, related_name='computador', blank=True, null=True, on_delete=models.SET_NULL,
     help_text='Funcionário que utilizará o computador.')
     nome_rede = CharField(verbose_name='Nome na Rede', max_length=15, blank=True, null=True)
     gabinete = models.OneToOneField(Gabinete, related_name='computador', blank=True, null=True, on_delete=PROTECT, )
@@ -135,14 +135,13 @@ class Computador(models.Model):
     sala = models.IntegerField(blank=True, null=True, help_text='Número de referência a sala onde ficará o computador')
 
     anydesk = models.CharField(max_length=120, verbose_name='AnyDesk', blank=True, null=True)
-    mac_computador = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='computador')
-    ip_computador = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='computador')
+    mac_computador = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='computador', on_delete=CASCADE)
+    ip_computador = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='computador', on_delete=CASCADE)
 
     def meu_id(self):
         return self.id
 
     def __str__(self) -> str:
-        print()
         modelo, funcionario, departamento = ' '*3
         # try: modelo = f'{self.processador.modelo}'
         # except AttributeError: modelo = ''

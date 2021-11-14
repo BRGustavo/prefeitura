@@ -39,8 +39,23 @@
                 <th scope="row">{{ computador.id }}</th>
                 <td>{{ computador.nome_rede }}</td>
                 <th>{{ computador.patrimonio }}</th>
-                <td>{{ computador.departamento }}</td>
-                <td>{{ computador.funcionario.nome }}</td>
+                <td>
+                    {% if computador.departamento %}
+                    <a href="{% url 'departamento_visualizar' computador.departamento.id %}">
+                        {{ computador.departamento }}
+                    </a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if computador.funcionario.nome|length > 1 %}
+                    <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">{{ computador.funcionario.nome }}</a>
+                    {% else %}
+                    {{ computador.funcionario.nome }}
+                    {% endif %}
+
+                </td>
                 <td>{{ computador.processador.modelo }}</td>
                 <td>{{ computador.sistema_op }}</td>
                 <td>

@@ -50,8 +50,15 @@
                 <th scope="row">{{ roteador.id }}</th>
                 <td>{{ roteador.ssid }}</td>
                 <td>{{ roteador.modelo }}</td>
-                <td>{{ roteador.departamento }}</td>
                 <td>
+                    {% if roteador.departamento %}
+                    <a href="{% url 'departamento_visualizar' roteador.departamento.id %}">{{ roteador.departamento }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    
                     {% for ip in roteador.ip_roteador.all %}
                         {{ ip }}
                     {% endfor %}

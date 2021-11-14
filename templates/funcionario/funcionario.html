@@ -1,7 +1,9 @@
 {% extends 'departamento/departamento.html' %}
 
 {% block button_adicionar %}
-<a href='{% url "funcionario_add" %}' class="btn btn-outline-success">Adicionar</a>
+<!-- <a href='{% url "funcionario_add" %}' class="btn btn-outline-success">Adicionar</a> -->
+<a class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalFuncionario'>Adicionar</a>
+
 
 {% endblock %}
 
@@ -28,8 +30,12 @@
             $(location).prop('href', `{% url "funcionario" 1 %}?query=${this.value}`)
         })
     });
+    var forms_urls = {
+        funcionario: '{% url "funcionario_ajax_add" %}'
+    }
 </script>
 {% endblock scripts %}
+
 {% block tabela %}
 <div class="card-body table-responsive bg-dark">
     {% if funcionarios %}
@@ -42,7 +48,7 @@
             <th scope='col'>Usuário PC</th>
             <th scope='col'>Acesso</th>
             <th scope='col'>Adm Rede</th>
-            <th scope='col'>Editar</th>
+            <th scope='col'>Visualizar</th>
         </thead>
         <tbody>
             {% for funcionario in funcionarios %}
@@ -50,11 +56,17 @@
                 <th scope="row">{{ funcionario.id }}</th>
                 <td>{{ funcionario.nome }}</td>
                 <td>{{ funcionario.sobrenome }}</td>
-                <td>{{ funcionario.departamento }}</td>
+                <td>
+                    {% if funcionario.departamento %}
+                    <a href="{% url 'departamento_visualizar' funcionario.departamento.id%}">{{ funcionario.departamento }}</a>
+                    {% else %}
+                    -
+                    {% endif%}
+                </td>
                 <td>{{ funcionario.usuario_pc }}</td>
                 <td>{{ funcionario.controle_acesso }}</td>
                 <td>{{ funcionario.admin_rede }}</td>
-                <td><a href="{% url 'funcionario_edit' funcionario.id %}"><i class="fas fa-edit"></i></a></td>
+                <td><a href="{% url 'funcionario_visualizar' funcionario.id %}"><i class="fas fa-eye"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -66,6 +78,35 @@
     {% endif %}
 </div>
 {% endblock tabela %}
+
+{% block modals %}
+<div class="modal fade" tabindex="-1" id='modalFuncionario'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Adicionar Funcionário
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id='form-funcionario' method="POST">
+                        {% csrf_token %}
+                        {{formFuncionario.as_p}}
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                <button onclick='AdicionarNovoItem("funcionario", false)' class="btn btn-success">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modals %}
 
 {% block nav_paginacao %}
     {% if funcionarios.has_previous %}

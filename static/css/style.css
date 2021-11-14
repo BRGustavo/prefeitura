@@ -53,6 +53,15 @@ header .navbar {
     margin-top: 100px;
     font-family: 'Times New Roman', Times, serif;
 }
+p label {
+    color:black;
+    font-family: 'Times New Roman', Times, serif
+}
+.modal .modal-title {
+    color:black;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 /* Responsive */
 @media (min-width: 1200px) {
     #primeiro {

@@ -13,7 +13,10 @@
         background-color:rgb(235, 232, 232);
         border-style:none;
     }
-
+    td a {
+        text-decoration: none;
+        color:#6c757d!important;
+    }
 </style>
 <main>
     <div class="container mb-5" id="primeiro">
@@ -60,6 +63,8 @@
             </div>
         </div>
     </div>
+{% block modals %}
+{% endblock modals %}
 </main>
 
 {% endblock %}

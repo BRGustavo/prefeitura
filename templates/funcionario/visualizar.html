@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Funcionário
+{% endblock title %}
+
+{% block scripts %}
+    <script>
+        const forms_urls = {
+            'editar_funcionario': '{% url "funcionario_ajax_edit" funcionario.id %}',
+        }
+    </script>
+{% endblock scripts %}
+
+{% block corpo %}
+
+<style>
+    body {
+        background-color:rgb(235, 232, 232);
+        border-style:none;
+    }
+    img {
+        width: 100px;
+    }
+    li a {
+        text-decoration: none;
+        color:#6c757d!important;
+    }
+</style>
+<main>
+    <div class="container-fluid mb-5" id="primeiro">
+        <div class="row">
+            <div class="col-12 div col-sm-4 col-lg-3 mb-1 mb-lg-0">
+                <div class="card bg-dark">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <h5 class='card-title text-muted text-center'>Funcionário</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-12 d-flex justify-content-center">
+                                <img class='rounded-circle' src="{% static 'img/funcionario.png' %}" alt="">
+                            </div>
+                            <div class="col-12 mt-2">
+                                <ul class="list-group">
+                                    <li class="list-group-item text-center bg-dark text-muted">
+                                        <b>Nome: </b> {{funcionario.nome}} {{funcionario.sobrenome}}
+                                    </li>
+                                    <li class="list-group-item text-center bg-dark text-muted">
+                                        <b>Departamento: </b> <a href="{% url 'departamento_visualizar' funcionario.departamento.id %}">{{funcionario.departamento}}</a> 
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-footer mb-2">
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-outline-danger me-3" data-bs-toggle='modal' data-bs-target='#modalDeletar'>Apagar</button>
+                                <button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalEditFuncionario'>Editar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-8 col-lg-9">
+                <div class="row">
+                    <div class="card bg-dark">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h5 class="card-title text-muted">
+                                    Computador Informações
+                                </h5>
+                            </div>
+                            <div class="card-body text-muted">
+                                {% if computadores|length < 1%}
+                                <div class="row alert alert-danger mb-2">
+                                    <h6 class="text-center">Não há computadores vinculados</h6>
+                                </div>
+                                {% endif %}
+                                {% for computador in computadores %}
+                                <div class="row alert alert-light mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <p class='text-muted'><b>{{computador.nome_rede}}</b></p>
+                                        <span>
+                                            <a href="" title='Desvincular' class='me-1'>
+                                                <i class="fa fa-chain-broken" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="" title='Editar' class='me-1 text-success'>
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="" title='Apagar' class='me-1 text-danger'>
+                                                <i class="far fa-trash-alt"></i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-lg-6">
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>Usuario PC:</b> {{funcionario.usuario_pc}}</p>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>Senha PC:</b> {{funcionario.senha_pc}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>Nome Rede:</b> {{computador.nome_rede}}</p>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>IP:</b>                  {% for ip in computador.ip_computador.all %}
+                                                    {{ ip }}
+                                                {% endfor %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>MAC:</b> 
+                                                {% for mac in computador.mac_computador.all %}
+                                                {{ mac }}
+                                                {% endfor %}
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>AnyDesk:</b>{{computador.anydesk}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>Admin Rede:</b> {{funcionario.admin_rede}}</p>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>Proxy:</b> {{funcionario.controle_acesso}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-lg-6">
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>OS:</b> {{computador.sistema_op}}</p>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>Processador:</b> {{computador.processador}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>HD:</b> {{computador.hd.tamanho_gb}}</p>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b>RAM:</b> 8 GB</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b> Gabinete Patrimônio</b>  {{ computador.gabinete.patrimonio }}</p>
+                                            </div>
+
+                                            <div class="col-12 col-lg-6">
+                                                <p class='text-muted'><b> Monitor Patrimonio:</b>
+                                                {% for patrimonio in computador.monitor.all %}
+                                                {{ patrimonio.patrimonio }};
+                                                {% endfor %}
+                                            </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id='modalEditFuncionario'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Funcionário</h5>
+                    <span data-bs-dismiss='modal'>
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="modal-body">
+                    <form method='POST' id='form-funcionario'>
+                        {% csrf_token %}
+                        {{form.as_p}}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button class="btn btn-success" onclick='EditarItem("funcionario")'>Editar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" tabindex="-1" id='modalDeletar'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="text-muted">Deseja Remover {{funcionario.nome}}? </h5>
+                    <span data-bs-dismiss='modal'>
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        Caso você realmente continue com o processo, removerá os dados desse funcionário e os computadores vinculados a ele.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bs-dismiss='modal'>Cancelar</button>
+                    <a href="{% url 'funcionario_remover' funcionario.id %}"><button class="btn btn-danger">Apagar</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

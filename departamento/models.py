@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 
+
 # Choices models e forms 
 
 CHOICES_PREDIOS = [

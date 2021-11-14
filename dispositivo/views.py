@@ -217,13 +217,13 @@ def roteador_add(request):
         form = RoteadorForm(request.POST)
         if form.is_valid():
             ip_data = ''
-            
             try:
                 ip_data = VerificarIp(form.cleaned_data.get('endereco_ip'))
                 try:
                     if isinstance(form.cleaned_data.get('endereco_mac'), EUI):
                         mac_data = VerificarMac(form.cleaned_data.get('endereco_mac'))
-
+                    else:
+                        mac_data = None
                     roteador_novo = form.save()
                     roteador_tipo = ContentType.objects.get(model='roteador')
 

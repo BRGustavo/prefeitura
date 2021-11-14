@@ -96,7 +96,7 @@ class Processador(models.Model):
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)
 
     def __str__(self) -> str:
-        return f'{self.marca}- {self.modelo} - {self.frequencia}'
+        return f'{self.marca}- {self.modelo}'
 
 
 class Hd(models.Model):

@@ -84,31 +84,28 @@ function FormularioMonitor(){
 function FormularioDepartamento(){
     AdicionarNovoItem('departamento', false);
 }
-function EditarDepartamento(){
-    const csrftoken = document.querySelector(`#form-departamento [name=csrfmiddlewaretoken]`).value;
-    var serialize = $(`#form-departamento`).serialize();
+function EditarItem(tipo){
+    let lower = tipo.toLowerCase();
+    let capitalize  = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+    const csrftoken = document.querySelector(`#form-${lower} [name=csrfmiddlewaretoken]`).value;
+    var serialize = $(`#form-${lower}`).serialize();
     $.ajax({
         csrfmiddlewaretoken: csrftoken,
         type: 'POST',
-        url: forms_urls['editar_departamento'],
+        url: forms_urls[`editar_${lower}`],
         data: serialize,
         success: function(data){
-            $('#modalEditDepartamento').modal('hide');
-            $(`#form-departamento`).trigger('reset');
+            $(`#modalEdit${capitalize}`).modal('hide');
+            $(`#form-${lower}`).trigger('reset');
             location.reload();
         },
         error: function (request, status, error) {
             let info = $.parseJSON(request.responseText);
-            let erros = info['campo_erros'];
-            
-            for(let erro in erros){
-                $(`#${erros[erro]}`).css('border-color', 'red');
-            }
-            if(erros.length >= 1){
-                alert("Verifique os campos novamente!");
-            }else {
-                alert("Ocorreu um erro na verificação.");
-                
+            if(info['status'] == 'false'){
+                alert("Verifique o formulário.");
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
             }
         }
     })
@@ -137,19 +134,16 @@ function AdicionarNovoItem(tipo, requisicao=true){
         },
         error: function (request, status, error) {
             let info = $.parseJSON(request.responseText);
-            let erros = info['campo_erros'];
-            
-            for(let erro in erros){
-                $(`#${erros[erro]}`).css('border-color', 'red');
-            }
-            if(erros.length >= 1){
-                alert("Verifique os campos novamente!");
+            if(info['status'] == 'false'){
+                alert("Verifique o formulário.");
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
             }
         }
     });
 }
 function visualizarModalApagar(id){
-
     $.ajax({
         type:'GET',
         url: forms_urls['apagarDepartamento'],

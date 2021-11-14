@@ -17,9 +17,13 @@ urlpatterns = [
     path('funcionario/<int:pagina>/', views.funcionario_view, name='funcionario'),
     path('funcionario/add', views.funcionario_create, name='funcionario_add'),
     path('funcionario/edit/<int:id>', views.funcionario_edit, name='funcionario_edit'),
+    path('funcionario/visualizar/<int:id>/', views.funcionario_visualizar, name='funcionario_visualizar'),
+    path('funcionario/remover/<int:id>/', views.funcionario_remover, name='funcionario_remover'),
 
     #Ajax URL
     path('funcionario/ajax/add/',ajax.funcionario_add_ajax, name='funcionario_ajax_add'),
+    path('funcionario/ajax/edit/<int:id>',ajax.funcionario_edit_ajax, name='funcionario_ajax_edit'),
+
     path('departamento/ajax/add/',ajax.departamento_add_ajax, name='departamento_ajax_add'),
     path('departamento/ajax/edit/<int:id>',ajax.departamento_edit_ajax, name='departamento_ajax_edit'),
     path('departamento/ajax/deletar',ajax.departamento_ajax_deletar, name='departamento_ajax_deletar'),

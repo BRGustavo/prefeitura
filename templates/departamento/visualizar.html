@@ -31,6 +31,10 @@
         background-color:#2e3338;
         color:gray;
     }
+    td a {
+        text-decoration: none;
+        color:#6c757d!important;
+    }
 </style>
 
 <main id='primeiro'>
@@ -196,7 +200,7 @@
                                     {% for funcionario in funcionarios %}
                                     <tr>
                                         <th scope="row">{{ funcionario.id }}</th>
-                                        <td>{{ funcionario.nome }} {{funcionario.sobrenome}}</td>
+                                        <td><a href="{% url 'funcionario_visualizar' funcionario.id %}">{{ funcionario.nome }} {{funcionario.sobrenome}}</a></td>
                                         <td>{{ funcionario.departamento }}</td>
                                         <td>{{ funcionario.usuario_pc }}</td>
                                         <td>{{ funcionario.controle_acesso }}</td>
@@ -273,6 +277,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Editar Departamento</h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times"></i>
+                </span>
             </div>
             <div class="modal-body">
                 <form method='POST' id='form-departamento'>
@@ -297,7 +304,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
-                <button class="btn btn-success" onclick='EditarDepartamento()'>Editar</button>
+                <button class="btn btn-success" onclick='EditarItem("departamento")'>Editar</button>
             </div>
         </div>
     </div>
