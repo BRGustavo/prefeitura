@@ -72,7 +72,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card bg-dark m-1">
+                <div class="card bg-dark mt-1 mb-1">
                     <div class="card-content">
                         <div class="card-header">
                             <h5 class="card-title text-center text-light text-muted">Impressoras</h5>
@@ -241,7 +241,7 @@
                                 {% for computador in computadores %}
                                 <tr>
                                     <th scope="row">{{ computador.id }}</th>
-                                    <td>{{ computador.nome_rede }}</td>
+                                    <td><a href="{% url 'computador_visualizar' computador.id %}">{{ computador.nome_rede }}</a></td>
                                     <th>{{ computador.patrimonio }}</th>    
                                     <td>{{ computador.funcionario.nome }}</td>
                                     <td>{{ computador.processador.modelo }}</td>

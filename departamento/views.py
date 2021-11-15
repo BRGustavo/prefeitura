@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 
 import departamento
 from .models import Departamento, Funcionario
-from .forms import DepartamentoForm, FuncionarioForm
+from .forms import DepartamentoForm, FuncionarioForm, FuncionarioVisualizarForm
 from django.db.models import Q, F
 from django.core.paginator import Paginator
 from dispositivo.models import Computador, Impressora, Roteador
@@ -20,7 +20,7 @@ def departamento_view(request, pagina=1):
         departamentos_list = departamentos_list.filter(
             Q(departamento__icontains=pesquisa) | Q(predio__icontains=pesquisa) | Q(singla_departamento__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    departamentos = Paginator(departamentos_list.order_by('id'), 5).get_page(pagina)
+    departamentos = Paginator(departamentos_list.order_by('id'), 10).get_page(pagina)
     content = {
         'departamentos': departamentos,
         'pesquisa': pesquisa,
@@ -115,7 +115,7 @@ def funcionario_visualizar(request, id=1):
     context = {
         'form': form,
         'funcionario': funcionario,
-        'computadores': computadores
+        'computadores': computadores,
     }
     return render(request, template_name='funcionario/visualizar.html', context=context)
 

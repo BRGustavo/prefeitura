@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Computador
+{% endblock title %}
+
+{% block scripts %}
+    <script>
+        const forms_urls = {
+        }
+    </script>
+{% endblock scripts %}
+
+{% block corpo %}
+
+<style>
+    body {
+        background-color:rgb(235, 232, 232);
+        border-style:none;
+    }
+    img {
+        width: 100px;
+    }
+    li a {
+        text-decoration: none;
+        color:#6c757d!important;
+    }
+    p a {
+        text-decoration: none;
+        color:black;
+    }
+    .img-centro {
+        background-image: url('{% static "img/teste.jpg" %}');
+        background-position-y: 0;
+    }
+</style>
+<main>
+    <div class="container p-3" id="primeiro">
+        <div class="img-centro row p-3 bg-dark rounded">
+            <div class="col-12 col-lg-3 text-center p-3">
+                <img class='rounded-circle' src="{% static 'img/patrimonio.png' %}" alt="">
+            </div>
+            <div class="col-12 col-lg-8">
+                <span class='d-flex justify-content-between'>
+                    <h2 class='text-dark'>{{computador.nome_rede}}</h2>
+                    <a href='{% url "computador_edit" computador.id %}' style='text-decoration:none; color:black;'><i class="fas fa-edit text-success me-2"></i></a>
+                    
+                </span>
+                <p class='text-dark mb-1'> 
+                    <i class="fas fa-user"></i>
+                    {% if computador.funcionario %}
+                    <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">{{computador.funcionario}}</a>
+                    {% else %}
+                    Não Vinculado
+                    {% endif %}
+                </p>
+                <p class='text-dark mb-1'>
+                    <i class="fas fa-building"></i>
+                    {% if computador.departamento %}
+                    <a href="{% url 'departamento_visualizar' computador.departamento.id %}">{{computador.departamento}}</a>
+                    {% else %}
+                    Não Vinculado
+                    {% endif %}
+                </p>
+                <p class='text-dark'>
+                    <i class="fas fa-hat-wizard"></i>
+                    <a href="anydesk:{{computador.anydesk}}">Anydesk</a>
+                </p>
+            </div>
+        </div>
+        <div class="col-12 bg-dark text-light d-flex justify-content-center">
+            <nav class="navbar navbar-expand">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                  <ul class="navbar-nav">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="#">Home <span class="sr-only">(Página atual)</span></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Processador</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Placa Mãe</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link disabled" href="#">Rede</a>
+                    </li>
+                  </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="col-12 bg-dark text-light p-2">
+            <div class="row">
+                <div class="col-12 col-lg-4">
+                    <div class="card bg-dark border-0">
+                        <div class="card-content">
+                            <div class="card-header border-0">
+                                <h5 class="card-title text-center text-muted">Funcionário & Departamento</h5>
+                                
+                            </div>
+                            <div class="card-body bg-dark">
+                                <ul class="list-group">
+                                    <li class="list-group-item bg-dark text-light">
+                                        <div class="col d-flex">
+                                            <img style='width:50px; height:50px;' class='rounded-circle me-4' src="{% static 'img/funcionario.jpg' %}" alt="">
+                                            <span>
+                                                {% if computador.funcionario %}
+                                                <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
+                                                    <p class='mb-0 text-muted'>{{computador.funcionario.nome}} {{computador.funcionario.sobrenome}}</p>
+                                                </a>
+                                                <p class='text-muted'>{{computador.departamento.departamento}}</p>
+                                                {% else %}
+                                                <p class='mb-0 text-muted'>Não Vinculado</p>
+                                                <p class="text-muted"></p>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item bg-dark text-light">
+                                        <div class="col d-flex">
+                                            <img style='width:50px; height:50px;' class='rounded-circle me-4' src="{% static 'img/patrimonio.png' %}" alt="">
+                                            <span>
+                                                {% if computador.departamento %}
+                                                <p class='mb-0 text-muted'>{{computador.departamento.departamento}}</p>
+                                                <p class='text-muted'>{{computador.departamento.predio}}</p>
+                                                {% else %}
+                                                <p class="mb-0 text-muted">
+                                                    Não Vinculado
+                                                </p>
+                                                <p class="text-muted">Pasárgada</p>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-12 col-lg-8">
+                    <div class="card bg-dark ">
+                        <div class="card-content">
+                            <div class="card-header border-0 d-flex justify-content-between">
+                                <h5 class='text-muted'>Informações</h5>
+                                <span>
+                                    <i class="fas fa-edit text-success me-2"></i>
+                                    <i class="far fa-trash-alt text-danger"></i>
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-lg-6">
+                                        <ul class="list-group">
+                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                                                <b>Nome na Rede:</b> {{computador.nome_rede}}
+                                            </li>
+                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                                                <b>AnyDesk:</b>
+                                                {% if computador.anydesk %}
+                                                {{computador.anydesk}}
+                                                {% else %}
+                                                Indisponivel
+                                                {% endif %}
+                                            </li>
+                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                                                <b>Sistema Operacional:</b> {{computador.sistema_op}}
+                                            </li>
+                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                                                <b>Processador</b>
+                                                {% if computador.processador %}
+                                                {{computador.processador.modelo}}
+                                                {% if computador.processador.frequencia %}
+                                                    {{computador.processador.frequencia }} Ghz
+                                                {% endif %}
+                                                {% else %}
+                                                Indisponivel
+                                                {% endif %}
+                                            </li>
+                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                                                <b>Memória RAM:</b>
+                                                {% if computador.memoria_ram %}
+                                                {{computador.memoria_ram}}
+                                                {% else %}
+                                                Indisponivel
+                                                {% endif %}
+                                            </li>
+                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                                                <b>Placa Mãe:</b>
+                                                {% if computador.placa_mae %}
+                                                {{computador.placa_mae.marca}} - {{computador.placa_mae.modelo }}
+                                                {% else %}
+                                                Indisponivel
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <ul class="list-group">
+                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                                                {% if computador.descricao %}
+                                                <b>Descrição:</b> {{computador.descricao}}
+                                                {% else %}
+                                                <b>Descrição:</b> Caso deseje descrever com mais detalhes esse computador, você podera usar esse campo.
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-lg-4">
+                                        <ul class="list-group">
+                                            <li class="list-group-item bg-dark text-muted border-0 text-center">
+                                                <b>Gabinete Patrimônio</b>
+                                                {% if computador.gabinete.patrimonio %}
+                                                {{ computador.gabinete.patrimonio }}
+                                                {% else %}
+                                                Indisponível
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    {% if computador.monitor.count %}
+                                    {% for monitor in computador.monitor.all %}
+                                    <div class="col-12 col-lg-4">
+                                        <ul class="list-group">
+                                            <li class="list-group-item bg-dark text-muted border-0 text-center">
+                                                <b>Monitor Patrimônio</b>
+                                                {{ monitor.patrimonio }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    <div class="col-12 col-lg-4">
+                                        <ul class="list-group">
+                                            <li class="list-group-item bg-dark text-muted border-0 text-center">
+                                                <b>Monitor Patrimônio</b>
+                                                Indisponível
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    {% endif %}                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mt-1">
+            <div class="card bg-dark">
+                <div class="card-content">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-muted">Impressoras</h5>
+                        <span>
+                            <i class="fas fa-plus text-success me-2"></i>
+                        </span>
+                    </div>
+                    <div class="card-body text-light text-center text-muted">
+                        Não Disponivel
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+{% endblock %}

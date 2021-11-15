@@ -5,6 +5,7 @@ from django.forms.widgets import Select, SelectMultiple, TextInput, Textarea
 from django.db.models import Value as V
 from django.db.models.functions import Concat
 from .models import Departamento, Funcionario, CHOICES_PREDIOS
+from dispositivo.models import CHOICES_SISTEMS
 
 class DepartamentoForm(forms.ModelForm):
     class Meta:
@@ -37,8 +38,23 @@ class FuncionarioForm(forms.ModelForm):
         ),widget=Select(attrs={'class': 'form-control'}))
 
     admin_rede = forms.ChoiceField(choices=(
-        (False, 'Não'),
-        (True,'Sim')
+        ('Não', 'Não'),
+        ("Sim",'Sim')
         ),widget=Select(attrs={'class': 'form-control'}))
     
     descricao = forms.CharField(label="Descrição", max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off', 'placeholder': 'Informações complementares sobre o usuário.'}), required=False)
+
+
+class FuncionarioVisualizarForm(forms.Form):
+    nome_rede = forms.CharField(label='Nome Rede', max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder':'Exemplo: PRE-01'}))
+    usuario_pc = forms.CharField(label='Usuário PC', max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder':'Ex: gustavo.silva'}))
+    senha_pc = forms.CharField(label='Senha PC', max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder':'Ex: Brasil2021'}))
+    sistema_op = forms.ChoiceField(choices=CHOICES_SISTEMS, widget=Select(attrs={'class': 'form-control'}))
+    admin_rede = forms.ChoiceField(required=True, choices=(
+        ('Não', 'Não'),
+        ('Sim', 'Sim')
+    ), widget=Select(attrs={'class': 'form-control'}))
+    acesso_rede = forms.ChoiceField(choices=(
+        ('Pessimista', 'Pessimista'),
+        ('Otimista', 'Otimista')
+    ), widget=Select(attrs={'class':'form-control'}))

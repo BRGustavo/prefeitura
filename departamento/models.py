@@ -46,9 +46,9 @@ class Funcionario(models.Model):
     nome = models.CharField(max_length=255, null=False)
     sobrenome = models.CharField(max_length=255, null=False)
     departamento = models.ForeignKey('Departamento', default='Prefeitura Municipal De Arapoti', null=False, on_delete=CASCADE)
-    admin_rede = models.BooleanField(verbose_name='Administrador Rede', default=False, null=False, choices=(
-        (True, 'Sim'),
-        (False, 'Não')
+    admin_rede = models.CharField(verbose_name='Administrador Rede', max_length=10, default="Não", null=False, choices=(
+        ("Sim", 'Sim'),
+        ("Não", 'Não')
     ), help_text='Possui privilégios de administrador na rede.')
     usuario_pc = models.CharField(max_length=50, verbose_name="Usuário PC", null=True, blank=True)
     senha_pc = models.CharField(max_length=50, verbose_name='Senha PC', blank=True, null=True)

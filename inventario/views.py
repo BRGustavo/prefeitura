@@ -30,7 +30,7 @@ def mouse_view(request, pagina):
         mouses = mouses.filter(
             Q(marca__icontains=pesquisa) | Q(usb__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    mouses = Paginator(mouses.order_by('id'), 5).get_page(pagina)
+    mouses = Paginator(mouses.order_by('id'), 10).get_page(pagina)
     content = {
         'mouses': mouses
     }
@@ -91,7 +91,7 @@ def teclado_view(request, pagina):
         teclados = teclados.filter(
             Q(marca__icontains=pesquisa) | Q(usb__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    teclados = Paginator(teclados.order_by('id'), 5).get_page(pagina)
+    teclados = Paginator(teclados.order_by('id'), 10).get_page(pagina)
     content = {
         'teclados': teclados
     }
@@ -150,7 +150,7 @@ def gabinete_view(request, pagina):
         gabinetes = gabinetes.filter(
             Q(patrimonio__icontains=pesquisa) | Q(modelo__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    gabinetes = Paginator(gabinetes.order_by('id'), 5).get_page(pagina)
+    gabinetes = Paginator(gabinetes.order_by('id'), 10).get_page(pagina)
     content = {
         'gabinetes': gabinetes
     }
@@ -209,7 +209,7 @@ def hd_view(request, pagina):
         hd = hd.filter(
             Q(modelo__icontains=pesquisa) | Q(tamanho_gb__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    hd = Paginator(hd.order_by('id'), 5).get_page(pagina)
+    hd = Paginator(hd.order_by('id'), 10).get_page(pagina)
     content = {
         'hds': hd
     }
@@ -269,7 +269,7 @@ def placamae_view(request, pagina):
         placasmae = placasmae.filter(
             Q(marca__icontains=pesquisa) | Q(hdmi__icontains=pesquisa) | Q(modelo__icontains=pesquisa) | Q(processador_suporte__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    placasmae = Paginator(placasmae.order_by('id'), 5).get_page(pagina)
+    placasmae = Paginator(placasmae.order_by('id'), 10).get_page(pagina)
     content = {
         'placasmae': placasmae
     }
@@ -328,7 +328,7 @@ def processador_view(request, pagina):
         processadores = processadores.filter(
             Q(marca__icontains=pesquisa) | Q(frequencia__icontains=pesquisa) | Q(modelo__icontains=pesquisa) | Q(memoria_cache__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    processadores = Paginator(processadores.order_by('id'), 5).get_page(pagina)
+    processadores = Paginator(processadores.order_by('id'), 10).get_page(pagina)
     content = {
         'processadores': processadores
     }
@@ -388,7 +388,7 @@ def monitor_view(request, pagina):
         monitores = monitores.filter(
             Q(marca__icontains=pesquisa) | Q(hdmi__icontains=pesquisa) | Q(patrimonio__icontains=pesquisa) | Q(tamanho__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    monitores = Paginator(monitores.order_by('id'), 5).get_page(pagina)
+    monitores = Paginator(monitores.order_by('id'), 10).get_page(pagina)
     content = {
         'monitores': monitores
     }

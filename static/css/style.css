@@ -61,6 +61,18 @@ p label {
     color:black;
     font-family: Arial, Helvetica, sans-serif;
 }
+.modal .modal-body p input {
+    color:rgb(41, 38, 38);
+    font-family: 'Times New Roman', Times, serif;
+}
+.modal .modal-body p select {
+    color:rgb(41, 38, 38);
+    font-family: 'Times New Roman', Times, serif;
+}
+.modal .modal-body p textarea {
+    color:rgb(41, 38, 38);
+    font-family: 'Times New Roman', Times, serif;
+}
 
 /* Responsive */
 @media (min-width: 1200px) {

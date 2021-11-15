@@ -25,7 +25,7 @@ def computador_view(request, pagina):
         computadores = computadores.filter(
             Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
-    computadores = Paginator(computadores.order_by('id'), 5).get_page(pagina)
+    computadores = Paginator(computadores.order_by('id'), 10).get_page(pagina)
     content = {
         'computadores': computadores
     }
@@ -179,7 +179,7 @@ def computador_edit(request, id):
                     consulta_computador_mac.delete()
 
             form.save()
-            return redirect(computador_view, 1)
+            return redirect(computador_visualizar, computador_db.id)
         else:
                 for valores in form.errors.values():
                     context['mensagens'].append(valores)
@@ -187,6 +187,14 @@ def computador_edit(request, id):
                 context['field_erros'] = form.errors.keys()       
     return render(request, template_name='computador/editar.html', context=context)
 
+@login_required
+@permission_required('dispositivo.view_computador', raise_exception=True)
+def computador_visualizar(request, id):
+    computador = get_object_or_404(Computador, pk=id)
+    context = {
+        'computador': computador,
+    }
+    return render(request, template_name='computador/visualizar.html', context=context)
 
 @login_required
 @permission_required('dispositivo.view_roteador', raise_exception=True)
@@ -198,7 +206,7 @@ def roteador_view(request, pagina):
             Q(ssid__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(modelo__icontains=pesquisa)| Q(ip_roteador__ip_address__icontains=pesquisa)
             | Q(id__iexact=pesquisa) | Q(mac_roteador__mac_address__icontains=(pesquisa))
         )
-    roteadores = Paginator(roteadores.order_by('id'), 5).get_page(pagina)
+    roteadores = Paginator(roteadores.order_by('id'), 10).get_page(pagina)
     content = {
         'roteadores': roteadores
     }
@@ -361,7 +369,7 @@ def impressora_view(request, pagina):
         impressoras = impressoras.filter(
             Q(patrimonio__icontains=pesquisa) | Q(nome__icontains=pesquisa) | Q(ip_impressora__ip_address__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(local__icontains=pesquisa) | Q(id__iexact=pesquisa))
 
-    impressoras = Paginator(impressoras.order_by('id'), 5).get_page(pagina)
+    impressoras = Paginator(impressoras.order_by('id'), 10).get_page(pagina)
     content = {
         'impressoras': impressoras
     }

@@ -27,6 +27,10 @@
         text-decoration: none;
         color:#6c757d!important;
     }
+    .gradiente-linear {
+        background-color: #ffffff;
+        background-image: linear-gradient(315deg, #ffffff 0%, #d7e1ec 74%);
+    }
 </style>
 <main>
     <div class="container-fluid mb-5" id="primeiro">
@@ -39,7 +43,7 @@
                         </div>
                         <div class="card-body">
                             <div class="col-12 d-flex justify-content-center">
-                                <img class='rounded-circle' src="{% static 'img/funcionario.png' %}" alt="">
+                                <img class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="">
                             </div>
                             <div class="col-12 mt-2">
                                 <ul class="list-group">
@@ -66,9 +70,9 @@
                     <div class="card bg-dark">
                         <div class="card-content">
                             <div class="card-header">
-                                <h5 class="card-title text-muted">
+                                <!-- <h5 class="card-title text-muted">
                                     Computador Informações
-                                </h5>
+                                </h5> -->
                             </div>
                             <div class="card-body text-muted">
                                 {% if computadores|length < 1%}
@@ -77,18 +81,12 @@
                                 </div>
                                 {% endif %}
                                 {% for computador in computadores %}
-                                <div class="row alert alert-light mb-2">
+                                <div class="row mb-2 gradiente-linear">
                                     <div class="d-flex justify-content-between">
-                                        <p class='text-muted'><b>{{computador.nome_rede}}</b></p>
+                                        <p class='text-muted'><b></b></p>
                                         <span>
-                                            <a href="" title='Desvincular' class='me-1'>
-                                                <i class="fa fa-chain-broken" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="" title='Editar' class='me-1 text-success'>
+                                            <a href='{% url "computador_visualizar" computador.id %}' title='Editar' class='me-1 text-success'>
                                                 <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="" title='Apagar' class='me-1 text-danger'>
-                                                <i class="far fa-trash-alt"></i>
                                             </a>
                                         </span>
                                     </div>
@@ -106,22 +104,37 @@
                                                 <p class='text-muted'><b>Nome Rede:</b> {{computador.nome_rede}}</p>
                                             </div>
                                             <div class="col-12 col-lg-6">
-                                                <p class='text-muted'><b>IP:</b>                  {% for ip in computador.ip_computador.all %}
+                                                <p class='text-muted'><b>IP:</b>                  
+                                                {% if computador.ip_computador.count %}    
+                                                {% for ip in computador.ip_computador.all %}
                                                     {{ ip }}
                                                 {% endfor %}
+                                                {% else %}
+                                                Indisponível
+                                                {% endif %}
                                                 </p>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 col-lg-6">
                                                 <p class='text-muted'><b>MAC:</b> 
+                                                {% if computador.mac_computador.count %}
                                                 {% for mac in computador.mac_computador.all %}
                                                 {{ mac }}
                                                 {% endfor %}
+                                                {% else %}
+                                                Indisponível
+                                                {% endif %}
                                                 </p>
                                             </div>
                                             <div class="col-12 col-lg-6">
-                                                <p class='text-muted'><b>AnyDesk:</b>{{computador.anydesk}}</p>
+                                                <p class='text-muted'><b>AnyDesk:</b>
+                                                    {% if computador.anydesk %}
+                                                    {{computador.anydesk}}
+                                                    {% else %}
+                                                    Indisponível
+                                                    {% endif %}
+                                                </p>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -139,28 +152,45 @@
                                                 <p class='text-muted'><b>OS:</b> {{computador.sistema_op}}</p>
                                             </div>
                                             <div class="col-12 col-lg-6">
-                                                <p class='text-muted'><b>Processador:</b> {{computador.processador}}</p>
+                                                <p class='text-muted'><b>Processador:</b>
+                                                    {% if computador.processador %}
+                                                    {{computador.processador}}
+                                                    {% else %}
+                                                    Indisponível
+                                                    {% endif %}
+                                                </p>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 col-lg-6">
-                                                <p class='text-muted'><b>HD:</b> {{computador.hd.tamanho_gb}}</p>
+                                                <p class='text-muted'><b>HD:</b>
+                                                    {% if computador.hd %}
+                                                    {{computador.hd.tamanho_gb}} GB
+                                                    {% else %}
+                                                    Indisponível
+                                                    {% endif %}
+                                                </p>
                                             </div>
                                             <div class="col-12 col-lg-6">
-                                                <p class='text-muted'><b>RAM:</b> 8 GB</p>
+                                                <p class='text-muted'><b>RAM:</b> {{computador.memoria_ram}}</p>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 col-lg-6">
-                                                <p class='text-muted'><b> Gabinete Patrimônio</b>  {{ computador.gabinete.patrimonio }}</p>
+                                                <p class='text-muted d-flex flex-column'><b> Gabinete Patrimônio</b> 
+                                                    <span class='p-2'><i class="fas fa-hdd me-3"></i> {{computador.gabinete.patrimonio}}</span>
+                                                </p>
                                             </div>
 
                                             <div class="col-12 col-lg-6">
-                                                <p class='text-muted'><b> Monitor Patrimonio:</b>
-                                                {% for patrimonio in computador.monitor.all %}
-                                                {{ patrimonio.patrimonio }};
-                                                {% endfor %}
-                                            </p>
+                                                <p class='text-muted d-flex flex-column '><b> Monitor Patrimônio:</b>
+                                                    {% for patrimonio in computador.monitor.all %} 
+                                                    <span class='p-1 mb-1'>
+                                                        <i class="fas fa-desktop me-3"></i>  {{patrimonio.patrimonio}}
+                                                    </span>
+                                                    {% endfor %}
+                                                </p>
+                                                
                                             </div>
                                         </div>
                                     </div>

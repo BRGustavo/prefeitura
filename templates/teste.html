@@ -26,22 +26,85 @@
         text-decoration: none;
         color:#6c757d!important;
     }
+    p a {
+        text-decoration: none;
+        color:black;
+    }
+    .img-centro {
+        background-image: url('{% static "img/teste.jpg" %}');
+        background-position-y: 0;
+    }
 </style>
 <main>
-    <div class="container-fluid mb-5" id="primeiro">
-        <div class="btn-group">
-            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Action
-            </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Separated link</a>
+    <div class="container p-3" id="primeiro">
+        <div class="img-centro row p-3 bg-dark rounded">
+            <div class="col-3 text-center p-3">
+                <img class='rounded-circle' src="{% static 'img/patrimonio.png' %}" alt="">
             </div>
-          </div>
+            <div class="col-8">
+                <span class='d-flex justify-content-between'>
+                    <h2 class='text-dark'>PRE-010</h2>
+                    <button class="btn btn-success btn-large">Editar</button>
+                </span>
+                <p class='text-dark mb-1'> <i class="fas fa-user"></i>
+                    <a href="{% url 'funcionario_visualizar' 4 %}">Gustavo de Oliveira</a>
+                </p>
+                <p class='text-dark mb-1'>
+                    <i class="fas fa-building"></i>
+                    <a href="{% url 'departamento_visualizar' 1 %}">Tecnologia Da Informação</a>
+                </p>
+                <p class='text-dark'>
+                    <i class="fas fa-hat-wizard"></i>
+                    <a href="anydesk:user@namespace">Anydesk</a>
+                </p>
+            </div>
+        </div>
+        <div class="col-12 bg-dark">
+            lorem
+        </div>
     </div>
+
+
+
+
+
+
+    <!-- <div class="container-fluid" id="primeiro">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card border border-0" style='background-color:transparent;'>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="img-centro pt-4 pb-1 d-flex rounded justify-content-center">
+                                    <img class='rounded-circle' src="{% static 'img/patrimonio.png' %}" alt="">
+                                </div>
+                            </div>
+                            <div class="col-12 mt-0 text-light">
+                                <div class="row">
+                                    <div class="col-12 col-lg-12 p-2 mt-2 bg-dark rounded">
+                                        <div class="card bg-dark">
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <h5 class='text-muted'>Informações</h5>
+                                                    <ul class="list-group p-2">
+                                                        <li class="bg-dark text-muted list-group-item">
+                                                            <b>Nome na Rede:</b>
+                                                            PRE-10
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
 </main>
 
 {% endblock %}

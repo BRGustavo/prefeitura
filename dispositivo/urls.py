@@ -11,6 +11,7 @@ urlpatterns = [
     path('computador/<int:pagina>/', views.computador_view, name='computador'),
     path('computador/add/', views.computador_create, name='computador_add'),
     path('computador/edit/<int:id>/', views.computador_edit, name='computador_edit'),
+    path('computador/visualizar/<int:id>/', views.computador_visualizar, name='computador_visualizar'),
 
     # URLs Model Roteador
     path('roteador/<int:pagina>/', views.roteador_view, name='roteador_view'),

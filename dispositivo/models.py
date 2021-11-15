@@ -132,12 +132,13 @@ class Computador(models.Model):
     teclado = models.OneToOneField(Teclado, related_name='computador', blank=True, null=True, on_delete=PROTECT, )
     mouse = models.OneToOneField(Mouse, related_name='computador', blank=True, null=True, on_delete=PROTECT, )
     sistema_op = models.CharField(verbose_name='Sistema Operacional', max_length=10, blank=True, choices=CHOICES_SISTEMS)
-    sala = models.IntegerField(blank=True, null=True, help_text='Número de referência a sala onde ficará o computador')
+    memoria_ram = models.CharField(max_length=20, blank=True, null=True, help_text='Exemplo: 8')
 
     anydesk = models.CharField(max_length=120, verbose_name='AnyDesk', blank=True, null=True)
     mac_computador = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='computador', on_delete=CASCADE)
     ip_computador = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='computador', on_delete=CASCADE)
 
+    descricao = models.TextField(blank=True, verbose_name='Descrição')
     def meu_id(self):
         return self.id
 
