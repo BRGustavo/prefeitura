@@ -23,7 +23,7 @@ def computador_view(request, pagina):
     computadores = Computador.objects.all()
     if pesquisa != '' and pesquisa is not None:
         computadores = computadores.filter(
-            Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(id__iexact=pesquisa)
+            Q(nome_rede__icontains=pesquisa) | Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
     computadores = Paginator(computadores.order_by('id'), 10).get_page(pagina)
     content = {
@@ -193,6 +193,7 @@ def computador_visualizar(request, id):
     computador = get_object_or_404(Computador, pk=id)
     context = {
         'computador': computador,
+        
     }
     return render(request, template_name='computador/visualizar.html', context=context)
 
@@ -521,6 +522,23 @@ def impressora_edit(request, id):
 
 
 def teste_view(request):
-    departamento_list = Departamento.objects.all()
-    departamentos = Paginator(departamento_list.order_by('id'), 20).get_page(1)
-    return render(request, template_name='teste.html', context={'departamentos': departamentos})
+    pagina = 1
+    """Função responsável pelo template de listar os usuários """
+    pesquisa = request.GET.get('query')
+    formFuncionario = FuncionarioForm()
+    funcionarios_lista = Funcionario.objects.all()
+    if pesquisa != '' and pesquisa is not None:
+
+        funcionarios_lista = funcionarios_lista.filter(
+            Q(nome__icontains=pesquisa) | Q(sobrenome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(controle_acesso__icontains=pesquisa) | Q(id__iexact=pesquisa) | Q(usuario_pc__icontains=pesquisa)
+        )
+
+    funcionarios = Paginator(funcionarios_lista.order_by('id'), 10).get_page(pagina)
+
+    content = {
+        'funcionarios': funcionarios,
+        'pesquisa':pesquisa,
+        'formFuncionario': formFuncionario,
+
+    }
+    return render(request, template_name='teste.html', context=content)

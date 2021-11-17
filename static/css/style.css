@@ -73,7 +73,9 @@ p label {
     color:rgb(41, 38, 38);
     font-family: 'Times New Roman', Times, serif;
 }
-
+#modalAdicionarImpressora .fa-link:hover {
+    color:green;
+}
 /* Responsive */
 @media (min-width: 1200px) {
     #primeiro {

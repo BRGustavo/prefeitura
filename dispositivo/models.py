@@ -93,7 +93,7 @@ class Impressora(models.Model):
     ))
     patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
     departamento = models.ForeignKey(Departamento, related_name='impressora', blank=True, null=True, on_delete=CASCADE)
-    sala = models.IntegerField(blank=True, null=True, verbose_name="Número Sala", help_text='Número de refência ao local onde a impressora está.')
+    sala = models.CharField(max_length=20, blank=True, null=True, verbose_name="Número Sala", help_text='Número de refência ao local onde a impressora está.')
 
     usando_ip = models.BooleanField(verbose_name='Usando IP', help_text='Está conectada pela rede;usando um ip.', default=True, null=False, choices=CHOICES_BOOL)
 
@@ -139,6 +139,9 @@ class Computador(models.Model):
     ip_computador = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='computador', on_delete=CASCADE)
 
     descricao = models.TextField(blank=True, verbose_name='Descrição')
+    impressora = models.ManyToManyField(Impressora, blank=True, verbose_name="Impressoras", related_name='computador')
+
+
     def meu_id(self):
         return self.id
 

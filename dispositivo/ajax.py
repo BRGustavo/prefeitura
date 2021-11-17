@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_ipv4_address
 from django.http.response import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import *
 from dispositivo.models import *
@@ -68,3 +68,46 @@ def verificar_ip_ajax(request):
                 data['mensagem'] = 'Esse endereço não está no padrão IPV4.'
         return JsonResponse(data, safe=True)
     return render(request, 'base.html')
+
+@login_required
+@permission_required('dispositivo.view_impressora')
+def impressora_pesquisa_ajax(request):
+    if request.method == 'GET':
+        impressoras = []
+        data = []
+        pesquisa = request.GET.get('query')
+        id_computador = request.GET.get('id_computador')
+        computador = get_object_or_404(Computador, pk=id_computador)
+        if pesquisa:
+            impressoras = Impressora.objects.filter(Q(nome__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(ip_impressora__ip_address__icontains=pesquisa)).exclude(computador=computador)
+        else:
+            impressoras = Impressora.objects.exclude(computador=computador)
+
+        for impressora in impressoras:
+
+            html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{impressora.departamento.predio}</td><td>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
+            """
+            data.append({
+                'html_item': html_item,
+                'nome': impressora.nome,
+                'modelo': impressora.modelo,
+                'ip': impressora.ip_impressora.first().ip_address
+            })
+        return JsonResponse(data={'impressoras': data}, safe=True)
+
+
+@login_required
+@permission_required('dispositivo.view_impressora')
+def vincular_impressora_ajax(request):
+    if request.method == 'GET':
+        id_impressora = request.GET.get('id_impressora')
+        id_computador = request.GET.get('id_computador')
+        impressora = get_object_or_404(Impressora, pk=id_impressora)
+        computador = get_object_or_404(Computador, pk=id_computador)
+        pesquisa = Impressora.objects.filter(id=id_impressora, computador=computador)
+        print(pesquisa)
+        if pesquisa:
+            computador.impressora.remove(impressora)
+        else:
+            computador.impressora.add(impressora)
+    return JsonResponse(data={'sim': 'sim'}, safe=True)

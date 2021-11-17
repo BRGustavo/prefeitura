@@ -1,4 +1,6 @@
 let timer = null;
+let atualizarAfterModal = false;
+
 $('#id_endereco_ip').keyup(function(){
     if(validador == true){
         clearTimeout(timer);
@@ -169,6 +171,69 @@ function visualizarModalApagar(id){
         }
     });
     $('#modalDeletar').modal('show');
+}
+
+$('#modalAdicionarImpressora').on('show.bs.modal', function (e) {
+    PesquisarImpressoras('');    
+});
+$('#modalAdicionarImpressora').on('hidden.bs.modal', function(e){
+    if(atualizarAfterModal == true){
+        location.reload();
+    }
+});
+
+$('#pesquisa').submit(function(e){
+    let conteudo = $('input[name="query"]').val();
+    PesquisarImpressoras(conteudo);
+    return false;
+})
+
+function PesquisarImpressoras(query){
+    let pesquisa = query;
+    $.ajax({
+        type: 'GET',
+        url: forms_urls['pesquisarImpressora'],
+        data: {
+            'query': pesquisa,
+            'id_computador': forms_urls['id_computador']
+        },
+        success: function(data){
+            $('#tabelaImpressora').html('');
+            if(data['impressoras'].length <= 0){
+                $('#tabelaImpressora').append('<tr><td class="text-center">Nada encontrado.</td></tr>');
+            }
+            for(let item in data['impressoras']){
+                let html_item = data['impressoras'][item].html_item;
+                let nome = data['impressoras'][item].nome;
+                let marca = data['impressoras'][item].marca;
+                let ip = data['impressoras'][item].ip;
+
+                $('#tabelaImpressora').append(
+                    $(`${html_item}`)
+                )
+                $('#tabelaImpressora img').attr('src', `${forms_urls['m4070Img']}`);
+            }
+        }
+    });
+}
+function VincularNovaImpressora(id_impressora, desvincular=false){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls['vincularNovaImpressora'],
+        data: {
+            'id_impressora': id_impressora,
+            'id_computador': forms_urls['id_computador'],
+        },
+        success: function(e){
+            atualizarAfterModal = true;
+            if(desvincular){
+                atualizarAfterModal = false;
+                location.reload()
+            }else{
+                $(`#impressoraId${id_impressora}`).toggleClass('alert alert-success');
+            }
+        }
+    });
 }
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
