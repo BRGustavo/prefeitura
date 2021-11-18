@@ -179,7 +179,7 @@ def computador_edit(request, id):
                     consulta_computador_mac.delete()
 
             form.save()
-            return redirect(computador_visualizar, computador_db.id)
+            return redirect(computador_visualizar, computador_db.id, 'principal')
         else:
                 for valores in form.errors.values():
                     context['mensagens'].append(valores)
@@ -189,13 +189,25 @@ def computador_edit(request, id):
 
 @login_required
 @permission_required('dispositivo.view_computador', raise_exception=True)
-def computador_visualizar(request, id):
+def computador_visualizar(request, id, pagina='principal'):
     computador = get_object_or_404(Computador, pk=id)
+    form = ComputadorForm(instance=computador)
     context = {
         'computador': computador,
+        'formComputador': form,
         
     }
-    return render(request, template_name='computador/visualizar.html', context=context)
+    if request.method == 'POST':
+        form = ComputadorForm(request.POST, instance=computador)
+        if form.is_valid():
+            form.save()
+            return redirect(computador_visualizar, id, pagina)
+            
+    if pagina == 'principal':
+        return render(request, template_name='computador/visualizar.html', context=context)
+    elif pagina == 'rede':
+        return render(request, template_name='computador/visualizar_rede.html', context=context)
+
 
 @login_required
 @permission_required('dispositivo.view_roteador', raise_exception=True)

@@ -67,7 +67,7 @@ class ComputadorForm(forms.ModelForm):
     endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Ex: 192.168.5.20'}))
     endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: AA-AA-AA-AA-AA-AA'}))
 
-    descricao = forms.CharField(required=False, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off', 'placeholder': 'Descreve mais sobre o dispositivo.'}))
+    descricao = forms.CharField(required=False, widget=Textarea(attrs={'rows':'8','class':'form-control', 'autocomplete':'off', 'placeholder': 'Descreve mais sobre o dispositivo.'}))
 
 
 class RoteadorForm(forms.ModelForm):

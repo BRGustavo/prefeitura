@@ -194,7 +194,7 @@
                                     <th scope='col'>Usuário PC</th>
                                     <th scope='col'>Acesso</th>
                                     <th scope='col'>Adm Rede</th>
-                                    <th scope='col'>Editar</th>
+                                    <th scope='col'>Visualizar</th>
                                 </thead>
                                 <tbody>
                                     {% for funcionario in funcionarios %}
@@ -205,7 +205,7 @@
                                         <td>{{ funcionario.usuario_pc }}</td>
                                         <td>{{ funcionario.controle_acesso }}</td>
                                         <td>{{ funcionario.admin_rede }}</td>
-                                        <td><a href="{% url 'funcionario_edit' funcionario.id %}"><i class="fas fa-edit"></i></a></td>
+                                        <td><a href="{% url 'funcionario_visualizar' funcionario.id %}"><i class="fas fa-eye"></i></a></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -236,12 +236,13 @@
                                 <th scope='col'>OS</th>
                                 <th scope='col'>IP</th>
                                 <th scope='col'>MAC</th>
+                                <th scope='col'>Visualizar</th>
                             </thead>
                             <tbody>
                                 {% for computador in computadores %}
                                 <tr>
                                     <th scope="row">{{ computador.id }}</th>
-                                    <td><a href="{% url 'computador_visualizar' computador.id %}">{{ computador.nome_rede }}</a></td>
+                                    <td><a href="{% url 'computador_visualizar' computador.id 'principal' %}">{{ computador.nome_rede }}</a></td>
                                     <th>{{ computador.patrimonio }}</th>    
                                     <td>{{ computador.funcionario.nome }}</td>
                                     <td>{{ computador.processador.modelo }}</td>
@@ -256,7 +257,7 @@
                                             {{ mac }}
                                         {% endfor %}
                                     </td>
-                                    <td><a href="{% url 'computador_edit' computador.id %}"><i class="fas fa-edit"></i></a></td>
+                                    <td><a href="{% url 'computador_visualizar' computador.id 'principal' %}"><i class="fas fa-eye"></i></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

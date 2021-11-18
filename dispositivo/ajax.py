@@ -105,9 +105,8 @@ def vincular_impressora_ajax(request):
         impressora = get_object_or_404(Impressora, pk=id_impressora)
         computador = get_object_or_404(Computador, pk=id_computador)
         pesquisa = Impressora.objects.filter(id=id_impressora, computador=computador)
-        print(pesquisa)
         if pesquisa:
             computador.impressora.remove(impressora)
         else:
             computador.impressora.add(impressora)
-    return JsonResponse(data={'sim': 'sim'}, safe=True)
+    return JsonResponse(data={'falha': 'sim'}, safe=True)
