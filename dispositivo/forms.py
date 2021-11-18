@@ -116,3 +116,38 @@ class MemoriaRamForm(forms.ModelForm):
     class Meta:
         model = MemoriaRam
         fields = ('modelo', 'frequencia', 'descricao')
+
+
+class ComputadorFormDescricao(forms.ModelForm):
+    class Meta:
+        model = Computador
+        fields = ('descricao',)
+    
+    descricao = forms.CharField(required=False, widget=Textarea(attrs={'rows':'8','class':'form-control', 'autocomplete':'off', 'placeholder': 'Descreve mais sobre o dispositivo.'}))
+
+class ComputadorFormInfo(forms.ModelForm):
+    class Meta:
+        model = Computador
+        fields = ('nome_rede', 'sistema_op', 'memoria_ram', 'hd', 'anydesk', 'processador', 'placa_mae')
+
+    def __init__(self, *args, **kwargs):
+        super(ComputadorFormInfo, self).__init__(*args, **kwargs)
+        
+        self.fields['placa_mae'].queryset = (
+            PlacaMae.objects.all().filter(computador__isnull=True) | (PlacaMae.objects.filter(computador=self.instance))
+        )
+        self.fields['processador'].queryset = (
+            Processador.objects.all().filter(computador__isnull=True) | (Processador.objects.filter(computador=self.instance))
+        )
+        self.fields['hd'].queryset = (
+            Hd.objects.all().filter(computador__isnull=True) | (Hd.objects.filter(computador=self.instance))
+        )
+
+    sistema_op = forms.ChoiceField(choices=CHOICES_SISTEMS, widget=Select(attrs={'class': 'form-control'}))
+    nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: PRE-01'}))
+    anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: 0000000'}))
+    memoria_ram = forms.CharField(required=False, max_length=20, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 8 GB'}))
+    gabinete = forms.ModelChoiceField(queryset=Gabinete.objects.all(), widget=Select(attrs={'class': 'form-control'})) 
+    placa_mae = forms.ModelChoiceField(required=False, queryset=PlacaMae.objects.all(), widget=Select(attrs={'class': 'form-control'}))      
+    processador = forms.ModelChoiceField(required=False, queryset=Processador.objects.all(), widget=Select(attrs={'class': 'form-control'}))
+    hd = forms.ModelChoiceField(required=False, queryset=Hd.objects.all(), widget=Select(attrs={'class': 'form-control'}))

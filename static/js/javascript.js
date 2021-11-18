@@ -7,6 +7,7 @@ $('#id_endereco_ip').keyup(function(){
         timer = setTimeout(VerificarEnderecoIp, 1000);
     }
 });
+
 function VerificarEnderecoIp(){
     var ip_valor = window.document.querySelector('#id_endereco_ip').value;
     if(ip_valor.length >= 1){
@@ -234,6 +235,35 @@ function VincularNovaImpressora(id_impressora, desvincular=false){
             }
         }
     });
+}
+
+
+function mandarconteudo(lowe, url=window.location){
+    let capitalize  = lowe.charAt(0).toUpperCase() + lowe.slice(1);
+    const csrftoken = document.querySelector(`#form-${lowe} [name=csrfmiddlewaretoken]`).value;
+    var serialize = $(`#form-${lowe}`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: url,
+        data: serialize,
+        success: function(data){
+            $(`#modalAtualizar${capitalize}`).modal('hide');
+            $(`#form-${lowe}`).trigger('reset');
+            location.reload();
+        },
+        error: function (request, status, error) {
+            console.log(request.responseText)
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert("Verifique o formulário.");
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
+            }
+        }
+    })
 }
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});

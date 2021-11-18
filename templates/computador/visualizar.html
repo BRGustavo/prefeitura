@@ -12,7 +12,9 @@
             'vincularNovaImpressora': '{% url "vincular_impressora_ajax" %}',
             'm4070Img': '{% static "img/m4070.jpg" %}',
             'id_computador': '{{computador.id}}',
+            'atualizar_computador_info_ajax': '{% url "atualizar_computador_info_ajax" %}'
         }
+        const formularioId = '{{ csrf_token }}';
     </script>
 {% endblock scripts %}
 
@@ -152,7 +154,7 @@
                             <div class="card-header bg-dark border-0 d-flex justify-content-between">
                                 <h5 class='text-muted'>Informações</h5>
                                 <span>
-                                    <i class="fas fa-edit text-success me-2"></i>
+                                    <i data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao' class="fas fa-edit text-success me-2"></i>
                                     <i class="far fa-trash-alt text-danger"></i>
                                 </span>
                             </div>
@@ -300,7 +302,8 @@
                     </span>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id='form-descricao'>
+                        {% csrf_token %}
                         <div class="form-group">
                             <p>
                                 <label for="id_descricao" class='mt-1'>Descrição</label>
@@ -311,7 +314,81 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Atualizar</button>
+                    <button onclick='mandarconteudo("descricao")' class="btn btn-primary">Atualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id='modalAtualizarInformacao'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Atualizar Informações</h5>
+                    <span data-bs-dismiss='modal'>
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="modal-body">
+                    <form computador_id='{{computador.id}}' id='form-informacao'>
+                        {% csrf_token %}
+                        <input type='hidden' value='{{computador.id}}' name='computador_id'>
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="id_nome_rede">Nome Rede</label>
+                                    <input type="text" name='nome_rede' id='id_nome_rede' value='{{computador.nome_rede}}' class='form-control'>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label for="id_memoria_ram">Memória RAM</label>
+                                    <input type="text" class='form-control' id='id_memoria_ram' name='memoria_ram' value='{{computador.memoria_ram}}'>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="id_sistema_op">Sistema Operacional</label>
+                                    <select class='form-control' name="sistema_op" id="id_sistema_op">
+                                        <option value="{{computador.sistema_op}}">{{computador.sistema_op}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label for="id_anydesk">AnyDesk</label>
+                                    <input type="text" class='form-control' id='id_anydesk' name='anydesk' value='{{computador.anydesk}}'>
+                                </div>
+                                
+                            </div>
+                            <div class="col-12 mt-2">
+                                <!-- <div class="form-group">
+                                    <label for="id_processador">Processador</label>
+                                    <select class='form-control' name="processador" id="id_processador">
+                                        <option value="{{computador.processador.id}}">{{computador.processador}}</option>
+                                    </select>
+                                </div> -->
+                                <div class="form-group mt-2">
+                                    <label for="id_hd">HD</label>
+                                    <select class='form-control' name="hd" id="id_jd">
+                                        <option value="{{computador.hd.id}}">{{computador.hd}}</option>
+                                    </select>
+                                </div>
+                                <!-- <div class="form-group mt-2">
+                                    <label for="id_placa_mae">Placa Mãe</label>
+                                    <select class='form-control' name="placa_mae" id="id_placa_mae">
+                                        <option value="{{computador.placa_mae.id}}">{{computador.placa_mae}}</option>
+                                    </select>
+                                </div> -->
+                                <div class="form-group mt-2">
+                                    <label for="id_gabinete">Gabinete</label>
+                                    <select class='form-control' name="gabinete" id="id_gabinete">
+                                        <option value="{{computador.gabinete.id}}">{{computador.gabinete}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
+                    <button onclick='mandarconteudo("informacao", forms_urls.atualizar_computador_info_ajax )' class="btn btn-primary">Atualizar</button>
                 </div>
             </div>
         </div>

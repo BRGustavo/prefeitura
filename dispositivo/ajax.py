@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import *
 from dispositivo.models import *
+from .forms import ComputadorForm, ComputadorFormInfo
 
 @login_required
 @permission_required('dispositivo.add_computador', raise_exception=True)
@@ -110,3 +111,27 @@ def vincular_impressora_ajax(request):
         else:
             computador.impressora.add(impressora)
     return JsonResponse(data={'falha': 'sim'}, safe=True)
+
+
+@login_required
+@permission_required('dispositivo.change_computador')
+def atualizar_computador_info_ajax(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'POST':
+        id = request.POST.get("computador_id")
+        computador = get_object_or_404(Computador, pk=id)
+        form = ComputadorFormInfo(request.POST, instance=computador)
+        if form.is_valid():
+            form.save()
+            return JsonResponse(status=200, safe=True, data={'data': 'data'})
+        else:
+            print('erro')
+            for valores in form.errors.values():
+                mensagens.append(valores)
+                print(mensagens)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})

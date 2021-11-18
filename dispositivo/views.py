@@ -7,7 +7,7 @@ from django.forms import inlineformset_factory
 from departamento.forms import FuncionarioForm
 from departamento.models import Departamento, Funcionario
 from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
-from .forms import ComputadorForm, RoteadorForm, ImpressoraForm
+from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, RoteadorForm, ImpressoraForm
 from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
@@ -192,17 +192,20 @@ def computador_edit(request, id):
 def computador_visualizar(request, id, pagina='principal'):
     computador = get_object_or_404(Computador, pk=id)
     form = ComputadorForm(instance=computador)
+    formInfo = ComputadorFormInfo(instance=computador)
     context = {
         'computador': computador,
         'formComputador': form,
+        'formInfo': formInfo,
         
     }
     if request.method == 'POST':
-        form = ComputadorForm(request.POST, instance=computador)
+        form = ComputadorFormDescricao(request.POST, instance=computador)
         if form.is_valid():
-            form.save()
-            return redirect(computador_visualizar, id, pagina)
-            
+            dados = form.save()
+            return JsonResponse(status=200, data={'data':'data'}, safe=True)
+        else:
+            return JsonResponse(status=404, safe=True, data={'erro': 'erro'})
     if pagina == 'principal':
         return render(request, template_name='computador/visualizar.html', context=context)
     elif pagina == 'rede':
