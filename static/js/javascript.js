@@ -1,6 +1,7 @@
 let timer = null;
 let atualizarAfterModal = false;
 
+
 $('#id_endereco_ip').keyup(function(){
     if(validador == true){
         clearTimeout(timer);
@@ -200,8 +201,10 @@ function PesquisarImpressoras(query){
         },
         success: function(data){
             $('#tabelaImpressora').html('');
+           
             if(data['impressoras'].length <= 0){
-                $('#tabelaImpressora').append('<tr><td class="text-center">Nada encontrado.</td></tr>');
+                let item_novo = $('<tr><td class="text-center">Nada encontrado.</td></tr>');
+                $('#tabelaImpressora').append(item_novo)
             }
             for(let item in data['impressoras']){
                 let html_item = data['impressoras'][item].html_item;
@@ -211,7 +214,7 @@ function PesquisarImpressoras(query){
 
                 $('#tabelaImpressora').append(
                     $(`${html_item}`)
-                )
+                ).fadeIn('slow')
                 $('#tabelaImpressora img').attr('src', `${forms_urls['m4070Img']}`);
             }
         }

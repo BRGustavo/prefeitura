@@ -201,11 +201,18 @@ def computador_visualizar(request, id, pagina='principal'):
         'endereco_mac':computador.mac_computador.first().mac_address if computador.mac_computador.count() >=1 else ''
         })
 
+    formProcessador = ProcessadorForm()
+    processador_pc = Processador.objects.filter(computador=computador)
+    if processador_pc.count() >=1:
+        processador_id = get_object_or_404(Processador, pk=processador_pc.first().id) 
+        formProcessador = ProcessadorForm(instance=processador_id)
+
     context = {
         'computador': computador,
         'formComputador': form,
         'formInfo': formInfo,
         'formIpMac': formIpMac,
+        'formProcessador': formProcessador,
         
     }
     if request.method == 'POST':
@@ -219,6 +226,8 @@ def computador_visualizar(request, id, pagina='principal'):
         return render(request, template_name='computador/visualizar.html', context=context)
     elif pagina == 'rede':
         return render(request, template_name='computador/visualizar_rede.html', context=context)
+    elif pagina == 'processador':
+        return render(request, template_name="computador/visualizar_processador.html", context=context)
 
 
 @login_required

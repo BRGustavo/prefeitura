@@ -230,7 +230,6 @@
                             <thead>
                                 <th scope="col">ID</th>
                                 <th scope='col'>Nome</th>
-                                <th scope='col'>Patrimônio</th>
                                 <th scope="col">Funcionario</th>
                                 <th scope="col">Processador</th>
                                 <th scope='col'>OS</th>
@@ -243,7 +242,6 @@
                                 <tr>
                                     <th scope="row">{{ computador.id }}</th>
                                     <td><a href="{% url 'computador_visualizar' computador.id 'principal' %}">{{ computador.nome_rede }}</a></td>
-                                    <th>{{ computador.patrimonio }}</th>    
                                     <td>{{ computador.funcionario.nome }}</td>
                                     <td>{{ computador.processador.modelo }}</td>
                                     <td>{{ computador.sistema_op }}</td>
@@ -276,10 +274,10 @@
 <div class="modal fade" tabindex="-1" id='modalEditDepartamento'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editar Departamento</h5>
+            <div class="modal-header" style='background-color:rgb(184, 106, 106);'>
+                <h5 class="modal-title text-light">Editar Departamento</h5>
                 <span data-bs-dismiss='modal'>
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times text-light"></i>
                 </span>
             </div>
             <div class="modal-body">

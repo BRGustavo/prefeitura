@@ -13,7 +13,8 @@
             'm4070Img': '{% static "img/m4070.jpg" %}',
             'id_computador': '{{computador.id}}',
             'atualizar_computador_info_ajax': '{% url "atualizar_computador_info_ajax" %}',
-            'verificar_enderecoip_ajax': '{% url "verificar_enderecoip_ajax" %}'
+            'verificar_enderecoip_ajax': '{% url "verificar_enderecoip_ajax" %}',
+            'atualizar_processador_ajax': '{% url "atualizar_processador_ajax" %}'
         }
         const formularioId = '{{ csrf_token }}';
     </script>
@@ -88,7 +89,7 @@
                         <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'rede' %}">Rede</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Processador</a>
+                        <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'processador' %}">Processador</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" href="#">Placa Mãe</a>
@@ -266,8 +267,8 @@
     <div class="modal fade" tabindex="-1" id='modalAtualizarDescricao'>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Atualizar Descrição</h5>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-light">Atualizar Descrição</h5>
                     <span data-bs-dismiss='modal'>
                         <i class="fas fa-times"></i>
                     </span>
@@ -294,10 +295,10 @@
     <div class="modal fade" tabindex="-1" id='modalAtualizarInformacao'>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Atualizar Informações</h5>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-light">Atualizar Informações</h5>
                     <span data-bs-dismiss='modal'>
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times text-light"></i>
                     </span>
                 </div>
                 <div class="modal-body">

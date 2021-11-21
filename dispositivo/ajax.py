@@ -3,6 +3,8 @@ from django.core.validators import ip_address_validator_map, validate_ipv4_addre
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
+
+from inventario.forms import ProcessadorForm
 from .models import *
 from dispositivo.models import *
 from .forms import ComputadorForm, ComputadorFormInfo, IpMacFormAtualizar
@@ -218,6 +220,7 @@ def atualizar_computador_info_ajax(request):
 
 @login_required
 @permission_required('dispositivo.change_computador')
+@permission_required('dispositivo.change_enderecoip')
 def verificar_endereco_ip(request):
     mensagens = []
     campo_erros = []
@@ -275,6 +278,37 @@ def verificar_endereco_ip(request):
                 if consulta_computador_mac.count() >=1:
                     consulta_computador_mac.delete()
 
+            return JsonResponse(status=200, safe=True, data={'data': 'data'})
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+@login_required
+def atualizar_processador_ajax(request):
+    mensagens = []
+    campo_erros = []
+    
+    if request.method == 'POST':
+        computador = get_object_or_404(Computador, pk=int(request.POST.get('id_computador')))
+        form = None
+        if computador.processador:
+            processador = get_object_or_404(Processador, pk=computador.processador.id)
+            form = ProcessadorForm(request.POST, instance=processador)
+        else:
+            form = ProcessadorForm(request.POST)
+
+        if form.is_valid():
+            processador_atualizado = form.save()
+            if computador.processador:
+                pass
+            else:
+                computador.processador = processador_atualizado
+                computador.save()
             return JsonResponse(status=200, safe=True, data={'data': 'data'})
         else:
             for valores in form.errors.values():

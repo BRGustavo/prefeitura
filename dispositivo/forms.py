@@ -168,13 +168,5 @@ class IpMacFormAtualizar(forms.Form):
     ip_address = forms.CharField(label='Endereço IP', required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Exemplo: 192.168.5.1'}))
     endereco_mac = MACAddressFormField(label='Endereço MAC', required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: AA-AA-AA-AA-AA-AA'}))
 
-    # def clean(self):
-    #     cleaned_data = self.cleaned_data
-    #     endereco_ip = cleaned_data.get('ip_address')
-    #     endereco_mac = self.cleaned_data.get('endereco_mac')
-    #     object_id = cleaned_data.get('object_id')
-    #     parent_object_id = self.cleaned_data.get('parent_object_id')
-        
 
-    #     return cleaned_data
         

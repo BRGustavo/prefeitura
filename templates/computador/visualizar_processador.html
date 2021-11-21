@@ -1,0 +1,153 @@
+{% extends 'computador/visualizar.html' %}
+{% load static %}
+
+{% block informacoes %}
+<div class="card bg-dark border-0">
+    <div class="card-content">
+        <div class="card-header bg-dark border-0 d-flex justify-content-between">
+            <h5 class='text-muted'>Informações Processador</h5>
+            <span>
+                <i data-bs-toggle='modal' data-bs-target='#modalAtualizarProcessador' class="fas fa-edit text-success me-2"></i>
+            </span>
+        </div>
+        <div class="card-body">
+            <div class="row ">
+                <div class="col-12 col-lg-6">
+                    <ul class="list-group">
+                        
+                        <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                            <b>Modelo Processador:</b>
+                            {% if computador.processador.modelo %}
+                            {{computador.processador.modelo}}
+                            {% else %}
+                            Indisponível
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                            <b>Fabricante:</b> 
+                            {% if computador.processador.marca %}
+                            {{computador.processador.marca}}
+                            {% else %}
+                            Indisponível
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                            <b>Frequência:</b>
+                            {% if computador.processador.frequencia %}
+                            {{computador.processador.frequencia}}
+                            {% else %}
+                            Indisponível
+                            {% endif %}
+                        </li>
+
+                        <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
+                            <b>Memória Cache:</b>
+                            {% if computador.processador.memoria_cache %}
+                            {{computador.processador.memoria_cache}}
+                            {% else %}
+                            Indisponível
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center">
+                    <ul class="list-group">
+                        {% if computador.processador %}
+                        <img class='rounded' src="{% get_static_prefix %}img/{{computador.processador.marca}}.jpg" alt="">
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock informacoes %}
+
+{% block impressora %}
+<div class="col-12 mt-1 mb-3">
+    <div class="card bg-dark border-0">
+        <div class="card-content">
+            <div class="card-header bg-dark d-flex justify-content-between">
+                
+            </div>
+            <div style='max-height:20vh; min-height: 14vh;' class="card-body text-light text-muted p-2 d-flex align-items-center d-flex justify-content-center">
+                <span class='me-3'><i class="fas fa-boxes fa-1x ms-3 me-2"></i>Acessar Inventário</span>
+                <span data-bs-toggle='modal' data-bs-target='#modalRemoverProcessador'><i class="fas fa-trash-alt ms-3 me-2"></i>Apagar Processador</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock impressora %}
+
+{% block modals %}
+<div class="modal fade" tabindex="-1" id='modalAtualizarProcessador'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">Alterar Processador</h5>
+                <span data-bs-dismiss="modal">
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form id='form-processador'>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <input type="hidden" id='id_id_computador' name='id_computador' value='{{computador.id}}'>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="">Modelo Prcessador</label>
+                                {{formProcessador.modelo}}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="">Fabricante</label>
+                                {{formProcessador.marca}}
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mt-2">
+                                <label for="">Frquência Processador</label>
+                                {{formProcessador.frequencia}}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="">Memória Cache</label>
+                                {{formProcessador.memoria_cache}}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("processador", forms_urls.atualizar_processador_ajax)' class="btn btn-primary">Atualizar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalRemoverProcessador'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div style='background-color:rgb(204, 84, 84);' class="modal-header d-flex justify-content-between">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-light'>Remover processador</h5>
+                <span data-bs-dismiss="modal">
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <div class="alert " style="font-family:'Times New Roman', Times, serif;">
+                    Você realmente deseja apagar o processador?<br>
+                    Essa ação é definitiva e excluirá o processador da base de dados permanentemente.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("processador", forms_urls.atualizar_processador_ajax)' class="btn" >Apagar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modals %}

@@ -25,7 +25,6 @@
         <thead>
             <th scope="col">ID</th>
             <th scope='col'>Nome</th>
-            <th scope='col'>Patrimônio</th>
             <th scope="col">Departamento</th>
             <th scope="col">Funcionario</th>
             <th scope="col">Processador</th>
@@ -39,7 +38,6 @@
             <tr>
                 <th scope="row">{{ computador.id }}</th>
                 <td>{{ computador.nome_rede }}</td>
-                <th>{{ computador.patrimonio }}</th>
                 <td>
                     {% if computador.departamento %}
                     <a href="{% url 'departamento_visualizar' computador.departamento.id %}">

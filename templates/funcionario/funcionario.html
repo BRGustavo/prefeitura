@@ -1,7 +1,6 @@
 {% extends 'departamento/departamento.html' %}
 
 {% block button_adicionar %}
-<!-- <a href='{% url "funcionario_add" %}' class="btn btn-outline-success">Adicionar</a> -->
 <a class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalFuncionario'>Adicionar</a>
 
 
@@ -83,12 +82,12 @@
 <div class="modal fade" tabindex="-1" id='modalFuncionario'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title text-light">
                     Adicionar Funcionário
                 </h5>
                 <span data-bs-dismiss='modal'>
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times text-light"></i>
                 </span>
             </div>
             <div class="modal-body">
