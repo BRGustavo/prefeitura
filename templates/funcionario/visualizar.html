@@ -164,8 +164,8 @@
                                         <div class="row">
                                             <div class="col-12 col-lg-6">
                                                 <p class='text-muted'><b>HD:</b>
-                                                    {% if computador.hd %}
-                                                    {{computador.hd.tamanho_gb}} GB
+                                                    {% if computador.hd and computador.hd.tamanho_gb > 0 %}
+                                                    {{computador.hd.tamanho}}
                                                     {% else %}
                                                     Indisponível
                                                     {% endif %}
@@ -190,7 +190,6 @@
                                                     </span>
                                                     {% endfor %}
                                                 </p>
-                                                
                                             </div>
                                         </div>
                                     </div>
@@ -220,12 +219,61 @@
                 <div class="modal-body">
                     <form method='POST' id='form-funcionario'>
                         {% csrf_token %}
-                        {{form.as_p}}
+                        <div class="row">
+                            <div class="col-12 col-lg-6 mt-2">
+                                <div class="form-group">
+                                    <label for="id_nome">Nome <span class='text-danger'>*</span></label>
+                                    {{form.nome}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-2">
+                                <div class="form-group">
+                                    <label for="id_nome">Sobrenome</label>
+                                    {{form.sobrenome}}
+                                </div>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Departamento <span class='text-danger'>*</span></label>
+                                    {{form.departamento}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Usuário PC</label>
+                                    {{form.usuario_pc}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Senha PC</label>
+                                    {{form.senha_pc}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Acesso Proxy</label>
+                                    {{form.controle_acesso}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Admin Rede</label>
+                                    {{form.admin_rede}}
+                                </div>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Descrição</label>
+                                    {{form.descricao}}
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
-                    <button class="btn btn-success" onclick='EditarItem("funcionario")'>Editar</button>
+                    <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                    <button style='font-family: Arial, Helvetica, sans-serif; background-color:rgb(184, 106, 106); color:white;' class="btn ps-3 pe-3" onclick='EditarItem("funcionario")'>Editar</button>
                 </div>
             </div>
         </div>

@@ -1,11 +1,13 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_ipv4_address
+from django.core.validators import ip_address_validator_map, validate_ipv4_address
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import *
 from dispositivo.models import *
-from .forms import ComputadorForm, ComputadorFormInfo
+from .forms import ComputadorForm, ComputadorFormInfo, IpMacFormAtualizar
+from netaddr import EUI
+
 
 @login_required
 @permission_required('dispositivo.add_computador', raise_exception=True)
@@ -85,8 +87,8 @@ def impressora_pesquisa_ajax(request):
             impressoras = Impressora.objects.exclude(computador=computador)
 
         for impressora in impressoras:
-
-            html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{impressora.departamento.predio}</td><td>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
+            predio = impressora.departamento.predio if impressora.departamento else 'Não selecionado'
+            html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{predio}</td><td>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
             """
             data.append({
                 'html_item': html_item,
@@ -123,15 +125,162 @@ def atualizar_computador_info_ajax(request):
         computador = get_object_or_404(Computador, pk=id)
         form = ComputadorFormInfo(request.POST, instance=computador)
         if form.is_valid():
+            # Validação Gabinete
+            gabinete = Gabinete.objects.filter(computador=computador).first()
+            if len(form.cleaned_data.get('gabinete')) >=1:
+                gabinete.patrimonio = form.cleaned_data.get('gabinete')
+                gabinete.save()
+            else:
+                Gabinete.objects.filter(computador=computador).update(patrimonio='')
+            
+            # validação HD
+            if len(form.cleaned_data.get('hd')) >= 1:
+                try: 
+                    hd = Hd.objects.filter(computador=computador)
+                    if hd.count() >= 1:
+                        hd = hd.first()
+                        hd.tamanho = form.cleaned_data.get('hd')
+                        hd.save()
+                    else:
+                        novo_hd = Hd(modelo='Normal', tamanho_gb=int(form.cleaned_data.get('hd')))
+                        novo_hd.tamanho = form.cleaned_data.get('hd')
+                        novo_hd.save()
+                        print(novo_hd)
+                        computador.hd = novo_hd
+                except ValueError:
+                    campo_erros.append('id_hd')
+                    mensagens.append('Tamanho do HD inválido, use um valor de 0 a 999')
+                    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+            
+            # validação Monitor
+            monitor1 = form.cleaned_data.get('monitor1')
+            monitor2 = form.cleaned_data.get('monitor2')
+            if len(monitor1) == 0 and len(monitor2) >=1:
+                monitor1 = monitor2
+                monitor2 = ''
+
+            elif len(monitor1) >=1 and len(monitor2) >= 1:
+                if monitor1 == monitor2:
+                    monitor2 = ''
+
+            if len(monitor1) >= 1:
+                monitor = Monitor.objects.filter(computador=computador)
+                if monitor.count() >= 1:
+                    monitor = monitor.first()
+                    monitor.patrimonio = monitor1
+                    monitor.save()
+                else:
+                    novo_monitor = Monitor(marca='Não especificado', hdmi='Não', tamanho='0x0', patrimonio=monitor1)
+                    novo_monitor.save()
+                    computador.monitor.add(novo_monitor)
+            else:
+                monitor = Monitor.objects.filter(computador=computador)
+                if monitor.count() >=1:
+                    monitor = monitor.first()
+                    if monitor.marca == 'Não especificado' and monitor.tamanho == '0x0':
+                        computador.monitor.remove(monitor)
+                        monitor.delete()
+                    else:
+                        computador.monitor.remove(monitor)
+
+            if len(monitor2) >= 1:
+                monitor = Monitor.objects.filter(computador=computador).exclude(patrimonio=monitor1)
+                if monitor.count() >= 1:
+                    monitor = monitor.first()
+                    monitor.patrimonio = monitor2
+                    monitor.save()
+                else:
+                    novo_monitor = Monitor(marca='Não especificado', hdmi='Não', tamanho='0x0', patrimonio=monitor2)
+                    novo_monitor.save()
+                    computador.monitor.add(novo_monitor)
+            else:
+                monitor = Monitor.objects.filter(computador=computador).exclude(patrimonio=monitor1)
+                if monitor.count() >=1:
+                    if monitor.first().marca == 'Não especificado' and monitor.first().tamanho == '0x0':
+                        monitor = monitor.first()
+                        computador.monitor.remove(monitor)
+                        monitor.delete()
+                    else:
+                        computador.monitor.remove(monitor.first())
+
             form.save()
             return JsonResponse(status=200, safe=True, data={'data': 'data'})
         else:
-            print('erro')
             for valores in form.errors.values():
                 mensagens.append(valores)
-                print(mensagens)
             for campo in form:
                 if campo.errors:
                     campo_erros.append(campo.id_for_label)
 
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+
+@login_required
+@permission_required('dispositivo.change_computador')
+def verificar_endereco_ip(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'POST':
+        form = IpMacFormAtualizar(request.POST)
+        if form.is_valid():
+            id_computador = form.cleaned_data.get('parent_object_id')
+            enderecoip = form.cleaned_data.get('ip_address')
+            enderecomac = form.cleaned_data.get('endereco_mac')
+            computador = get_object_or_404(Computador, pk=id_computador)
+            
+            if len(enderecoip) >=1:
+                try:
+                    if validate_ipv4_address(enderecoip) is None:
+                        if EnderecoIp.objects.filter(ip_address=enderecoip).count() >=1:
+                            endereco_bd = EnderecoIp.objects.filter(ip_address=enderecoip, computador=computador)
+                            if endereco_bd.count() <= 0:
+                                campo_erros.append('id_ip_address')
+                                mensagens.append('Esse endereço de ip já está em uso.')
+                                return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+                        else:
+                            endereco_bd = EnderecoIp.objects.filter(computador=computador)
+                            if endereco_bd.count() >=1:
+                                endereco_bd = endereco_bd.first()
+                                endereco_bd.ip_address = enderecoip
+                                endereco_bd.save()
+                            else:
+                                novo_ip = EnderecoIp(ip_address=enderecoip, content_type_id= ContentType.objects.filter(model='computador').first().id, parent_object_id=computador.id)
+                                novo_ip.save()
+                                computador.ip_computador.add(novo_ip)
+                except ValidationError:
+                    campo_erros.append('id_ip_address')
+                    mensagens.append('Isso não é um endereço ipv4')
+                    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+            else:
+                endereco_bd = EnderecoIp.objects.filter(computador=computador)
+                if endereco_bd.count() >=1:
+                    endereco_bd = endereco_bd.first()
+                    computador.ip_computador.remove(endereco_bd)
+                    endereco_bd.delete()        
+
+            consulta_computador_mac = EnderecoMac.objects.filter(computador=computador)
+
+            if isinstance(enderecomac, EUI):
+                # Consulta para ver se esse computador possui um mac já cadastrado.
+                if consulta_computador_mac.count() >=1:
+                    """Caso computador já possua um mac cadastrado."""
+                    mac_antigo = consulta_computador_mac.first()
+                    mac_antigo.mac_address = enderecomac
+                    mac_antigo.save()
+                else:
+                    mac_novo = EnderecoMac(mac_address=enderecomac, content_type_id= ContentType.objects.filter(model='computador').first().id, parent_object_id=computador.id)
+                    mac_novo.save()
+            else:
+                if consulta_computador_mac.count() >=1:
+                    consulta_computador_mac.delete()
+
+            return JsonResponse(status=200, safe=True, data={'data': 'data'})
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})

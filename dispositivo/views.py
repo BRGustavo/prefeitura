@@ -7,7 +7,7 @@ from django.forms import inlineformset_factory
 from departamento.forms import FuncionarioForm
 from departamento.models import Departamento, Funcionario
 from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
-from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, RoteadorForm, ImpressoraForm
+from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
 from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
@@ -193,10 +193,19 @@ def computador_visualizar(request, id, pagina='principal'):
     computador = get_object_or_404(Computador, pk=id)
     form = ComputadorForm(instance=computador)
     formInfo = ComputadorFormInfo(instance=computador)
+
+    formIpMac = IpMacFormAtualizar(initial={
+        'object_id': ContentType.objects.filter(model='computador').first().id,
+        'parent_object_id': computador.id,
+        'ip_address':computador.ip_computador.first().ip_address if computador.ip_computador.count() >=1 else '',
+        'endereco_mac':computador.mac_computador.first().mac_address if computador.mac_computador.count() >=1 else ''
+        })
+
     context = {
         'computador': computador,
         'formComputador': form,
         'formInfo': formInfo,
+        'formIpMac': formIpMac,
         
     }
     if request.method == 'POST':

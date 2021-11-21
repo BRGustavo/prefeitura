@@ -1,5 +1,8 @@
 from typing import Text
 from django import forms
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_ipv4_address
 from django.db.models.base import Model
 from django.db.models.fields import CharField, TextField
 from django.db.models.query import QuerySet
@@ -10,7 +13,7 @@ from django.forms.widgets import CheckboxSelectMultiple, Input, NumberInput, Sel
 from macaddress.fields import MACAddressFormField
 
 from inventario.models import Hd, Monitor, Mouse, PlacaMae, Processador, Teclado
-from .models import Computador, EnderecoIp, Gabinete, Impressora, MemoriaRam, Roteador, CHOICES_ROTEADORES, CHOICES_SISTEMS, TONER_CHOICES
+from .models import Computador, EnderecoIp, Gabinete, Impressora, MemoriaRam, Roteador, CHOICES_ROTEADORES, CHOICES_SISTEMS
 from departamento.models import Departamento, Funcionario
 from django.db.models import Q 
 
@@ -88,11 +91,10 @@ class RoteadorForm(forms.ModelForm):
 class ImpressoraForm(forms.ModelForm):
     class Meta:
         model = Impressora
-        fields = ('nome', 'modelo', 'tipo_toner', 'patrimonio', 'pertence_gestpar', 'gestpar_matricula', 'departamento', 'sala')
+        fields = ('nome', 'modelo', 'patrimonio', 'pertence_gestpar', 'gestpar_matricula', 'departamento', 'sala')
 
     nome = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Corredor Informática.'}))
     modelo = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Samsung'}))
-    tipo_toner = forms.ChoiceField(required=True, choices=TONER_CHOICES, widget=forms.Select(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Samsung'}))
     patrimonio = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Ex: 123456'}))
     pertence_gestpar = forms.BooleanField(required=False, widget=Select(attrs={'class':'form-control'}))
     gestpar_matricula = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: GEST-123'}))
@@ -128,7 +130,7 @@ class ComputadorFormDescricao(forms.ModelForm):
 class ComputadorFormInfo(forms.ModelForm):
     class Meta:
         model = Computador
-        fields = ('nome_rede', 'sistema_op', 'memoria_ram', 'hd', 'anydesk', 'processador', 'placa_mae')
+        fields = ('nome_rede', 'sistema_op', 'memoria_ram', 'anydesk', 'processador', 'placa_mae')
 
     def __init__(self, *args, **kwargs):
         super(ComputadorFormInfo, self).__init__(*args, **kwargs)
@@ -142,12 +144,37 @@ class ComputadorFormInfo(forms.ModelForm):
         self.fields['hd'].queryset = (
             Hd.objects.all().filter(computador__isnull=True) | (Hd.objects.filter(computador=self.instance))
         )
+        if Monitor.objects.filter(computador=self.instance).count() >=1:
+            self.fields['monitor1'].initial = Monitor.objects.filter(computador=self.instance).first().patrimonio
+
+        if Monitor.objects.filter(computador=self.instance).count() >=2:
+            self.fields['monitor2'].initial = Monitor.objects.filter(computador=self.instance)[1].patrimonio
 
     sistema_op = forms.ChoiceField(choices=CHOICES_SISTEMS, widget=Select(attrs={'class': 'form-control'}))
     nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: PRE-01'}))
     anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: 0000000'}))
     memoria_ram = forms.CharField(required=False, max_length=20, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 8 GB'}))
-    gabinete = forms.ModelChoiceField(queryset=Gabinete.objects.all(), widget=Select(attrs={'class': 'form-control'})) 
+    gabinete = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Patrimônio Gabinete'})) 
     placa_mae = forms.ModelChoiceField(required=False, queryset=PlacaMae.objects.all(), widget=Select(attrs={'class': 'form-control'}))      
     processador = forms.ModelChoiceField(required=False, queryset=Processador.objects.all(), widget=Select(attrs={'class': 'form-control'}))
-    hd = forms.ModelChoiceField(required=False, queryset=Hd.objects.all(), widget=Select(attrs={'class': 'form-control'}))
+    hd = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'false'}))
+
+    monitor1 = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'false', 'placeholder': 'Número Patrimônio'}))
+    monitor2 = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'false', 'placeholder': 'Número Patrimônio'}))
+
+class IpMacFormAtualizar(forms.Form):
+    object_id = forms.IntegerField(label='Modal ID Objeto', required=False, widget=TextInput(attrs={'class': 'form-control', '':''}))
+    parent_object_id = forms.IntegerField(label='Modal ID Objeto', required=False, widget=TextInput(attrs={'class': 'form-control', '':''}))
+    ip_address = forms.CharField(label='Endereço IP', required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Exemplo: 192.168.5.1'}))
+    endereco_mac = MACAddressFormField(label='Endereço MAC', required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: AA-AA-AA-AA-AA-AA'}))
+
+    # def clean(self):
+    #     cleaned_data = self.cleaned_data
+    #     endereco_ip = cleaned_data.get('ip_address')
+    #     endereco_mac = self.cleaned_data.get('endereco_mac')
+    #     object_id = cleaned_data.get('object_id')
+    #     parent_object_id = self.cleaned_data.get('parent_object_id')
+        
+
+    #     return cleaned_data
+        

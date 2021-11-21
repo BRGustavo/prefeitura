@@ -107,6 +107,25 @@ class Hd(models.Model):
 
     def __str__(self) -> str:
         return f'Modelo: {self.modelo} GB: {self.tamanho_gb} Modelo: {self.modelo}'
+    
+    @property
+    def tamanho(self):
+        if self.tamanho_gb >= 1000000:
+            return f'{int(self.tamanho_gb/1000000)} TB'
+        elif self.tamanho_gb >= 1000:
+            return f'{int(self.tamanho_gb/1000)} GB'
+    
+    @tamanho.setter
+    def tamanho(self, string):
+        valor = string.lower()
+        if 'tb' in valor:
+            valor = valor.replace('tb', '')
+            valor = valor.strip()
+            self.tamanho_gb = int(valor) * 1000000
+        else:
+            valor = valor.replace('gb', '')
+            valor = valor.strip()
+            self.tamanho_gb = int(valor) * 1000
 
 class Gabinete(models.Model):
 

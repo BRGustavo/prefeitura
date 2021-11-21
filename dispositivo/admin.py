@@ -72,7 +72,7 @@ class ImpressoraModel(admin.ModelAdmin):
     inlines = [EnderecoMacInline, EnderecoIpInline]
 
     fieldsets = (
-        ('INFORMAÇÕES IMPRESSORA', {'fields': ('nome', 'modelo', 'tipo_toner', 'usando_ip', 'patrimonio')}),
+        ('INFORMAÇÕES IMPRESSORA', {'fields': ('nome', 'modelo', 'usando_ip', 'patrimonio')}),
         ('GESTPAR INFORMAÇÕES', {'fields': ('pertence_gestpar', 'gestpar_matricula')}),
         ('LOCAL INFORMAÇÕES', {'fields': ('local', 'sala', 'descricao')})
     )
@@ -88,7 +88,7 @@ class ComputadorModel(admin.ModelAdmin):
     inlines = [MemoriaRamInline, EnderecoMacInline, EnderecoIpInline]
     list_display = ['funcionario', 'departamento', 'processador', 'sistema_op']
     fieldsets = (
-        ('DEPARTAMENTO E FUNCIONARIO', {'fields': ('nome_rede', 'patrimonio', 'funcionario', 'departamento', 'memoria_ram')}),
+        ('DEPARTAMENTO E FUNCIONARIO', {'fields': ('nome_rede', 'funcionario', 'departamento', 'memoria_ram')}),
         ('Acesso Remoto', {'fields': ('anydesk', )}),
         ('COMPONENTES COMPUTADOR', {'fields': ('sistema_op', 'monitor', 'teclado', 'mouse', 'gabinete', 'placa_mae', 'processador', 'hd')})
     )

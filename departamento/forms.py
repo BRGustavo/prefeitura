@@ -12,10 +12,10 @@ class DepartamentoForm(forms.ModelForm):
         model = Departamento
         fields = ['predio', 'departamento', 'singla_departamento', 'descricao']
 
-    predio = forms.ChoiceField(choices=CHOICES_PREDIOS, widget=Select(attrs={'class': 'form-control'}))
+    predio = forms.ChoiceField(label='Prédio', choices=CHOICES_PREDIOS, widget=Select(attrs={'class': 'form-control'}))
     departamento = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
-    singla_departamento = forms.CharField(max_length=5, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}), required=False)
-    descricao = forms.CharField(max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off'}), required=False)
+    singla_departamento = forms.CharField(label='Sigla Departamento', max_length=5, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}), required=False)
+    descricao = forms.CharField(label='Descrição', max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off'}), required=False)
 
 
 class FuncionarioForm(forms.ModelForm):
@@ -27,7 +27,7 @@ class FuncionarioForm(forms.ModelForm):
         ]
 
     nome = forms.CharField(label="Nome *" ,widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: Fulano'}))
-    sobrenome = forms.CharField(label='Sobrenome', max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: Silva'}))
+    sobrenome = forms.CharField(label='Sobrenome', required=False, max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: Silva'}))
     departamento = forms.ModelChoiceField(label='Departamento', queryset=(Departamento.objects.all()), widget=Select(attrs={'class': 'form-control'}))
     usuario_pc = forms.CharField(label='Usuário PC' ,widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: fulano.silva'}), required=False)
     senha_pc = forms.CharField(label='Senha PC', max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: Brasil2021'}), required=False)

@@ -21,30 +21,26 @@
 <main>
     <div class="container mb-5" id="primeiro">
         <div class="row">
-            <div style='border-radius: 10px;' class="card mt-5 mt-lg-3">
-                <div class="card-body">
-                    <form>
-                        <div class="input-group">
-                            <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
-                            aria-describedby="search-addon" autocomplete="off"/>
-                            {% block botao_pesquisa %}
-                            <button type="submit" class="btn btn-outline-primary">Procurar</button>
-                            {% endblock botao_pesquisa%}
-                          </div>
-                    </form>
-                </div>
-            </div>
+            
             <div class="card mt-2 bg-dark">
                 <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="text-muted">
-                        {% block titulo_lista %}
-                        Departamentos
-                        {% endblock titulo_lista%}
-                        </h5>
-                        {% block button_adicionar %}
-                        <a href='{{ BASE_DIR }}/departamento/departamento/add' class="btn btn-success">Adicionar</a>
-                        {% endblock button_adicionar %}
+                    <div class="d-flex justify-content-between p-3">
+                        <div class='col-lg'>
+                            <form>
+                                <div class="input-group">
+                                    <input type="search" name='query' class="form-control bg-dark text-light rounded border-secondary" placeholder="Pesquisar" aria-label="Search"
+                                    aria-describedby="search-addon" autocomplete="off"/>
+                                    {% block botao_pesquisa %}
+                                    <button type="submit" class="btn btn-outline-primary">Procurar</button>
+                                    {% endblock botao_pesquisa%}
+                                  </div>
+                            </form>
+                        </div>
+                        <div class='ms-3'>
+                            {% block button_adicionar %}
+                            <a href='{{ BASE_DIR }}/departamento/departamento/add' class="btn btn-success">Adicionar</a>
+                            {% endblock button_adicionar %}
+                        </div>
                     </div>
                 </div>
                 {% block tabela %}

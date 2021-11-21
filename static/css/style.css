@@ -78,6 +78,7 @@ p label {
 #modalAdicionarImpressora .fa-link:hover {
     color:green;
 }
+
 /* Responsive */
 @media (min-width: 1200px) {
     #primeiro {

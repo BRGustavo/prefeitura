@@ -253,13 +253,19 @@ function mandarconteudo(lowe, url=window.location){
             location.reload();
         },
         error: function (request, status, error) {
-            console.log(request.responseText)
+            $(`#form-${lowe} input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-${lowe} label`).each(function(index){
+                $(this).css('color', 'black');
+            });
             let info = $.parseJSON(request.responseText);
             
             if(info['status'] == 'false'){
-                alert("Verifique o formulário.");
+                alert(info['messagem']);
                 for(let erro_id in info['field_erros']){
                     $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
                 }
             }
         }

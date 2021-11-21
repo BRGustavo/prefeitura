@@ -34,11 +34,11 @@ CHOICES_SISTEMS = (
     ('WinServer', 'Windows Server')
 )
 
-TONER_CHOICES = [
-    ('Modelo 01', 'Modelo 01'),
-    ('Modelo 02', 'Modelo 02'),
-    ('Modelo 03', 'Modelo 03')
-]
+# TONER_CHOICES = [
+#     ('Modelo 01', 'Modelo 01'),
+#     ('Modelo 02', 'Modelo 02'),
+#     ('Modelo 03', 'Modelo 03')
+# ]
 
 
 class EnderecoMac(models.Model):
@@ -86,7 +86,6 @@ class Impressora(models.Model):
 
     nome = models.CharField(max_length=100, blank=True, null=True, verbose_name='Nome Impressora')
     modelo = models.CharField(max_length=100, null=False, blank=False, verbose_name='Modelo')
-    tipo_toner = models.CharField(max_length=100, default=TONER_CHOICES[0], null=False, choices=TONER_CHOICES, verbose_name='Toner')
     local = models.CharField(max_length=10, verbose_name='Local Impressora', default='Sala', choices=(
         ('Sala', 'Sala'),
         ('Corredor', 'Corredor')
@@ -146,15 +145,7 @@ class Computador(models.Model):
         return self.id
 
     def __str__(self) -> str:
-        modelo, funcionario, departamento = ' '*3
-        # try: modelo = f'{self.processador.modelo}'
-        # except AttributeError: modelo = ''
-        # try: funcionario = f'{self.funcionario.modelo}'
-        # except: AttributeError: funcionario = ''
-        # try: departamento = f'{self.departamento.departamento}'
-        # except AttributeError: departamento = ''
-
-        return f'{modelo} {funcionario} {departamento}'
+       return f"{self.nome_rede} "
 
 
 class MemoriaRam(models.Model):

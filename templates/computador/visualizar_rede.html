@@ -7,8 +7,7 @@
         <div class="card-header bg-dark border-0 d-flex justify-content-between">
             <h5 class='text-muted'>Informações Rede</h5>
             <span>
-                <i class="fas fa-edit text-success me-2"></i>
-                <i class="far fa-trash-alt text-danger"></i>
+                <i data-bs-toggle='modal' data-bs-target='#modalAtualizarIpMac' class="fas fa-edit text-success me-2"></i>
             </span>
         </div>
         <div class="card-body">
@@ -53,7 +52,6 @@
                 {% if computador.impressora.count %}
                 <table class="table table-sm table bg-dark text-light text-muted text-center">
                     <thead>
-                        <th scope="col">ID</th>
                         <th>Nome</th>
                         <th>Impressora</th>
                         <th>IP</th>
@@ -62,7 +60,6 @@
                     <tbody>
                         {% for impressora in computador.impressora.all %}
                         <tr>
-                            <th scope="row">{{ impressora.id }}</th>
                             <td>{{impressora.nome}}</td>
                             <td>{{impressora.modelo}}</td>
                             <td>
@@ -85,3 +82,68 @@
     </div>
 </div>
 {% endblock impressora %}
+
+{% block modals %}
+<div class="modal fade" tabindex="-1" id='modalAdicionarImpressora'>
+    <div class="modal-dialog modal-lg">
+        <div style='font-family: Arial, Helvetica, sans-serif;' class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adicionar Impressora</h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times"></i>
+                </span>
+            </div>
+            <div style='max-height:50vh;' class="modal-body overflow-auto">
+                <form id='pesquisa'>
+                    <div class="input-group">
+                        <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
+                        aria-describedby="search-addon" autocomplete="off"/>
+                        <button class="btn btn-outline-primary">Procurar</button>
+                      </div>
+                </form>
+                <div class="mt-4">
+                    <table class="table table-sm table">
+                        <tbody id='tabelaImpressora'>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id='modalAtualizarIpMac'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title">Alterar IP/MAC</h5>
+                <span data-bs-dismiss="modal">
+                    <i class="fas fa-plus text-success me-2"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form id='form-ipMac'>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_ip_address" class='mb-1'>Endereço IP</label>
+                        {{ formIpMac.ip_address }}
+                        <small hidden id='enderecoiphelp' style='font-family: Arial, Helvetica, sans-serif;' class='form-text text-danger'>** Digite um endereço IP válido!</small>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="id_endereco_mac" class='mb-1'>Endereço MAC</label>
+                        {{ formIpMac.endereco_mac }}
+                        <small hidden id='enderecomachelp' style='font-family: Arial, Helvetica, sans-serif;' class='form-text text-danger'>** Digite um endereço MAC válido!</small>
+                    </div>
+                    <div hidden>
+                        {{formIpMac.object_id}}
+                        {{formIpMac.parent_object_id}}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("ipMac", forms_urls.verificar_enderecoip_ajax)' class="btn btn-primary">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modals %}
