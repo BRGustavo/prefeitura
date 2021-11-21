@@ -4,6 +4,4 @@ departamento/migrations/
 dispositivo/migrations/
 inventario/migrations/
 
-departamento/__pycache__/
-dispositivo/__pycache__/
-inventario/__pycache__/
+
