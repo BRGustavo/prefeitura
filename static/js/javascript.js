@@ -1,10 +1,13 @@
 let timer = null;
+let atualizarAfterModal = false;
+
 $('#id_endereco_ip').keyup(function(){
     if(validador == true){
         clearTimeout(timer);
         timer = setTimeout(VerificarEnderecoIp, 1000);
     }
 });
+
 function VerificarEnderecoIp(){
     var ip_valor = window.document.querySelector('#id_endereco_ip').value;
     if(ip_valor.length >= 1){
@@ -169,6 +172,104 @@ function visualizarModalApagar(id){
         }
     });
     $('#modalDeletar').modal('show');
+}
+
+$('#modalAdicionarImpressora').on('show.bs.modal', function (e) {
+    PesquisarImpressoras('');    
+});
+$('#modalAdicionarImpressora').on('hidden.bs.modal', function(e){
+    if(atualizarAfterModal == true){
+        location.reload();
+    }
+});
+
+$('#pesquisa').submit(function(e){
+    let conteudo = $('input[name="query"]').val();
+    PesquisarImpressoras(conteudo);
+    return false;
+})
+
+function PesquisarImpressoras(query){
+    let pesquisa = query;
+    $.ajax({
+        type: 'GET',
+        url: forms_urls['pesquisarImpressora'],
+        data: {
+            'query': pesquisa,
+            'id_computador': forms_urls['id_computador']
+        },
+        success: function(data){
+            $('#tabelaImpressora').html('');
+            if(data['impressoras'].length <= 0){
+                $('#tabelaImpressora').append('<tr><td class="text-center">Nada encontrado.</td></tr>');
+            }
+            for(let item in data['impressoras']){
+                let html_item = data['impressoras'][item].html_item;
+                let nome = data['impressoras'][item].nome;
+                let marca = data['impressoras'][item].marca;
+                let ip = data['impressoras'][item].ip;
+
+                $('#tabelaImpressora').append(
+                    $(`${html_item}`)
+                )
+                $('#tabelaImpressora img').attr('src', `${forms_urls['m4070Img']}`);
+            }
+        }
+    });
+}
+function VincularNovaImpressora(id_impressora, desvincular=false){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls['vincularNovaImpressora'],
+        data: {
+            'id_impressora': id_impressora,
+            'id_computador': forms_urls['id_computador'],
+        },
+        success: function(e){
+            atualizarAfterModal = true;
+            if(desvincular){
+                atualizarAfterModal = false;
+                location.reload()
+            }else{
+                $(`#impressoraId${id_impressora}`).toggleClass('alert alert-success');
+            }
+        }
+    });
+}
+
+
+function mandarconteudo(lowe, url=window.location){
+    let capitalize  = lowe.charAt(0).toUpperCase() + lowe.slice(1);
+    const csrftoken = document.querySelector(`#form-${lowe} [name=csrfmiddlewaretoken]`).value;
+    var serialize = $(`#form-${lowe}`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: url,
+        data: serialize,
+        success: function(data){
+            $(`#modalAtualizar${capitalize}`).modal('hide');
+            $(`#form-${lowe}`).trigger('reset');
+            location.reload();
+        },
+        error: function (request, status, error) {
+            $(`#form-${lowe} input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-${lowe} label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
 }
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});

@@ -57,21 +57,26 @@ p label {
     color:black;
     font-family: 'Times New Roman', Times, serif
 }
-.modal .modal-title {
+.modal .modal-title, .modal .modal-body form label {
     color:black;
     font-family: Arial, Helvetica, sans-serif;
 }
-.modal .modal-body p input {
+
+.modal .modal-body p input, .modal-body form input {
     color:rgb(41, 38, 38);
     font-family: 'Times New Roman', Times, serif;
 }
-.modal .modal-body p select {
+.modal .modal-body p select, .modal-body form select {
     color:rgb(41, 38, 38);
     font-family: 'Times New Roman', Times, serif;
 }
-.modal .modal-body p textarea {
+.modal .modal-body p textarea, .modal-body form textarea {
     color:rgb(41, 38, 38);
     font-family: 'Times New Roman', Times, serif;
+}
+
+#modalAdicionarImpressora .fa-link:hover {
+    color:green;
 }
 
 /* Responsive */

@@ -95,13 +95,62 @@
                 <div class="container-fluid">
                     <form id='form-funcionario' method="POST">
                         {% csrf_token %}
-                        {{formFuncionario.as_p}}
+                        <div class="row">
+                            <div class="col-12 col-lg-6 mt-2">
+                                <div class="form-group">
+                                    <label for="id_nome">Nome <span class='text-danger'>*</span></label>
+                                    {{formFuncionario.nome}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-2">
+                                <div class="form-group">
+                                    <label for="id_nome">Sobrenome</label>
+                                    {{formFuncionario.sobrenome}}
+                                </div>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Departamento <span class='text-danger'>*</span></label>
+                                    {{formFuncionario.departamento}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Usuário PC</label>
+                                    {{formFuncionario.usuario_pc}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Senha PC</label>
+                                    {{formFuncionario.senha_pc}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Acesso Proxy</label>
+                                    {{formFuncionario.controle_acesso}}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Admin Rede</label>
+                                    {{formFuncionario.admin_rede}}
+                                </div>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="form-group">
+                                    <label for="id_nome">Descrição</label>
+                                    {{formFuncionario.descricao}}
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" data-bs-dismiss='modal'>Cancelar</button>
-                <button onclick='AdicionarNovoItem("funcionario", false)' class="btn btn-success">Salvar</button>
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' class="btn btn-success" onclick='AdicionarNovoItem("funcionario", false)'>Adicionar</button>
             </div>
         </div>
     </div>

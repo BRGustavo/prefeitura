@@ -44,7 +44,7 @@ class Departamento(models.Model):
 
 class Funcionario(models.Model):
     nome = models.CharField(max_length=255, null=False)
-    sobrenome = models.CharField(max_length=255, null=False)
+    sobrenome = models.CharField(max_length=255, blank=True, null=True)
     departamento = models.ForeignKey('Departamento', default='Prefeitura Municipal De Arapoti', null=False, on_delete=CASCADE)
     admin_rede = models.CharField(verbose_name='Administrador Rede', max_length=10, default="Não", null=False, choices=(
         ("Sim", 'Sim'),

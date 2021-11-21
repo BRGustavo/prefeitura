@@ -7,7 +7,7 @@ from django.forms import inlineformset_factory
 from departamento.forms import FuncionarioForm
 from departamento.models import Departamento, Funcionario
 from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
-from .forms import ComputadorForm, RoteadorForm, ImpressoraForm
+from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
 from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
@@ -23,7 +23,7 @@ def computador_view(request, pagina):
     computadores = Computador.objects.all()
     if pesquisa != '' and pesquisa is not None:
         computadores = computadores.filter(
-            Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(id__iexact=pesquisa)
+            Q(nome_rede__icontains=pesquisa) | Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
     computadores = Paginator(computadores.order_by('id'), 10).get_page(pagina)
     content = {
@@ -179,7 +179,7 @@ def computador_edit(request, id):
                     consulta_computador_mac.delete()
 
             form.save()
-            return redirect(computador_visualizar, computador_db.id)
+            return redirect(computador_visualizar, computador_db.id, 'principal')
         else:
                 for valores in form.errors.values():
                     context['mensagens'].append(valores)
@@ -189,12 +189,37 @@ def computador_edit(request, id):
 
 @login_required
 @permission_required('dispositivo.view_computador', raise_exception=True)
-def computador_visualizar(request, id):
+def computador_visualizar(request, id, pagina='principal'):
     computador = get_object_or_404(Computador, pk=id)
+    form = ComputadorForm(instance=computador)
+    formInfo = ComputadorFormInfo(instance=computador)
+
+    formIpMac = IpMacFormAtualizar(initial={
+        'object_id': ContentType.objects.filter(model='computador').first().id,
+        'parent_object_id': computador.id,
+        'ip_address':computador.ip_computador.first().ip_address if computador.ip_computador.count() >=1 else '',
+        'endereco_mac':computador.mac_computador.first().mac_address if computador.mac_computador.count() >=1 else ''
+        })
+
     context = {
         'computador': computador,
+        'formComputador': form,
+        'formInfo': formInfo,
+        'formIpMac': formIpMac,
+        
     }
-    return render(request, template_name='computador/visualizar.html', context=context)
+    if request.method == 'POST':
+        form = ComputadorFormDescricao(request.POST, instance=computador)
+        if form.is_valid():
+            dados = form.save()
+            return JsonResponse(status=200, data={'data':'data'}, safe=True)
+        else:
+            return JsonResponse(status=404, safe=True, data={'erro': 'erro'})
+    if pagina == 'principal':
+        return render(request, template_name='computador/visualizar.html', context=context)
+    elif pagina == 'rede':
+        return render(request, template_name='computador/visualizar_rede.html', context=context)
+
 
 @login_required
 @permission_required('dispositivo.view_roteador', raise_exception=True)
@@ -521,6 +546,23 @@ def impressora_edit(request, id):
 
 
 def teste_view(request):
-    departamento_list = Departamento.objects.all()
-    departamentos = Paginator(departamento_list.order_by('id'), 20).get_page(1)
-    return render(request, template_name='teste.html', context={'departamentos': departamentos})
+    pagina = 1
+    """Função responsável pelo template de listar os usuários """
+    pesquisa = request.GET.get('query')
+    formFuncionario = FuncionarioForm()
+    funcionarios_lista = Funcionario.objects.all()
+    if pesquisa != '' and pesquisa is not None:
+
+        funcionarios_lista = funcionarios_lista.filter(
+            Q(nome__icontains=pesquisa) | Q(sobrenome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(controle_acesso__icontains=pesquisa) | Q(id__iexact=pesquisa) | Q(usuario_pc__icontains=pesquisa)
+        )
+
+    funcionarios = Paginator(funcionarios_lista.order_by('id'), 10).get_page(pagina)
+
+    content = {
+        'funcionarios': funcionarios,
+        'pesquisa':pesquisa,
+        'formFuncionario': formFuncionario,
+
+    }
+    return render(request, template_name='teste.html', context=content)

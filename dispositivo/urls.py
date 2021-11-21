@@ -11,7 +11,7 @@ urlpatterns = [
     path('computador/<int:pagina>/', views.computador_view, name='computador'),
     path('computador/add/', views.computador_create, name='computador_add'),
     path('computador/edit/<int:id>/', views.computador_edit, name='computador_edit'),
-    path('computador/visualizar/<int:id>/', views.computador_visualizar, name='computador_visualizar'),
+    path('computador/visualizar/<int:id>/<str:pagina>/', views.computador_visualizar, name='computador_visualizar'),
 
     # URLs Model Roteador
     path('roteador/<int:pagina>/', views.roteador_view, name='roteador_view'),
@@ -26,7 +26,10 @@ urlpatterns = [
     # Ajax
     path('computador/add/ajax', ajax.computador_create_ajax, name='computador_add_ajax'),
     path('ip/verificador/ajax/', ajax.verificar_ip_ajax, name='verificar_ip_ajax'),
-
+    path('ip/verificardorip/ajax', ajax.verificar_endereco_ip,name='verificar_enderecoip_ajax'),
+    path('impressora/pesquisar/ajax/', ajax.impressora_pesquisa_ajax, name='impressora_pesquisa_ajax'),
+    path('impressora/vincular/ajax/', ajax.vincular_impressora_ajax, name='vincular_impressora_ajax'),
+    path('computador/atualizarinfo/ajax', ajax.atualizar_computador_info_ajax, name='atualizar_computador_info_ajax'),
     path('',views.teste_view, name='teste')
 
 ]
