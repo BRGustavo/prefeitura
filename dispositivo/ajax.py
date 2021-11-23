@@ -307,8 +307,8 @@ def atualizar_processador_ajax(request):
             if computador.processador:
                 pass
             else:
-                computador.processador = processador_atualizado
-                computador.save()
+                Computador.objects.filter(id=computador.id).update(processador=processador_atualizado)
+                
             return JsonResponse(status=200, safe=True, data={'data': 'data'})
         else:
             for valores in form.errors.values():

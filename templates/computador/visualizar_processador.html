@@ -34,7 +34,7 @@
                         <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
                             <b>Frequência:</b>
                             {% if computador.processador.frequencia %}
-                            {{computador.processador.frequencia}}
+                            {{computador.processador.frequencia}} Ghz
                             {% else %}
                             Indisponível
                             {% endif %}
@@ -145,7 +145,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                <button style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("processador", forms_urls.atualizar_processador_ajax)' class="btn" >Apagar</button>
+                <button style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("as", forms_urls.atualizar_processador_ajax)' class="btn" >Apagar</button>
             </div>
         </div>
     </div>

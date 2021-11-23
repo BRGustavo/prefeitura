@@ -1,4 +1,5 @@
 {% extends 'base_listagem.html' %}
+{% load static %}
 
 <!-- Titulo Página -->
 {% block title %}
@@ -15,9 +16,20 @@
 {% endblock botao_pesquisa %}
 
 {% block button_adicionar %}
-<a href='{% url "computador_add" %}' class="btn btn-outline-success">Adicionar</a>
+<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalAdicionarComputador'>Adicionar</button>
 {% endblock %}
 
+{% block style %}
+.card img {
+    width: 5vw;
+}
+.inputplaceholder::placeholder { 
+    color: black;
+    opacity: 0.5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+{% endblock style %}
 {% block tabela %}
 <div class="card-body table-responsive bg-dark">
     {% if computadores %}
@@ -79,6 +91,114 @@
     {% endif %}
 </div>
 {% endblock tabela %}
+
+
+{% block modals %}
+
+<div class="modal fade" tabindex="-1" id='modalAdicionarComputador'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="container d-flex p-0 justify-content-center rounded">
+                    <div class="col">
+                        <div class="row">
+                            <div class="card p-0 col-12 col-md-4 col-lg-4 bg-success">
+                                <div class="card-content">
+                                    <div class="col d-flex justify-content-center d-flex align-items-center pt-4 pb-3">
+                                        <img class='rounded-circle' src="{% static 'img/patrimonio.png' %}" alt="">
+                                    </div>
+                                    <div class="col p-5 pt-2">
+                                        <h5 class='text-light text-center'>Informações Usuario & Departamento</h5>
+                                        <div class="form-group mt-4">
+                                            <div class="input-group border">
+                                               
+                                                <span class="input-group-text bg-success border-0">
+                                                    <i class="fas fa-user"></i>
+                                                </span>
+                                                <input type="text" class="form-control bg-success border-0 inputplaceholder" placeholder='Exemplo: gustavo.silva'>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <div class="input-group border">
+                                                <span class="input-group-text bg-success border-0">
+                                                    <i class="fas fa-key"></i>
+                                                </span>
+                                                <input type="password" class="form-control bg-success border-0 inputplaceholder" placeholder='Senha Acesso'>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <select name="" id="" class="form-control inputplaceholder bg-success ">
+                                                <option value="Oi"> Departamento</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-8 col-lg-8 bg-light pb-4">
+                                <div class="col p-3 pb-1 pt-4 d-flex justify-content-between">
+                                    <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-center'>Novo Computador</h5>
+                                    <span data-bs-dismiss='modal'>
+                                        <i class="fas fa-times text-dark"></i>
+                                    </span>
+                                </div>
+                                <div class="col mt-3">
+                                    <form >
+                                        <div class="row">
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">Nome Rede</label>
+                                                <input type="text" class='form-control' placeholder='Exemplo: PRE-10'>
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">Sistema Operacional</label>
+                                                <input type="text" class='form-control' placeholder='Ex: Windows 10'>
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">AnyDesk</label>
+                                                <input type="text" class='form-control' placeholder="Ex: 153 154 211">
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">Processador</label>
+                                                <input type="text" class='form-control' placeholder="Ex: Core i9 10ª">
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">Memória RAM</label>
+                                                <input type="text" class='form-control' placeholder="Ex: 8 GB">
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">HD</label>
+                                                <input type="text" class='form-control' placeholder="500 GB">
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">Endereço IP</label>
+                                                <input type="text" class='form-control' placeholder="Ex: 192.168.0.10"> 
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">Endereço MAC</label>
+                                                <input type="text" class='form-control' placeholder='Ex: AA-BB-CC-DD-EE-FF'>
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">Patrimônio Gabinete</label>
+                                                <input type="text" class='form-control' placeholder='Ex: 002343'>
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="">Patrimônio Monitor</label>
+                                                <input type="text" class='form-control' placeholder='Ex: 002343'>
+                                            </div>
+                                            <div class="col-12 mt-3 d-flex justify-content-end">
+                                                <button class="btn btn-success">Adicionar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modals %}
 
 {% block nav_paginacao %}
     {% if computadores.has_previous %}

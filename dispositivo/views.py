@@ -202,7 +202,7 @@ def computador_visualizar(request, id, pagina='principal'):
         })
 
     formProcessador = ProcessadorForm()
-    processador_pc = Processador.objects.filter(computador=computador)
+    processador_pc = Processador.objects.all().filter(computador=computador)
     if processador_pc.count() >=1:
         processador_id = get_object_or_404(Processador, pk=processador_pc.first().id) 
         formProcessador = ProcessadorForm(instance=processador_id)

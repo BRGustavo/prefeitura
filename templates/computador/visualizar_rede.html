@@ -50,13 +50,13 @@
             </div>
             <div style='max-height:20vh; min-height: 20vh;' class="card-body text-light text-center text-muted overflow-auto">
                 {% if computador.impressora.count %}
-                <table class="table table-sm table bg-dark text-light text-muted text-center">
-                    <thead>
+                <table class="table table-sm table bg-dark text-light text-muted text-center table-borderless">
+                    <!-- <thead>
                         <th>Nome</th>
                         <th>Impressora</th>
                         <th>IP</th>
                         <th>Remover</th>
-                    </thead>
+                    </thead> -->
                     <tbody>
                         {% for impressora in computador.impressora.all %}
                         <tr>
@@ -102,7 +102,7 @@
                         <button class="btn btn-outline-primary">Procurar</button>
                       </div>
                 </form>
-                <div class="mt-4">
+                <div class="mt-4 p-2">
                     <table class="table table-sm table">
                         <tbody id='tabelaImpressora'>
                         </tbody>
