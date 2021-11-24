@@ -48,7 +48,10 @@
                             <div class="col-12 mt-2">
                                 <ul class="list-group">
                                     <li class="list-group-item text-center bg-dark text-muted">
-                                        <b>Nome: </b> {{funcionario.nome}} {{funcionario.sobrenome}}
+                                        <b>Nome: </b> {{funcionario.nome}} 
+                                        {% if funcionario.sobrenome %}
+                                        {{funcionario.sobrenome}}
+                                        {% endif %}
                                     </li>
                                     <li class="list-group-item text-center bg-dark text-muted">
                                         <b>Departamento: </b> <a href="{% url 'departamento_visualizar' funcionario.departamento.id %}">{{funcionario.departamento}}</a> 

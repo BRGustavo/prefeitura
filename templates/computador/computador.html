@@ -28,6 +28,13 @@
     opacity: 0.5;
     font-family: Arial, Helvetica, sans-serif;
 }
+{% block scripts %}
+    <script>
+        const forms_urls = {
+            'computador_novo_ajax': '{% url "computador_novo_ajax" %}',
+        }
+    </script>
+{% endblock scripts %}
 
 {% endblock style %}
 {% block tabela %}
@@ -115,7 +122,7 @@
                                                 <span class="input-group-text bg-success border-0">
                                                     <i class="fas fa-user"></i>
                                                 </span>
-                                                <input type="text" class="form-control bg-success border-0 inputplaceholder" placeholder='Exemplo: gustavo.silva'>
+                                                <input type="text" id='usuario-usuario' class="form-control bg-success border-0 inputplaceholder" placeholder='Exemplo: gustavo.silva'>
                                             </div>
                                         </div>
                                         <div class="form-group mt-3">
@@ -123,12 +130,12 @@
                                                 <span class="input-group-text bg-success border-0">
                                                     <i class="fas fa-key"></i>
                                                 </span>
-                                                <input type="password" class="form-control bg-success border-0 inputplaceholder" placeholder='Senha Acesso'>
+                                                <input type="password" id='senha-senha' class="form-control bg-success border-0 inputplaceholder" placeholder='Senha Acesso'>
                                             </div>
                                         </div>
                                         <div class="form-group mt-3">
-                                            <select name="" id="" class="form-control inputplaceholder bg-success ">
-                                                <option value="Oi"> Departamento</option>
+                                            <select name="departamento" id="departamento-departamento" class="form-control inputplaceholder bg-success" style='font-family: Arial, Helvetica, sans-serif;'>
+                                                <option value="">--------------</option>
                                             </select>
                                         </div>
                                     </div>
@@ -142,50 +149,54 @@
                                     </span>
                                 </div>
                                 <div class="col mt-3">
-                                    <form >
+                                    <form id='form-computadornovo'>
+                                        {% csrf_token %}
                                         <div class="row">
+                                            {{formComputador.usuario}}
+                                            {{formComputador.senha}}
+                                            <div class="col" hidden>{{formComputador.departamento}}</div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">Nome Rede</label>
-                                                <input type="text" class='form-control' placeholder='Exemplo: PRE-10'>
+                                                {{ formComputador.nome_rede}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">Sistema Operacional</label>
-                                                <input type="text" class='form-control' placeholder='Ex: Windows 10'>
+                                                {{ formComputador.sistema_op}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">AnyDesk</label>
-                                                <input type="text" class='form-control' placeholder="Ex: 153 154 211">
+                                                {{ formComputador.anydesk}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">Processador</label>
-                                                <input type="text" class='form-control' placeholder="Ex: Core i9 10ª">
+                                                {{ formComputador.processador}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">Memória RAM</label>
-                                                <input type="text" class='form-control' placeholder="Ex: 8 GB">
+                                                {{ formComputador.memoria_ram}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">HD</label>
-                                                <input type="text" class='form-control' placeholder="500 GB">
+                                                {{formComputador.hd}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">Endereço IP</label>
-                                                <input type="text" class='form-control' placeholder="Ex: 192.168.0.10"> 
+                                                {{formComputador.ip_endereco}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">Endereço MAC</label>
-                                                <input type="text" class='form-control' placeholder='Ex: AA-BB-CC-DD-EE-FF'>
+                                                {{ formComputador.endereco_mac}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">Patrimônio Gabinete</label>
-                                                <input type="text" class='form-control' placeholder='Ex: 002343'>
+                                                {{ formComputador.gabinete_patrimonio}}
                                             </div>
                                             <div class="form-group col-12 col-lg-6 mt-2">
                                                 <label for="">Patrimônio Monitor</label>
-                                                <input type="text" class='form-control' placeholder='Ex: 002343'>
+                                                {{formComputador.monitor_patrimonio}}
                                             </div>
                                             <div class="col-12 mt-3 d-flex justify-content-end">
-                                                <button class="btn btn-success">Adicionar</button>
+                                                <button id='novoComputadorButton' class="btn btn-success">Adicionar</button>
                                             </div>
                                         </div>
                                     </form>

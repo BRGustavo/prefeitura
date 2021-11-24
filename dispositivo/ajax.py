@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from inventario.forms import ProcessadorForm
 from .models import *
 from dispositivo.models import *
-from .forms import ComputadorForm, ComputadorFormInfo, IpMacFormAtualizar
+from .forms import ComputadorForm, ComputadorFormInfo, ComputadorFormNovo, IpMacFormAtualizar
 from netaddr import EUI
 
 
@@ -75,7 +75,7 @@ def verificar_ip_ajax(request):
     return render(request, 'base.html')
 
 @login_required
-@permission_required('dispositivo.view_impressora')
+@permission_required('dispositivo.view_impressora', raise_exception=True)
 def impressora_pesquisa_ajax(request):
     if request.method == 'GET':
         impressoras = []
@@ -102,7 +102,7 @@ def impressora_pesquisa_ajax(request):
 
 
 @login_required
-@permission_required('dispositivo.view_impressora')
+@permission_required('dispositivo.view_impressora', raise_exception=True)
 def vincular_impressora_ajax(request):
     if request.method == 'GET':
         id_impressora = request.GET.get('id_impressora')
@@ -118,7 +118,7 @@ def vincular_impressora_ajax(request):
 
 
 @login_required
-@permission_required('dispositivo.change_computador')
+@permission_required('dispositivo.change_computador', raise_exception=True)
 def atualizar_computador_info_ajax(request):
     mensagens = []
     campo_erros = []
@@ -219,8 +219,8 @@ def atualizar_computador_info_ajax(request):
 
 
 @login_required
-@permission_required('dispositivo.change_computador')
-@permission_required('dispositivo.change_enderecoip')
+@permission_required('dispositivo.change_computador', raise_exception=True)
+@permission_required('dispositivo.change_enderecoip', raise_exception=True)
 def verificar_endereco_ip(request):
     mensagens = []
     campo_erros = []
@@ -317,4 +317,45 @@ def atualizar_processador_ajax(request):
                 if campo.errors:
                     campo_erros.append(campo.id_for_label)
     
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+@login_required
+@permission_required('dispositivo.add_computador', raise_exception=True)
+def computador_novo_ajax(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'POST':
+        usuario = request.POST.get('usuario')
+        senha = request.POST.get('senha')
+        valores = [request.POST]
+        form = ComputadorFormNovo(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                return JsonResponse(data={'data': 'data'}, safe=True)
+            except ValueError as e:
+                print(e)
+                mensagens.append('Ocorreu um erro ao tentar salvar o computador. Tente Novamente.')
+                for campo in form:
+                    campo_erros.append(campo.id_for_label)
+
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
+    if request.method == 'GET':
+        departamentos = []
+        for item in Departamento.objects.all():
+            departamentos.append({
+                'id': item.id,
+                'nome': item.departamento,
+            })
+        data = {
+            'departamentos': departamentos
+        }
+        return JsonResponse(status=200, data=data, safe=True)
+
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})

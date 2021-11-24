@@ -7,7 +7,7 @@ from django.forms import inlineformset_factory
 from departamento.forms import FuncionarioForm
 from departamento.models import Departamento, Funcionario
 from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
-from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
+from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, ComputadorFormNovo, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
 from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
@@ -27,7 +27,8 @@ def computador_view(request, pagina):
         )
     computadores = Paginator(computadores.order_by('id'), 10).get_page(pagina)
     content = {
-        'computadores': computadores
+        'computadores': computadores,
+        'formComputador': ComputadorFormNovo()
     }
     return render(request, template_name='computador/computador.html', context=content)
 

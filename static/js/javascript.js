@@ -274,6 +274,77 @@ function mandarconteudo(lowe, url=window.location){
         }
     })
 }
+$('#modalAdicionarComputador').on('show.bs.modal', function (e) {
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.computador_novo_ajax,
+        data: {
+            'tipo': 'departamento'
+        },
+        success: function(data){
+            let select = $('#departamento-departamento')
+            select.html("")
+            select.append($(`<option value selected'>---------</option>`))
+            data['departamentos'].forEach(function(item){
+                var elemento = $(`<option value='${item.id}'>${item.nome}</option>`)
+                select.append(elemento);
+            })
+        }
+    });
+});
+
+$('#form-computadornovo').submit(function(e){
+    e.preventDefault()
+    const csrftoken = document.querySelector(`#form-computadornovo [name=csrfmiddlewaretoken]`).value;
+    let usuario = window.document.querySelector("#usuario-usuario").value
+    let senha = window.document.querySelector("#senha-senha").value
+    let departamento = window.document.querySelector("#departamento-departamento").value
+    if(usuario !== null){
+        window.document.querySelector("#id_usuario").value = usuario
+        window.document.querySelector("#id_senha").value = senha
+        
+    }
+    if(departamento !== null){
+        window.document.querySelector('#id_departamento').value = departamento
+    }
+    var serialize = $(`#form-computadornovo`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.computador_novo_ajax,
+        data: serialize,
+        beforeSend: function(e){
+
+            $("#novoComputadorButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalAdicionarComputador').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novoComputadorButton").html("Adicionar")
+
+            $(`#form-computadornovo input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-computadornovo label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+
+    var serialize = $(`#form-computadornovo`).serialize();
+    console.log(serialize)
+})
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});

@@ -6,14 +6,17 @@ from django.core.validators import validate_ipv4_address
 from django.db.models.base import Model
 from django.db.models.fields import CharField, TextField
 from django.db.models.query import QuerySet
+from django.db.utils import IntegrityError
 from django.forms import widgets
 from django.forms.fields import IntegerField
 from django.forms.models import ModelForm 
-from django.forms.widgets import CheckboxSelectMultiple, Input, NumberInput, Select, SelectMultiple, TextInput, Textarea
+from django.forms.widgets import CheckboxSelectMultiple, Input, NumberInput, PasswordInput, Select, SelectMultiple, TextInput, Textarea
+from django.shortcuts import get_object_or_404
 from macaddress.fields import MACAddressFormField
+from netaddr.eui import EUI
 
 from inventario.models import Hd, Monitor, Mouse, PlacaMae, Processador, Teclado
-from .models import Computador, EnderecoIp, Gabinete, Impressora, MemoriaRam, Roteador, CHOICES_ROTEADORES, CHOICES_SISTEMS
+from .models import Computador, EnderecoIp, EnderecoMac, Gabinete, Impressora, MemoriaRam, Roteador, CHOICES_ROTEADORES, CHOICES_SISTEMS
 from departamento.models import Departamento, Funcionario
 from django.db.models import Q 
 
@@ -165,4 +168,185 @@ class IpMacFormAtualizar(forms.Form):
     endereco_mac = MACAddressFormField(label='Endereço MAC', required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: AA-AA-AA-AA-AA-AA'}))
 
 
+class ComputadorFormNovo(forms.Form):
+    usuario = forms.CharField(label='Usuário', required=False, max_length=30, widget=TextInput(attrs={
+        'placeholder': 'Exemplo: gustavo.silva',
+        'class': 'form-control bg-success border-0 inputplaceholder',
+        'type': 'hidden',
+        'autocomplete': 'off',
+    }))
+    senha = forms.CharField(label='Senha', required=False, max_length=50, widget=PasswordInput(attrs={
+        'placeholder': 'Senha Acesso',
+        'class': 'form-control bg-success border-0 inputplaceholder',
+        'type': 'hidden',
+        'autocomplete': 'off',
+    }))
+    departamento = forms.ModelChoiceField(queryset=Departamento.objects.all(), required=False, widget=Select(attrs={
+        'class': 'form-control inputplaceholder bg-success',
+        'style': 'font-family: "Arial, Helvetica, sans-serif";',
+        'type': 'hidden'
+    }))
+    nome_rede = forms.CharField(max_length=20, widget=TextInput(attrs={
+        'placeholder': 'Exemplo: PRE-10',
+        'class': 'form-control',
+        'autocomplete': 'off',
+    }))
+    sistema_op = forms.ChoiceField(label='Sistema Operacional', choices=CHOICES_SISTEMS, widget=forms.Select(attrs={
+        'class': 'form-control'
+    }))
+    anydesk = forms.CharField(max_length=15,required=False, widget=TextInput(attrs={
+        'placeholder': 'Exemplo: 153 154 211',
+        'class': 'form-control',
+        'autocomplete': 'off',
+    }))
+    processador = forms.CharField(label='Processador', required=False, max_length=15, widget=TextInput(attrs={
+        'placeholder': 'Exemplo: Core i9 10ª',
+        'class': 'form-control',
+        'autocomplete': 'off',
+    }))
+    memoria_ram = forms.CharField(label='Memória RAM', required=False, max_length=10, widget=TextInput(attrs={
+        'placeholder': 'Ex: 8 GB',
+        'class': 'form-control',
+        'autocomplete': 'off',
+    }))
+    hd = forms.CharField(label='HD', max_length=10, required=False, widget=TextInput(attrs={
+        'placeholder': 'Ex: 500 GB',
+        'class': 'form-control',
+        'autocomplete': 'off',
+    }))
+    ip_endereco = forms.GenericIPAddressField(label="Endereço IP", required=False, widget=TextInput(attrs={
+        'placeholder': 'Ex: 192.168.0.10',
+        'class': 'form-control',
+        'autocomplete': 'off',
+    }))
+    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={
+        'class': 'form-control', 
+        'autocomplete':'off', 
+        'placeholder': 'Ex: AA-AA-AA-AA-AA-AA',
+        'autocomplete': 'off',
+    }))
+    gabinete_patrimonio = forms.CharField(label='Patrimônio Gabinete', required=False, max_length=20, widget=TextInput(attrs={
+        'placeholder': 'Ex: 002343',
+        'class': 'form-control',
+        'autocomplete': 'off',
+    }))
+    monitor_patrimonio = forms.CharField(label='Patrimônio Monitor', required=False, max_length=20, widget=TextInput(attrs={
+        'placeholder': 'Ex: 002343',
+        'class': 'form-control',
+        'autocomplete': 'off',
+    }))
+
+    def clean(self):
         
+        cleaned_data = self.cleaned_data
+
+        ip_formulario = cleaned_data.get('ip_endereco')
+        departamento_formulario = cleaned_data.get('departamento')
+        mac_formulario = cleaned_data.get('endereco_mac')
+        if ip_formulario is not None and len(ip_formulario) >=1:
+            try: 
+                if validate_ipv4_address(ip_formulario) is None:
+                    if EnderecoIp.objects.filter(ip_address=ip_formulario).count() >=1:
+                        raise forms.ValidationError({'ip_endereco': 'Esse endereço de IP já está sendo utilizado.'})
+            except ValidationError as e:
+                raise forms.ValidationError(e)
+        
+        if departamento_formulario is not None:
+            if departamento_formulario:
+                print("Sim")
+            else:
+                raise forms.ValidationError({'departamento': 'Esse departamento informado não existe.'})
+
+        if mac_formulario is not None:
+            if isinstance(mac_formulario, EUI):
+                pass
+            else:
+                raise forms.ValidationError({'endereco_mac': 'Endereço MAC informado é inválido.'})
+                
+        return cleaned_data
+
+    def save(self):
+        data = self.cleaned_data
+        computador = None
+        componentes = {
+            'gabinete': None,
+            'hd': None,
+            'ip': None,
+            'processador': None,
+            'mac': None,
+            'usuario': None
+        }
+        componentes['computador'] = Computador(nome_rede=data['nome_rede'], anydesk=data['anydesk'], sistema_op=data['sistema_op'], memoria_ram=data['memoria_ram'])
+        componentes['computador'].save()
+
+        computador = Computador.objects.filter(id=componentes['computador'].id)
+
+        if data['gabinete_patrimonio'] is not None and len(data['gabinete_patrimonio']) >=1:
+            componentes['gabinete'] = Gabinete(patrimonio=data['gabinete_patrimonio'], modelo='Outro', descricao='Genérico')
+        else:
+            componentes['gabinete'] = Gabinete(modelo='Outro', descricao='Genérico')
+        
+        componentes['gabinete'].save()
+        computador.update(gabinete=componentes['gabinete'])
+
+        if data['ip_endereco'] is not None and len(data['ip_endereco']) >=1:
+            componentes['ip'] = EnderecoIp(ip_address=data['ip_endereco'], content_type=ContentType.objects.get(model='computador'), parent_object_id=computador.first().id)
+            componentes['ip'].save()
+            computador.first().ip_computador.add(componentes['ip'])
+    
+        if data['endereco_mac'] is not None:
+            try:
+                componentes['mac'] = EnderecoMac(mac_address=data['endereco_mac'], content_type=ContentType.objects.get(model='computador'), parent_object_id=computador.first().id)
+                componentes['mac'].save()
+                computador.first().mac_computador.add(componentes['mac'])
+            except IntegrityError:
+                return self.abortar(computador.first().id)
+
+        if data['processador'] is not None and len(data['processador']) >=1:
+            componentes['processador'] = Processador(marca='Intel', modelo=data['processador'], descricao='Genérico')
+            componentes['processador'].save()
+            computador.update(processador=componentes['processador'])
+
+        if data['hd'] is not None and len(data['hd']) >=1:
+            componentes['hd'] = Hd(modelo='Normal', tamanho_gb=0, descricao="Genérico")
+            componentes['hd'].tamanho = data['hd']
+            componentes['hd'].save()
+            computador.update(hd=componentes['hd'])
+
+        if data['usuario'] is not None and len(data['usuario']) >=1:
+            if data['senha'] is None or len(data['senha']) <=1:
+                data['senha'] = ''
+
+            usuario = data['usuario']
+            consulta_usuario = Funcionario.objects.filter(usuario_pc=usuario)
+            if consulta_usuario and consulta_usuario.count() >=1:
+                componentes['usuario'] = consulta_usuario.first()
+            else:
+                if '.' in usuario:
+                    local = usuario.find('.')
+                    nome_usuario = usuario[:local]
+                    sobrenome_usuario = usuario[local+1:]
+                    componentes['usuario'] = Funcionario(nome=nome_usuario, sobrenome=sobrenome_usuario, nome_usuario=usuario.lower(), senha_pc=data['senha'])
+                    componentes['usuario'].save()
+
+                else:
+                    nome_usuario = usuario
+
+                    componentes['usuario'] = Funcionario(nome=nome_usuario, usuario_pc=nome_usuario, senha_pc=data['senha'])
+                    componentes['usuario'].save()
+                
+                if data['departamento'] is not None:
+                    Funcionario.objects.filter(id=componentes['usuario'].id).update(departamento=data['departamento'])
+
+            computador.update(funcionario=componentes['usuario'])  
+
+    def abortar(self, id):
+        computador = Computador.objects.get(id=id)
+        computador.delete()
+        Processador.objects.filter(computador=computador).delete()
+        Gabinete.objects.filter(computador=computador).delete()
+        EnderecoMac.objects.filter(content_type=ContentType.objects.get(model='computador'), parent_object_id=computador.id).delete()
+        EnderecoIp.objects.filter(content_type=ContentType.objects.get(model='computador'), parent_object_id=computador.id).delete()
+        Hd.objects.filter(computador=computador).delete()
+
+        raise ValueError('Ocorreu um erro ao salvar o computador. Por favor, tente novamente.')

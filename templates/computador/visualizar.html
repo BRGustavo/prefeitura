@@ -115,7 +115,11 @@
                                             <span>
                                                 {% if computador.funcionario %}
                                                 <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
-                                                    <p class='mb-0 text-muted'>{{computador.funcionario.nome}} {{computador.funcionario.sobrenome}}</p>
+                                                    <p class='mb-0 text-muted'>{{computador.funcionario.nome}} 
+                                                    {% if computador.funcionario.sobrenome %}
+                                                    {{computador.funcionario.sobrenome}}
+                                                    {% endif %}
+                                                    </p>
                                                 </a>
                                                 <p class='text-muted'>{{computador.departamento.departamento}}</p>
                                                 {% else %}
@@ -279,7 +283,7 @@
                         <div class="form-group">
                             <p>
                                 <label for="id_descricao" class='mt-1'>Descrição</label>
-                                <textarea class='form-control' name="descricao" id="id_descricao" cols="25" rows="10">{{computador.descricao}}</textarea>
+                                <textarea class='form-control' name="descricao" placeholder='Informações complementares...' id="id_descricao" cols="25" rows="10">{{computador.descricao}}</textarea>
                             </p>
                         </div>
                     </form>
@@ -296,7 +300,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h5 class="modal-title text-light">Atualizar Informações</h5>
+                    <h5 class="modal-title text-primary">Atualizar Informações</h5>
                     <span data-bs-dismiss='modal'>
                         <i class="fas fa-times text-light"></i>
                     </span>
