@@ -90,14 +90,11 @@ class Impressora(models.Model):
         ('Sala', 'Sala'),
         ('Corredor', 'Corredor')
     ))
-    patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
+    matricula = models.CharField(max_length=50, blank=True, null=True, default='', verbose_name='Patrimônio', help_text='Número do patrimônio')
     departamento = models.ForeignKey(Departamento, related_name='impressora', blank=True, null=True, on_delete=CASCADE)
-    sala = models.CharField(max_length=20, blank=True, null=True, verbose_name="Número Sala", help_text='Número de refência ao local onde a impressora está.')
 
     usando_ip = models.BooleanField(verbose_name='Usando IP', help_text='Está conectada pela rede;usando um ip.', default=True, null=False, choices=CHOICES_BOOL)
 
-    pertence_gestpar = models.BooleanField(default=False, null=False, choices=CHOICES_BOOL, verbose_name='Impressora Gestpar', help_text='Impressora alugada')
-    gestpar_matricula = models.CharField(max_length=20, blank=True, null=True)
     descricao = models.TextField(verbose_name='Descrição', blank=True, null=True)
     mac_impressora = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='impressora')
 

@@ -91,23 +91,6 @@ class RoteadorForm(forms.ModelForm):
     endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: AA-AA-AA-AA-AA-AA'}))
 
 
-class ImpressoraForm(forms.ModelForm):
-    class Meta:
-        model = Impressora
-        fields = ('nome', 'modelo', 'patrimonio', 'pertence_gestpar', 'gestpar_matricula', 'departamento', 'sala')
-
-    nome = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Corredor Informática.'}))
-    modelo = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Samsung'}))
-    patrimonio = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Ex: 123456'}))
-    pertence_gestpar = forms.BooleanField(required=False, widget=Select(attrs={'class':'form-control'}))
-    gestpar_matricula = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: GEST-123'}))
-    departamento = forms.ModelChoiceField(required=False, queryset=Departamento.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    sala = forms.CharField(required=False, max_length=20, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Sala 10'}))
-    descricao = forms.CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva melhor o dispositivo.'}))
-    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Ex: 192.168.4.20'}))
-    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: AA-AA-AA-AA-AA-AA'}))
-
-
 class EndereoIpForm(forms.ModelForm):
     class Meta:
         model = EnderecoIp
@@ -349,4 +332,79 @@ class ComputadorFormNovo(forms.Form):
         EnderecoIp.objects.filter(content_type=ContentType.objects.get(model='computador'), parent_object_id=computador.id).delete()
         Hd.objects.filter(computador=computador).delete()
 
+        raise ValueError('Ocorreu um erro ao salvar o computador. Por favor, tente novamente.')
+
+
+class ImpressoraForm(forms.Form):
+    nome = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Corredor Informática.'}))
+    modelo = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Samsung'}))
+    matricula = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: GEST-123'}))
+    departamento = forms.ModelChoiceField(required=False, queryset=Departamento.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    descricao = forms.CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva melhor o dispositivo.',
+    'rows': '4'}))
+    endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Ex: 192.168.4.20'}))
+    endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: AA-AA-AA-AA-AA-AA'}))
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        nome = cleaned_data.get('nome')
+        modelo = cleaned_data.get('modelo')
+        departamento = cleaned_data.get('departamento')
+        endereco_ip = cleaned_data.get('endereco_ip')
+        endereco_mac = cleaned_data.get('endereco_mac')
+
+        if nome is None or len(nome) < 1:
+            raise forms.ValidationError({'nome':'O Nome da impressora não pode ser nulo.'})
+        
+        if modelo is None or len(modelo) <=1:
+            raise forms.ValidationError({'modelo':'Filho de Deus, qual é o modelo da impressora!?'})
+        
+        if departamento is not None:
+            if Departamento.objects.filter(departamento=departamento.departamento).count() <= 0:
+                raise forms.ValidationError({'departamento': 'Esse departamento não existe.'})
+        
+        if endereco_ip is not None and len(endereco_ip) >=1:
+            try: 
+                if validate_ipv4_address(endereco_ip) is None:
+                    if EnderecoIp.objects.filter(ip_address=endereco_ip).count() >=1:
+                        raise forms.ValidationError({'endereco_ip': 'Esse endereço de IP já está sendo utilizado.'})
+            except ValidationError as e:
+                raise forms.ValidationError(e)
+
+        if endereco_mac is not None:
+            if isinstance(endereco_mac, EUI):
+                pass
+            else:
+                raise forms.ValidationError({'endereco_mac': 'Endereço MAC informado é inválido.'})
+                
+        return cleaned_data
+
+    def save(self):
+        data = self.cleaned_data
+        if self.is_valid():
+            impressora = Impressora(nome=data['nome'], modelo=data['modelo'], matricula=data['matricula'], descricao=data['descricao'])
+            impressora.save()
+            impressora = Impressora.objects.filter(id=impressora.id)
+            
+            if data['endereco_ip'] is not None and len(data['endereco_ip']) >=1:
+                ip_impressora = EnderecoIp(ip_address=data['endereco_ip'], content_type=ContentType.objects.get(model='impressora'), parent_object_id=impressora.first().id)
+                ip_impressora.save()
+                impressora.first().ip_impressora.add(ip_impressora)
+
+            if data['endereco_mac'] is not None:
+                try:
+                    mac_impressora = EnderecoMac(mac_address=data['endereco_mac'], content_type=ContentType.objects.get(model='impressora'), parent_object_id=impressora.first().id)
+                    mac_impressora.save()
+                    impressora.first().mac_impressora.add(mac_impressora)
+
+                except IntegrityError:
+                    return self.abortar(impressora.first().id)
+            
+            if data['departamento'] is not None:
+                departamento = data['departamento']
+                Impressora.objects.filter(id=impressora.first().id).update(departamento=departamento)
+        else:
+            return self.abortar()
+
+    def abortar(self, id=0):
         raise ValueError('Ocorreu um erro ao salvar o computador. Por favor, tente novamente.')

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from inventario.forms import ProcessadorForm
 from .models import *
 from dispositivo.models import *
-from .forms import ComputadorForm, ComputadorFormInfo, ComputadorFormNovo, IpMacFormAtualizar
+from .forms import ComputadorForm, ComputadorFormInfo, ComputadorFormNovo, ImpressoraForm, IpMacFormAtualizar
 from netaddr import EUI
 
 
@@ -334,7 +334,6 @@ def computador_novo_ajax(request):
                 form.save()
                 return JsonResponse(data={'data': 'data'}, safe=True)
             except ValueError as e:
-                print(e)
                 mensagens.append('Ocorreu um erro ao tentar salvar o computador. Tente Novamente.')
                 for campo in form:
                     campo_erros.append(campo.id_for_label)
@@ -358,4 +357,30 @@ def computador_novo_ajax(request):
         }
         return JsonResponse(status=200, data=data, safe=True)
 
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+
+@login_required
+@permission_required('dispositivo.add_impressora', raise_exception=True)
+def impressora_nova_ajax(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'POST':
+        form = ImpressoraForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                return JsonResponse(data={'data': 'data'}, safe=True)
+            except ValueError as e:
+                mensagens.append('Ocorreu um erro ao tentar salvar o roteador. Tente Novamente.')
+                for campo in form:
+                    campo_erros.append(campo.id_for_label)
+
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})

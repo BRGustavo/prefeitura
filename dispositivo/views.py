@@ -23,7 +23,7 @@ def computador_view(request, pagina):
     computadores = Computador.objects.all()
     if pesquisa != '' and pesquisa is not None:
         computadores = computadores.filter(
-            Q(nome_rede__icontains=pesquisa) | Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(id__iexact=pesquisa)
+            Q(nome_rede__icontains=pesquisa) | Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(departamento__singla_departamento__icontains=pesquisa) | Q(ip_computador__ip_address__icontains=pesquisa) | Q(id__iexact=pesquisa)
         )
     computadores = Paginator(computadores.order_by('id'), 10).get_page(pagina)
     content = {
@@ -406,61 +406,17 @@ def impressora_view(request, pagina):
 
     impressoras = Paginator(impressoras.order_by('id'), 10).get_page(pagina)
     content = {
-        'impressoras': impressoras
+        'impressoras': impressoras,
+        'form': ImpressoraForm()
     }
     return render(request, template_name='impressora/impressora.html', context=content)
 
 
 @login_required
-@permission_required('dispositivo.add_impressora', raise_exception=True)
-def impressora_add(request):
-    form = ImpressoraForm()
-    context = {
-        'form': form,
-        'mensagens': []
-    }
-    if request.method == 'POST':
-        form = ImpressoraForm(request.POST)
-        if form.is_valid():
-            ip_data = ''
-            mac_data = ''
-            
-            try:
-                ip_data = VerificarIp(form.cleaned_data.get('endereco_ip'))
-                try:
-                    mac_data = VerificarMac(form.cleaned_data.get('endereco_mac'))
-                    pc_novo = form.save()
-                    impressora_tipo = ContentType.objects.get(model='impressora')
-
-                    if ip_data is not None:
-                        EnderecoIp(ip_address=ip_data,
-                        content_type_id=impressora_tipo.id, parent_object_id=pc_novo.id).save()
-                    if mac_data is not None:
-                        EnderecoMac(mac_address=mac_data,
-                        content_type_id=impressora_tipo.id, parent_object_id=pc_novo.id).save()
-
-                    return redirect(impressora_view, 1)
-
-                except IndexError:
-                    context['mensagens'].append('Esse endereço MAC já está em uso')
-                    return render(request, template_name='impressora/novo.html', context=context)
-
-            except IndexError:
-                context['mensagens'].append('Esse endereço IP já está em uso')
-                return render(request, template_name='impressora/novo.html', context=context)
-
-        else:
-                for valores in form.errors.values():
-                    context['mensagens'].append(valores)
-                
-                context['field_erros'] = form.errors.keys()
-    return render(request, template_name='impressora/novo.html', context=context)
-
-@login_required
 @permission_required('dispositivo.change_impressora', raise_exception=True)
 def impressora_edit(request, id):
     impressora_db = get_object_or_404(Impressora, pk=id)
-    form = ImpressoraForm(instance=impressora_db)
+    form = ImpressoraForm()
     form_ip = EnderecoIp.objects.filter(impressora=impressora_db)
     form_mac = EnderecoMac.objects.filter(impressora=impressora_db)
     context = {
@@ -471,7 +427,7 @@ def impressora_edit(request, id):
         'mensagens': []
     }
     if request.method == 'POST':
-        form = ImpressoraForm(request.POST, instance=impressora_db)
+        form = ImpressoraForm(request.POST)
         impressora_objeto_tipo = ContentType.objects.filter(model='impressora').first().id
         if form.is_valid():
             endereco_ip_formulario = form.cleaned_data['endereco_ip']

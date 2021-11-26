@@ -20,7 +20,6 @@ urlpatterns = [
 
     # URLs Model Impressora
     path('impressora/<int:pagina>/', views.impressora_view, name='impressora_view'),
-    path('impressora/add/', views.impressora_add, name='impressora_add'),
     path('impressora/edit/<int:id>/', views.impressora_edit, name='impressora_edit'),
 
     # Ajax
@@ -32,6 +31,7 @@ urlpatterns = [
     path('computador/atualizarinfo/ajax', ajax.atualizar_computador_info_ajax, name='atualizar_computador_info_ajax'),
     path('computador/atualizarprocessador/ajax/', ajax.atualizar_processador_ajax, name='atualizar_processador_ajax'),
     path('computador/computador_novo_ajax/ajax/', ajax.computador_novo_ajax, name='computador_novo_ajax'),
+    path('impressora/impressora_nova_ajax/ajax/', ajax.impressora_nova_ajax, name='impressora_nova_ajax'),
 
     path('',views.teste_view, name='teste')
 
