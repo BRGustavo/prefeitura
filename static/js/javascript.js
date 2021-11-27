@@ -382,12 +382,65 @@ $('#form-impressoranova').submit(function(e){
             }
         }
     })
-
-    var serialize = $(`#form-impressoranova`).serialize();
-    console.log(serialize)
 })
 
+$('#form-impressoraatualizar').submit(function(e){
+    e.preventDefault()
+    const csrftoken = document.querySelector(`#form-impressoraatualizar [name=csrfmiddlewaretoken]`).value;
+    var serialize = $(`#form-impressoraatualizar`).serialize();
+    console.log(serialize)
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.impressora_atualizar_ajax,
+        data: serialize,
+        beforeSend: function(e){
 
+            $("#novaImpressoraButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalImpressoraAtualizar').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novaImpressoraButton").html("Adicionar")
+
+            $(`#form-impressoraatualizar input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-impressoraatualizar label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+})
+
+function mostrarImpressoraAtualizar(impressora_id){
+    $.ajax({
+        type:"GET",
+        url: forms_urls.impressora_nova_ajax,
+        data: {
+            'id': impressora_id
+        },
+        success: function(data){
+            for(let item in data.campos){
+                $(`input[name='${item}']`).val(data.campos[item]);
+                $(`textarea[name='descricao']`).val(data.campos['descricao']);
+            }
+        }
+    });
+
+    $("#modalImpressoraAtualizar").modal('show');
+}
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});

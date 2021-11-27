@@ -18,6 +18,7 @@
     <script>
         const forms_urls = {
             'impressora_nova_ajax': '{% url "impressora_nova_ajax" %}',
+            'impressora_atualizar_ajax': '{% url "impressora_atualizar_ajax" %}',
         }
     </script>
 {% endblock scripts %}
@@ -39,19 +40,40 @@
             <tr>
                 <th scope="row">{{ impressora.id }}</th>
                 <td>{{ impressora.nome }}</td>
-                <th>{{ impressora.matricula }}</th>
-                <td>{{ impressora.departamento }}</td>
+                <th>
+                    {% if impressora.matricula %}
+                        {{ impressora.matricula }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </th>
+                <td>
+                    {% if impressora.departamento %}
+                    {{ impressora.departamento }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
                 <td>
                     {% for ip in impressora.ip_impressora.all %}
                         {{ ip }}
                     {% endfor %}
                 </td>
                 <td>
+                    {% if impressora.mac_impressora.all %}
                     {% for mac in impressora.mac_impressora.all %}
                         {{ mac }}
                     {% endfor %}
+                    {% else %}
+                    -
+                    {% endif %}
                 </td>
-                <td><a href="{% url 'impressora_edit' impressora.id %}"><i class="fas fa-edit"></i></a></td>
+                <td>
+                    <!-- <a href="{% url 'impressora_edit' impressora.id %}"><i class="fas fa-edit"></i></a> -->
+                    <i class="fas fa-edit pe-1" onclick="mostrarImpressoraAtualizar('{{impressora.id}}')"></i>
+                    <i class="fas fa-eye" onclick="mostrarInformacoesImpressora('{{impressora.id}}')"></i>
+                    
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -128,7 +150,72 @@
             </div>
         </div>
     </div>
+</div>
 
+<div class="modal fade" tabindex="-1" id='modalImpressoraAtualizar'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="container p-0">
+                    <div class="row p-0">
+                        <div class="col-12 col-lg-4 p-5 d-flex justify-content-center d-flex align-items-center" style='background-color: #02aed8;'>
+                            <img style='width:300px;' src="{% static 'img/impressoras.jpg' %}" alt="">
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <div class="col p-3 pb-1 pt-4 d-flex justify-content-between">
+                                <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-center'>
+                                    <i class="fas fa-print pe-2"></i>
+                                    Atualizar Impressora
+                                </h5>
+                                <span data-bs-dismiss='modal'>
+                                    <i class="fas fa-times text-dark"></i>
+                                </span>
+                            </div>
+                            <div class="col mt-1 mb-3">
+                                <form id='form-impressoraatualizar'>
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <input type="hidden" name='impressora_id' id='id_impressora_id' value='None'>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_nome">Nome</label>
+                                            {{form.nome}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_modelo">Modelo</label>
+                                            {{form.modelo}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_departamento">Departamento</label>
+                                            {{form.departamento}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_matricula">Patrimônio/Gestpar-ID</label>
+                                            {{form.matricula}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_endereco_ip">Endereço IP</label>
+                                            {{form.endereco_ip}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_endereco_mac">Endereço MAC</label>
+                                            {{form.endereco_mac}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-12 mt-2">
+                                            <label for="id_descricao">Descrição</label>
+                                            {{form.descricao}}
+                                        </div>
+                                        <div class="col-12 mt-3 d-flex justify-content-end">
+                                            <button id='AtualizarImpressoraButton' class="btn text-dark" style='background-color:#02aed8; color:black; font-family: Arial, Helvetica, sans-serif;'>Atualizar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock modals %}
 

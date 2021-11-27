@@ -365,6 +365,10 @@ def computador_novo_ajax(request):
 def impressora_nova_ajax(request):
     mensagens = []
     campo_erros = []
+    if request.method == 'PUT':
+        print("hoi")
+        return JsonResponse(data={'data': 'data'}, safe=True)
+    
     if request.method == 'POST':
         form = ImpressoraForm(request.POST)
         if form.is_valid():
@@ -383,4 +387,48 @@ def impressora_nova_ajax(request):
                 if campo.errors:
                     campo_erros.append(campo.id_for_label)
     
+    if request.method == 'GET':
+        impressora_id = request.GET.get('id')
+        impressora = get_object_or_404(Impressora, pk=impressora_id)
+        endereco_mac = ''
+        endereco_ip = ''
+        if impressora.mac_impressora.count() >=1:
+            endereco_mac = str(impressora.mac_impressora.first().mac_address)
+
+        if impressora.ip_impressora.count() >=1:
+            endereco_ip = str(impressora.ip_impressora.first().ip_address)
+
+        return JsonResponse(data={'id':impressora_id, 'campos': {
+            'impressora_id': impressora.id,
+            'nome': impressora.nome,
+            'modelo': impressora.modelo,
+            'departamento': impressora.departamento.id if impressora.departamento else '',
+            'matricula': impressora.matricula,
+            'endereco_ip': endereco_ip,
+            'endereco_mac': endereco_mac,
+            'descricao': impressora.descricao
+            
+        }}, safe=True)
+
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+@login_required
+@permission_required('dispositivo.change_impressora', raise_exception=True)
+def impressora_atualizar_ajax(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'POST':
+        impressora_id = request.POST.get('impressora_id')
+        form = ImpressoraForm(request.POST)
+        try:
+            if form.put_isvalid(impressora_id):
+                form.put_save(impressora_id)
+                return JsonResponse(data={'data': 'data'}, safe=True)
+        except ValidationError as e:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})

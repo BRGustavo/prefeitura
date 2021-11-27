@@ -109,6 +109,13 @@ class Impressora(models.Model):
     #     EnderecoIp.objects.filter(content_type='dispositivo | impressora', content_type__id=self.id)
     #     return super(Impressora, self).delete(*args, **kwargs)
 
+    @property
+    def view_mac_impressora(self):
+        if self.mac_impressora is not None:
+            return self.mac_impressora.first()
+        else:
+            return ''
+
 class Computador(models.Model):
 
     class Meta:

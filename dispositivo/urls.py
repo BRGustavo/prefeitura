@@ -32,6 +32,7 @@ urlpatterns = [
     path('computador/atualizarprocessador/ajax/', ajax.atualizar_processador_ajax, name='atualizar_processador_ajax'),
     path('computador/computador_novo_ajax/ajax/', ajax.computador_novo_ajax, name='computador_novo_ajax'),
     path('impressora/impressora_nova_ajax/ajax/', ajax.impressora_nova_ajax, name='impressora_nova_ajax'),
+    path('impressora/impressora_atualizar_ajax/ajax/', ajax.impressora_atualizar_ajax, name='impressora_atualizar_ajax'),
 
     path('',views.teste_view, name='teste')
 
