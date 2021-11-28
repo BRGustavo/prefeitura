@@ -59,7 +59,7 @@ class ComputadorForm(forms.ModelForm):
     departamento = forms.ModelChoiceField(required=False, queryset=(Departamento.objects.all()), widget=Select(attrs={'class': 'form-control'}))
     funcionario = forms.ModelChoiceField(required=False, queryset=(Funcionario.objects.all()), widget=Select(attrs={'class': 'form-control', 'autocomplete':'off'}))
     nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: PRE-01'}))
-    anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: 0000000'}))
+    anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: 0000000', 'autocomplete': 'off'}))
     memoria_ram = forms.CharField(required=False, max_length=20, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 8 GB'}))
     gabinete = forms.ModelChoiceField(queryset=Gabinete.objects.all(), widget=Select(attrs={'class': 'form-control'})) 
     placa_mae = forms.ModelChoiceField(required=False, queryset=PlacaMae.objects.all(), widget=Select(attrs={'class': 'form-control'}))      
@@ -116,7 +116,7 @@ class ComputadorFormDescricao(forms.ModelForm):
 class ComputadorFormInfo(forms.ModelForm):
     class Meta:
         model = Computador
-        fields = ('nome_rede', 'sistema_op', 'memoria_ram', 'anydesk', 'placa_mae')
+        fields = ('nome_rede', 'sistema_op', 'memoria_ram', 'anydesk')
 
     def __init__(self, *args, **kwargs):
         super(ComputadorFormInfo, self).__init__(*args, **kwargs)

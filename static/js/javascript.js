@@ -404,12 +404,10 @@ $('#form-computadornovo').submit(function(e){
     })
 
     var serialize = $(`#form-computadornovo`).serialize();
-    console.log(serialize)
 })
 $('#form-impressoranova').submit(function(e){
     e.preventDefault()
     const csrftoken = window.document.querySelector('#form-impressoranova input[name=csrfmiddlewaretoken]').value;
-    alert(csrftoken)
     var serialize = $(`#form-impressoranova`).serialize();
     $.ajax({
         csrfmiddlewaretoken: csrftoken,
@@ -454,7 +452,6 @@ $('#form-impressoraatualizar').submit(function(e){
     e.preventDefault()
     const csrftoken = document.querySelector(`#form-impressoraatualizar [name=csrfmiddlewaretoken]`).value;
     var serialize = $(`#form-impressoraatualizar`).serialize();
-    console.log(serialize)
     $.ajax({
         csrfmiddlewaretoken: csrftoken,
         type: 'POST',
@@ -523,6 +520,47 @@ function confirmarRemoverImpressora(){
         success: function(data){
             $('modalApagarImpressora').modal('hide');
             location.reload()
+        }
+    });
+}
+
+function apagarProcessador(id_computador){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.deletar_processador_ajax,
+        data: {
+            'id_computador':id_computador
+        },
+        success: function(data){
+            $('modalRemoverProcessador').modal('hide');
+            location.reload()
+        },
+        error: function (request, status, error) {
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+            }
+        }
+    });
+}
+function apagarPlacaMae(id_computador){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.deletar_placamae_ajax,
+        data: {
+            'id_computador':id_computador
+        },
+        success: function(data){
+            $('modalRemoverPlacaMae').modal('hide');
+            location.reload()
+        },
+        error: function (request, status, error) {
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+            }
         }
     });
 }

@@ -212,12 +212,19 @@ def computador_visualizar(request, id, pagina='principal'):
         processador_id = get_object_or_404(Processador, pk=processador_pc.first().id) 
         formProcessador = ProcessadorForm(instance=processador_id)
 
+    formPlacaMae = PlacaMaeForm()
+    placamae_pc = PlacaMae.objects.all().filter(computador=computador)
+    if placamae_pc.count() >=1:
+        placamae_id = get_object_or_404(PlacaMae, pk=placamae_pc.first().id) 
+        formPlacaMae = PlacaMaeForm(instance=placamae_id)
+
     context = {
         'computador': computador,
         'formComputador': form,
         'formInfo': formInfo,
         'formIpMac': formIpMac,
         'formProcessador': formProcessador,
+        'formPlacaMae': formPlacaMae,
         'funcionarios': Funcionario.objects.all(),
         
     }
@@ -234,6 +241,8 @@ def computador_visualizar(request, id, pagina='principal'):
         return render(request, template_name='computador/visualizar_rede.html', context=context)
     elif pagina == 'processador':
         return render(request, template_name="computador/visualizar_processador.html", context=context)
+    elif pagina == 'placa_mae':
+        return render(request, template_name='computador/visualizar_placa_mae.html', context=context)
 
 
 @login_required

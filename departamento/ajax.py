@@ -47,7 +47,6 @@ def funcionario_edit_ajax(request, id):
                 mensagens.append(valores)
             for campo in form:
                 if campo.errors:
-                    print(campo.id_for_label)
                     campo_erros.append(campo.id_for_label)
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
 

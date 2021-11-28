@@ -4,7 +4,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 
-from inventario.forms import ProcessadorForm
+from inventario.forms import PlacaMaeForm, ProcessadorForm
 from .models import *
 from dispositivo.models import *
 from .forms import ComputadorForm, ComputadorFormInfo, ComputadorFormNovo, ImpressoraForm, IpMacFormAtualizar
@@ -101,7 +101,7 @@ def impressora_pesquisa_ajax(request):
         return JsonResponse(data={'impressoras': data}, safe=True)
 
 @login_required
-@permission_required('dispositivo.view_funcionario', raise_exception=True)
+@permission_required('departamento.view_funcionario', raise_exception=True)
 def funcionario_pesquisa_ajax(request):
     if request.method == 'GET':
         impressoras = []
@@ -130,7 +130,7 @@ def funcionario_pesquisa_ajax(request):
         return JsonResponse(data={'funcionarios': data}, safe=True)
 
 @login_required
-@permission_required('dispositivo.view_funcionario', raise_exception=True)
+@permission_required('departamento.view_funcionario', raise_exception=True)
 def vincular_funcionario_ajax(request):
     if request.method == 'GET':
         id_funcionario = request.GET.get('id_funcionario')
@@ -193,7 +193,6 @@ def atualizar_computador_info_ajax(request):
                         novo_hd = Hd(modelo='Normal', tamanho_gb=int(form.cleaned_data.get('hd')))
                         novo_hd.tamanho = form.cleaned_data.get('hd')
                         novo_hd.save()
-                        print(novo_hd)
                         computador.hd = novo_hd
                 except ValueError:
                     campo_erros.append('id_hd')
@@ -335,6 +334,7 @@ def verificar_endereco_ip(request):
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
 
 @login_required
+@permission_required('inventario.change_processador', raise_exception=True)
 def atualizar_processador_ajax(request):
     mensagens = []
     campo_erros = []
@@ -364,6 +364,68 @@ def atualizar_processador_ajax(request):
                     campo_erros.append(campo.id_for_label)
     
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+
+@login_required
+@permission_required('dispositivo.change_computador', raise_exception=True)
+def deletar_processador_ajax(request):
+    if request.method == 'GET':
+        id_computador = request.GET.get('id_computador')
+        computador = get_object_or_404(Computador, pk=id_computador)
+        if computador.processador:
+            Processador.objects.filter(computador=computador).delete()
+            return JsonResponse(status=200, data={'apagado': 'Sim'}, safe=True)
+        else:
+            return JsonResponse(status=400, data={'status':'false', 'messagem': ['Esse computador não possui um processador vinculado.'],  'field_erros': ['']}, safe=True)
+    
+    return JsonResponse(status=404, data={'status':'false','messagem': ['Ocorreu um erro ao tentar remover o processador'], 'field_erros': ['']})
+
+@login_required
+@permission_required('dispositivo.change_computador', raise_exception=True)
+def deletar_placamae_ajax(request):
+    if request.method == 'GET':
+        id_computador = request.GET.get('id_computador')
+        computador = get_object_or_404(Computador, pk=id_computador)
+        if computador.placa_mae:
+            PlacaMae.objects.filter(computador=computador).delete()
+            return JsonResponse(status=200, data={'apagado': 'Sim'}, safe=True)
+        else:
+            return JsonResponse(status=400, data={'status':'false', 'messagem': ['Esse computador não possui uma placa mãe vinculada.'],  'field_erros': ['']}, safe=True)
+    
+    return JsonResponse(status=404, data={'status':'false','messagem': ['Ocorreu um erro ao tentar remover a placa mãe'], 'field_erros': ['']})
+
+@login_required
+@permission_required('dispositivo.change_computador', raise_exception=True)
+def atualizar_placamae_ajax(request):
+    mensagens = []
+    campo_erros = []
+    
+    if request.method == 'POST':
+        computador = get_object_or_404(Computador, pk=int(request.POST.get('id_computador')))
+        form = None
+        if computador.placa_mae:
+            placamae = get_object_or_404(PlacaMae, pk=computador.placa_mae.id)
+            form = PlacaMaeForm(request.POST, instance=placamae)
+        else:
+            form = PlacaMaeForm(request.POST)
+
+        if form.is_valid():
+            placamae_atualizado = form.save()
+            if computador.placa_mae:
+                pass
+            else:
+                Computador.objects.filter(id=computador.id).update(placa_mae=placamae_atualizado)
+                
+            return JsonResponse(status=200, safe=True, data={'data': 'data'})
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
 
 @login_required
 @permission_required('dispositivo.add_computador', raise_exception=True)
@@ -412,7 +474,6 @@ def impressora_nova_ajax(request):
     mensagens = []
     campo_erros = []
     if request.method == 'PUT':
-        print("hoi")
         return JsonResponse(data={'data': 'data'}, safe=True)
     
     if request.method == 'POST':
