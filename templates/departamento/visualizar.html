@@ -91,7 +91,13 @@
                                         <th scope="row">{{ impressora.nome }}</th>
                                         <td>{{ impressora.ip_impressora.first }}</td>
                                         <td>
-                                            <a href="{% url 'impressora_edit' impressora.id %}">
+                                            <a href="
+                                            {% if impressora.ip_impressora.first %}
+                                            {% url 'impressora_view' 1 %}?query={{impressora.ip_impressora.first}}
+                                            {% else %}
+                                            {% url 'impressora_view' 1 %}?query={{impressora.id}}
+                                            {% endif %}
+                                            ">
                                             <i class="fas fa-edit"></i>
                                             </a>
                                         </td>
@@ -275,7 +281,10 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header" style='background-color:rgb(184, 106, 106);'>
-                <h5 class="modal-title text-light">Editar Departamento</h5>
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-pen pe-2"></i>
+                    Editar Departamento
+                </h5>
                 <span data-bs-dismiss='modal'>
                     <i class="fas fa-times text-light"></i>
                 </span>
@@ -312,11 +321,16 @@
 <div class="modal fade" tabindex="-1" id='modalDeletar'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4>Deseja apagar {{departamento.departamento }}?</h4>
+            <div class="modal-header bg-danger text-light" style="font-family: Arial, Helvetica, sans-serif;">
+                <h5>
+                    <i class="fas fa-trash-alt"></i>
+                    Deseja apagar esse departamento?
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
             </div>
             <div class="modal-body">
-                
                 <div class="alert alert-danger">
                     Caso você remova esse Departamento, não será possivel adicionar ou remover elementos. Além disso, toda e qualquer informação vinculada a esse departamento será perdida.
                 </div>
@@ -325,9 +339,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                
-                <button class="btn btn-primary" data-bs-dismiss='modal'>Cancelar</button>
-                <a href="{% url 'departamento_remover' departamento.id %}"><button class="btn btn-danger">Apagar</button></a>
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <a href="{% url 'departamento_remover' departamento.id %}" class="btn" style='font-family: Arial, Helvetica, sans-serif; background-color:rgb(238, 37, 37); color:white;'>Apagar</a>
             </div>
         </div>
     </div>

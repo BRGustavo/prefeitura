@@ -79,6 +79,16 @@ p label {
     color:green;
 }
 
+#tabelaFuncionario tr:hover{
+    transform: scale(1.04);
+    transition: 1.2s
+}
+
+#tabelaImpressora tr:hover{
+    transform: scale(1.04);
+    transition: 1.2s
+}
+
 /* Responsive */
 @media (min-width: 1200px) {
     #primeiro {

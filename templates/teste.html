@@ -1,1 +1,16 @@
-holá
+{% if computador.funcionario %}
+                                                <span class='d-flex justify-content-between'>
+                                                    <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
+                                                        <p class='mb-0 text-muted'>{{computador.funcionario.nome}}
+                                                        {% if computador.funcionario.sobrenome %}
+                                                        {{computador.funcionario.sobrenome}}
+                                                        {% endif %}
+                                                        </p>
+                                                    </a>
+                                                    <i data-bs-toggle='modal' data-bs-target='#modalDepUser' class="far fa-edit text-success text-end ps-5"></i>
+                                                </span>
+                                                <p class='text-muted'>{{computador.departamento.departamento}}</p>
+                                                {% else %}
+                                                <p class='mb-0 text-muted'>Não Vinculado</p>
+                                                <p class="text-muted"></p>
+                                                {% endif %}

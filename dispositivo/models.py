@@ -42,7 +42,7 @@ CHOICES_SISTEMS = (
 
 
 class EnderecoMac(models.Model):
-    mac_address = MACAddressField(unique=True, blank=True, null=True)
+    mac_address = MACAddressField(unique=True, blank=True, null=True, integer=False)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, blank=True, related_name='mac_parente')
     parent_object_id = models.PositiveIntegerField()
     parent_object = GenericForeignKey("content_type", "parent_object_id")

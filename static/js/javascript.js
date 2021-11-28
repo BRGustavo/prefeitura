@@ -175,6 +175,67 @@ function visualizarModalApagar(id){
     $('#modalDeletar').modal('show');
 }
 
+$('#modalDepUser').on('show.bs.modal', function (e) {
+    atualizarAfterModal = false;
+    PesquisarFuncionario('');    
+});
+$('#modalDepUser').on('hidden.bs.modal', function (e) {
+    if(atualizarAfterModal == true){
+        location.reload();
+    } 
+});
+$('#pesquisaFuncionario').submit(function(e){
+    let conteudo = $("#pesquisaFuncionario").find('input[name="query"]').val();
+    PesquisarFuncionario(conteudo);
+    return false;
+})
+
+function PesquisarFuncionario(query){
+    let pesquisa = query;
+    $.ajax({
+        type: 'GET',
+        url: forms_urls['pesquisaFuncionario'],
+        data: {
+            'query': pesquisa,
+            'id_computador': forms_urls['id_computador']
+        },
+        success: function(data){
+            $('#tabelaFuncionario').html('');
+           
+            if(data['funcionarios'].length <= 0){
+                let item_novo = $('<tr><td class="text-center">Nada encontrado.</td></tr>');
+                $('#tabelaFuncionario').append(item_novo)
+            }
+            for(let item in data['funcionarios']){
+                let html_item = data['funcionarios'][item].html_item;
+                let nome = data['funcionarios'][item].nome;
+                let marca = data['funcionarios'][item].marca;
+                let ip = data['funcionarios'][item].ip;
+
+                $('#tabelaFuncionario').append(
+                    $(`${html_item}`)
+                ).fadeIn('slow')
+                $('#tabelaFuncionario img').attr('src', `${forms_urls['funcionarioImg']}`);
+            }
+        }
+    });
+}
+function VincularFuncionario(id_funcionario){
+    atualizarAfterModal = true
+    $.ajax({
+        type: 'GET',
+        url: forms_urls['vincularFuncionario'],
+        data: {
+            'id_funcionario': id_funcionario,
+            'id_computador': forms_urls['id_computador'],
+        },
+        success: function(e){
+            let conteudo = $("#pesquisaFuncionario").find('input[name="query"]').val();
+            PesquisarFuncionario(conteudo);
+        }
+    });
+}
+
 $('#modalAdicionarImpressora').on('show.bs.modal', function (e) {
     PesquisarImpressoras('');    
 });
@@ -347,7 +408,8 @@ $('#form-computadornovo').submit(function(e){
 })
 $('#form-impressoranova').submit(function(e){
     e.preventDefault()
-    const csrftoken = document.querySelector(`#form-impressoranova [name=csrfmiddlewaretoken]`).value;
+    const csrftoken = window.document.querySelector('#form-impressoranova input[name=csrfmiddlewaretoken]').value;
+    alert(csrftoken)
     var serialize = $(`#form-impressoranova`).serialize();
     $.ajax({
         csrfmiddlewaretoken: csrftoken,
@@ -383,7 +445,11 @@ $('#form-impressoranova').submit(function(e){
         }
     })
 })
-
+$('#modalImpressora').on('show.bs.modal', function(){
+    window.document.querySelectorAll("#modalImpressora input:not([name='csrfmiddlewaretoken']), textarea").forEach(function(e){
+        e.value = ""
+    });
+});
 $('#form-impressoraatualizar').submit(function(e){
     e.preventDefault()
     const csrftoken = document.querySelector(`#form-impressoraatualizar [name=csrfmiddlewaretoken]`).value;
@@ -440,6 +506,25 @@ function mostrarImpressoraAtualizar(impressora_id){
     });
 
     $("#modalImpressoraAtualizar").modal('show');
+}
+function apagarImpressora(impressora_id){
+    $("#modalApagarImpressora").modal('show');
+    $("#modalApagarImpressora").find("#apagarID").val(impressora_id);
+    
+}
+function confirmarRemoverImpressora(){
+    let impressora_id = $("#modalApagarImpressora").find("#apagarID").val()
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.impressora_delete,
+        data: {
+            'impressora_id':impressora_id
+        },
+        success: function(data){
+            $('modalApagarImpressora').modal('hide');
+            location.reload()
+        }
+    });
 }
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});

@@ -14,7 +14,10 @@
             'id_computador': '{{computador.id}}',
             'atualizar_computador_info_ajax': '{% url "atualizar_computador_info_ajax" %}',
             'verificar_enderecoip_ajax': '{% url "verificar_enderecoip_ajax" %}',
-            'atualizar_processador_ajax': '{% url "atualizar_processador_ajax" %}'
+            'atualizar_processador_ajax': '{% url "atualizar_processador_ajax" %}',
+            'pesquisaFuncionario': '{% url "funcionario_pesquisa_ajax" %}',
+            'funcionarioImg': '{% static "img/funcionario.jpg" %}',
+            'vincularFuncionario': '{% url "vincular_funcionario_ajax" %}',
         }
         const formularioId = '{{ csrf_token }}';
     </script>
@@ -112,21 +115,32 @@
                                     <li class="list-group-item bg-dark text-light">
                                         <div class="col d-flex">
                                             <img style='width:50px; height:50px;' class='rounded-circle me-4' src="{% static 'img/funcionario.jpg' %}" alt="">
-                                            <span>
+                                            <div class="col d-flex justify-content-between">
                                                 {% if computador.funcionario %}
-                                                <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
-                                                    <p class='mb-0 text-muted'>{{computador.funcionario.nome}} 
-                                                    {% if computador.funcionario.sobrenome %}
-                                                    {{computador.funcionario.sobrenome}}
-                                                    {% endif %}
-                                                    </p>
-                                                </a>
-                                                <p class='text-muted'>{{computador.departamento.departamento}}</p>
+                                                <span>
+                                                    <div class="d-flex flex-column">
+                                                        <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
+                                                            <p class='mb-0 text-muted'>{{computador.funcionario.nome}}
+                                                            {% if computador.funcionario.sobrenome %}
+                                                            {{computador.funcionario.sobrenome}}
+                                                            {% endif %}
+                                                            </p>
+                                                        </a>
+                                                        {% if computador.funcionario.departamento %}
+                                                        <p class='text-muted'>
+                                                            {{computador.funcionario.departamento.departamento}}
+                                                        </p>
+                                                        {% endif %}
+                                                    </div>
+                                                </span>
                                                 {% else %}
                                                 <p class='mb-0 text-muted'>Não Vinculado</p>
-                                                <p class="text-muted"></p>
                                                 {% endif %}
-                                            </span>
+                                                <span>
+                                                    <i data-bs-toggle='modal' data-bs-target='#modalDepUser' class="far fa-edit text-success"></i>
+                                                </span>
+                                        
+                                            </div>
                                         </div>
                                     </li>
                                     <li class="list-group-item bg-dark text-light">
@@ -151,7 +165,7 @@
                         
                     </div>
                 </div>
-                <div class="col-12 col-lg-8">
+                <div class="col-12 col-lg-8" style="min-height: 52vh;">
                     {% block informacoes %}
                     <div class="card bg-dark border-0">
                         <div class="card-content">
@@ -373,6 +387,48 @@
         </div>
     </div>
     {% endblock modals%}
+    <div class="modal fade" tabindex="-1" id='modalDepUser'>
+        <div class="modal-dialog modal-lg">
+            <div style='font-family: Arial, Helvetica, sans-serif;' class="modal-content">
+                <div class="modal-header border-0" style='background-color:#0229d8;'>
+                    <h5 class="modal-title text-light">
+                        <i class="fas fa-link pe-2"></i>
+                        Vincular Funcionário
+                    </h5>
+                    <span data-bs-dismiss='modal'>
+                        <i class="fas fa-times text-light"></i>
+                    </span>
+                </div>
+                <div style='max-height:60vh;' class="modal-body overflow-auto">
+                    <form id='pesquisaFuncionario'>
+                        <div class="input-group">
+                            <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
+                            aria-describedby="search-addon" autocomplete="off"/>
+                            <button class="btn btn-outline-primary">Procurar</button>
+                          </div>
+                    </form>
+                    <div class="mt-4 p-2 bg-light">
+                        <table class="table table-sm table table-responsive">
+                            <tbody id='tabelaFuncionario'>
+                                <tr class='mt-3'>
+                                    <td class='d-flex justify-content-between'>
+                                        <img class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" style='width:50px;' alt="">
+                                        <div class="col ps-3 d-flex flex-column">
+                                            <span><b>Gustavo de Oliveira</b></span> 
+                                            <span class='text-muted'>Departamento de Informática</span>
+                                        </div>
+                                    </td>
+                                    <td class='text-center'>
+                                        <i onclick='VincularFuncionario({funcionario.id})' class="fas fa-link"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 {% endblock %}

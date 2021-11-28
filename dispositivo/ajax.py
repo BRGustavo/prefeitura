@@ -100,6 +100,52 @@ def impressora_pesquisa_ajax(request):
             })
         return JsonResponse(data={'impressoras': data}, safe=True)
 
+@login_required
+@permission_required('dispositivo.view_funcionario', raise_exception=True)
+def funcionario_pesquisa_ajax(request):
+    if request.method == 'GET':
+        impressoras = []
+        data = []
+        pesquisa = request.GET.get('query')
+        id_computador = request.GET.get('id_computador')
+        computador = get_object_or_404(Computador, pk=id_computador)
+        if pesquisa:
+            funcionarios = Funcionario.objects.filter(Q(nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa))
+        else:
+            funcionarios = Funcionario.objects.all()
+
+        for funcionario in funcionarios.order_by('nome'):
+            predio = funcionario.departamento.predio if funcionario.departamento else ''
+            departamento = funcionario.departamento.departamento if funcionario.departamento else ''
+            background_cor = ''
+            if computador.funcionario is not None and computador.funcionario == funcionario:
+                background_cor = 'rgb(170, 255, 170)'
+
+            html_item = f"""<tr class='mt-2' style='background-color:{background_cor};'><td class='d-flex justify-content-between'><img class='rounded-circle' src="" style='width:50px;' alt=""><div class="col ps-3 d-flex flex-column"><span><b>{funcionario.nome} {funcionario.sobrenome}</b></span><span class='text-muted'>{departamento} - {predio}</span></div></td><td class='text-center'><i onclick='VincularFuncionario({funcionario.id})' class="fas fa-link"></i></td></tr>
+            """
+            data.append({
+                'html_item': html_item,
+                'nome': funcionario.nome,
+            })
+        return JsonResponse(data={'funcionarios': data}, safe=True)
+
+@login_required
+@permission_required('dispositivo.view_funcionario', raise_exception=True)
+def vincular_funcionario_ajax(request):
+    if request.method == 'GET':
+        id_funcionario = request.GET.get('id_funcionario')
+        id_computador = request.GET.get('id_computador')
+        funcionario = get_object_or_404(Funcionario, pk=id_funcionario)
+        computador = get_object_or_404(Computador, pk=id_computador)
+        
+        if computador.funcionario != funcionario:
+            Computador.objects.filter(id=computador.id).update(funcionario=funcionario)
+        else:
+            Computador.objects.filter(id=computador.id).update(funcionario=None)
+            
+        return JsonResponse(data={'falha': 'sim'}, safe=True)
+
+    return JsonResponse(status=401, data={'data':'data'}, safe=True)
 
 @login_required
 @permission_required('dispositivo.view_impressora', raise_exception=True)
