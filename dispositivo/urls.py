@@ -20,8 +20,7 @@ urlpatterns = [
 
     # URLs Model Impressora
     path('impressora/<int:pagina>/', views.impressora_view, name='impressora_view'),
-    path('impressora/add/', views.impressora_add, name='impressora_add'),
-    path('impressora/edit/<int:id>/', views.impressora_edit, name='impressora_edit'),
+    path('impressora/ajax/apagarimpressora', views.impressora_delete, name='impressora_delete'),
 
     # Ajax
     path('computador/add/ajax', ajax.computador_create_ajax, name='computador_add_ajax'),
@@ -30,6 +29,16 @@ urlpatterns = [
     path('impressora/pesquisar/ajax/', ajax.impressora_pesquisa_ajax, name='impressora_pesquisa_ajax'),
     path('impressora/vincular/ajax/', ajax.vincular_impressora_ajax, name='vincular_impressora_ajax'),
     path('computador/atualizarinfo/ajax', ajax.atualizar_computador_info_ajax, name='atualizar_computador_info_ajax'),
+    path('computador/atualizarprocessador/ajax/', ajax.atualizar_processador_ajax, name='atualizar_processador_ajax'),
+    path('computador/apagar_processador_ajax/ajax/', ajax.deletar_processador_ajax, name='deletar_processador_ajax'),
+    path('computador/apagar_placamae_ajax/ajax/', ajax.deletar_placamae_ajax, name='deletar_placamae_ajax'),
+    path('computador/atualizarplacamae/ajax/', ajax.atualizar_placamae_ajax, name='atualizar_placamae_ajax'),
+    path('computador/computador_novo_ajax/ajax/', ajax.computador_novo_ajax, name='computador_novo_ajax'),
+    path('impressora/impressora_nova_ajax/ajax/', ajax.impressora_nova_ajax, name='impressora_nova_ajax'),
+    path('impressora/impressora_atualizar_ajax/ajax/', ajax.impressora_atualizar_ajax, name='impressora_atualizar_ajax'),
+    path('funcionario/pesquisar/ajax/', ajax.funcionario_pesquisa_ajax, name='funcionario_pesquisa_ajax'),
+    path('funcionario/vincular/ajax/', ajax.vincular_funcionario_ajax, name='vincular_funcionario_ajax'),
+
     path('',views.teste_view, name='teste')
 
 ]

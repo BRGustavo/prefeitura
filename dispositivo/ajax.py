@@ -3,9 +3,11 @@ from django.core.validators import ip_address_validator_map, validate_ipv4_addre
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
+
+from inventario.forms import PlacaMaeForm, ProcessadorForm
 from .models import *
 from dispositivo.models import *
-from .forms import ComputadorForm, ComputadorFormInfo, IpMacFormAtualizar
+from .forms import ComputadorForm, ComputadorFormInfo, ComputadorFormNovo, ImpressoraForm, IpMacFormAtualizar
 from netaddr import EUI
 
 
@@ -73,7 +75,7 @@ def verificar_ip_ajax(request):
     return render(request, 'base.html')
 
 @login_required
-@permission_required('dispositivo.view_impressora')
+@permission_required('dispositivo.view_impressora', raise_exception=True)
 def impressora_pesquisa_ajax(request):
     if request.method == 'GET':
         impressoras = []
@@ -98,9 +100,55 @@ def impressora_pesquisa_ajax(request):
             })
         return JsonResponse(data={'impressoras': data}, safe=True)
 
+@login_required
+@permission_required('departamento.view_funcionario', raise_exception=True)
+def funcionario_pesquisa_ajax(request):
+    if request.method == 'GET':
+        impressoras = []
+        data = []
+        pesquisa = request.GET.get('query')
+        id_computador = request.GET.get('id_computador')
+        computador = get_object_or_404(Computador, pk=id_computador)
+        if pesquisa:
+            funcionarios = Funcionario.objects.filter(Q(nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa))
+        else:
+            funcionarios = Funcionario.objects.all()
+
+        for funcionario in funcionarios.order_by('nome'):
+            predio = funcionario.departamento.predio if funcionario.departamento else ''
+            departamento = funcionario.departamento.departamento if funcionario.departamento else ''
+            background_cor = ''
+            if computador.funcionario is not None and computador.funcionario == funcionario:
+                background_cor = 'rgb(170, 255, 170)'
+
+            html_item = f"""<tr class='mt-2' style='background-color:{background_cor};'><td class='d-flex justify-content-between'><img class='rounded-circle' src="" style='width:50px;' alt=""><div class="col ps-3 d-flex flex-column"><span><b>{funcionario.nome} {funcionario.sobrenome}</b></span><span class='text-muted'>{departamento} - {predio}</span></div></td><td class='text-center'><i onclick='VincularFuncionario({funcionario.id})' class="fas fa-link"></i></td></tr>
+            """
+            data.append({
+                'html_item': html_item,
+                'nome': funcionario.nome,
+            })
+        return JsonResponse(data={'funcionarios': data}, safe=True)
 
 @login_required
-@permission_required('dispositivo.view_impressora')
+@permission_required('departamento.view_funcionario', raise_exception=True)
+def vincular_funcionario_ajax(request):
+    if request.method == 'GET':
+        id_funcionario = request.GET.get('id_funcionario')
+        id_computador = request.GET.get('id_computador')
+        funcionario = get_object_or_404(Funcionario, pk=id_funcionario)
+        computador = get_object_or_404(Computador, pk=id_computador)
+        
+        if computador.funcionario != funcionario:
+            Computador.objects.filter(id=computador.id).update(funcionario=funcionario)
+        else:
+            Computador.objects.filter(id=computador.id).update(funcionario=None)
+            
+        return JsonResponse(data={'falha': 'sim'}, safe=True)
+
+    return JsonResponse(status=401, data={'data':'data'}, safe=True)
+
+@login_required
+@permission_required('dispositivo.view_impressora', raise_exception=True)
 def vincular_impressora_ajax(request):
     if request.method == 'GET':
         id_impressora = request.GET.get('id_impressora')
@@ -116,7 +164,7 @@ def vincular_impressora_ajax(request):
 
 
 @login_required
-@permission_required('dispositivo.change_computador')
+@permission_required('dispositivo.change_computador', raise_exception=True)
 def atualizar_computador_info_ajax(request):
     mensagens = []
     campo_erros = []
@@ -145,7 +193,6 @@ def atualizar_computador_info_ajax(request):
                         novo_hd = Hd(modelo='Normal', tamanho_gb=int(form.cleaned_data.get('hd')))
                         novo_hd.tamanho = form.cleaned_data.get('hd')
                         novo_hd.save()
-                        print(novo_hd)
                         computador.hd = novo_hd
                 except ValueError:
                     campo_erros.append('id_hd')
@@ -217,7 +264,8 @@ def atualizar_computador_info_ajax(request):
 
 
 @login_required
-@permission_required('dispositivo.change_computador')
+@permission_required('dispositivo.change_computador', raise_exception=True)
+@permission_required('dispositivo.change_enderecoip', raise_exception=True)
 def verificar_endereco_ip(request):
     mensagens = []
     campo_erros = []
@@ -283,4 +331,211 @@ def verificar_endereco_ip(request):
                 if campo.errors:
                     campo_erros.append(campo.id_for_label)
     
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+@login_required
+@permission_required('inventario.change_processador', raise_exception=True)
+def atualizar_processador_ajax(request):
+    mensagens = []
+    campo_erros = []
+    
+    if request.method == 'POST':
+        computador = get_object_or_404(Computador, pk=int(request.POST.get('id_computador')))
+        form = None
+        if computador.processador:
+            processador = get_object_or_404(Processador, pk=computador.processador.id)
+            form = ProcessadorForm(request.POST, instance=processador)
+        else:
+            form = ProcessadorForm(request.POST)
+
+        if form.is_valid():
+            processador_atualizado = form.save()
+            if computador.processador:
+                pass
+            else:
+                Computador.objects.filter(id=computador.id).update(processador=processador_atualizado)
+                
+            return JsonResponse(status=200, safe=True, data={'data': 'data'})
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+
+@login_required
+@permission_required('dispositivo.change_computador', raise_exception=True)
+def deletar_processador_ajax(request):
+    if request.method == 'GET':
+        id_computador = request.GET.get('id_computador')
+        computador = get_object_or_404(Computador, pk=id_computador)
+        if computador.processador:
+            Processador.objects.filter(computador=computador).delete()
+            return JsonResponse(status=200, data={'apagado': 'Sim'}, safe=True)
+        else:
+            return JsonResponse(status=400, data={'status':'false', 'messagem': ['Esse computador não possui um processador vinculado.'],  'field_erros': ['']}, safe=True)
+    
+    return JsonResponse(status=404, data={'status':'false','messagem': ['Ocorreu um erro ao tentar remover o processador'], 'field_erros': ['']})
+
+@login_required
+@permission_required('dispositivo.change_computador', raise_exception=True)
+def deletar_placamae_ajax(request):
+    if request.method == 'GET':
+        id_computador = request.GET.get('id_computador')
+        computador = get_object_or_404(Computador, pk=id_computador)
+        if computador.placa_mae:
+            PlacaMae.objects.filter(computador=computador).delete()
+            return JsonResponse(status=200, data={'apagado': 'Sim'}, safe=True)
+        else:
+            return JsonResponse(status=400, data={'status':'false', 'messagem': ['Esse computador não possui uma placa mãe vinculada.'],  'field_erros': ['']}, safe=True)
+    
+    return JsonResponse(status=404, data={'status':'false','messagem': ['Ocorreu um erro ao tentar remover a placa mãe'], 'field_erros': ['']})
+
+@login_required
+@permission_required('dispositivo.change_computador', raise_exception=True)
+def atualizar_placamae_ajax(request):
+    mensagens = []
+    campo_erros = []
+    
+    if request.method == 'POST':
+        computador = get_object_or_404(Computador, pk=int(request.POST.get('id_computador')))
+        form = None
+        if computador.placa_mae:
+            placamae = get_object_or_404(PlacaMae, pk=computador.placa_mae.id)
+            form = PlacaMaeForm(request.POST, instance=placamae)
+        else:
+            form = PlacaMaeForm(request.POST)
+
+        if form.is_valid():
+            placamae_atualizado = form.save()
+            if computador.placa_mae:
+                pass
+            else:
+                Computador.objects.filter(id=computador.id).update(placa_mae=placamae_atualizado)
+                
+            return JsonResponse(status=200, safe=True, data={'data': 'data'})
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+
+@login_required
+@permission_required('dispositivo.add_computador', raise_exception=True)
+def computador_novo_ajax(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'POST':
+        usuario = request.POST.get('usuario')
+        senha = request.POST.get('senha')
+        valores = [request.POST]
+        form = ComputadorFormNovo(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                return JsonResponse(data={'data': 'data'}, safe=True)
+            except ValueError as e:
+                mensagens.append('Ocorreu um erro ao tentar salvar o computador. Tente Novamente.')
+                for campo in form:
+                    campo_erros.append(campo.id_for_label)
+
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
+    if request.method == 'GET':
+        departamentos = []
+        for item in Departamento.objects.all():
+            departamentos.append({
+                'id': item.id,
+                'nome': item.departamento,
+            })
+        data = {
+            'departamentos': departamentos
+        }
+        return JsonResponse(status=200, data=data, safe=True)
+
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+
+@login_required
+@permission_required('dispositivo.add_impressora', raise_exception=True)
+def impressora_nova_ajax(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'PUT':
+        return JsonResponse(data={'data': 'data'}, safe=True)
+    
+    if request.method == 'POST':
+        form = ImpressoraForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                return JsonResponse(data={'data': 'data'}, safe=True)
+            except ValueError as e:
+                mensagens.append('Ocorreu um erro ao tentar salvar o roteador. Tente Novamente.')
+                for campo in form:
+                    campo_erros.append(campo.id_for_label)
+
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+    
+    if request.method == 'GET':
+        impressora_id = request.GET.get('id')
+        impressora = get_object_or_404(Impressora, pk=impressora_id)
+        endereco_mac = ''
+        endereco_ip = ''
+        if impressora.mac_impressora.count() >=1:
+            endereco_mac = str(impressora.mac_impressora.first().mac_address)
+
+        if impressora.ip_impressora.count() >=1:
+            endereco_ip = str(impressora.ip_impressora.first().ip_address)
+
+        return JsonResponse(data={'id':impressora_id, 'campos': {
+            'impressora_id': impressora.id,
+            'nome': impressora.nome,
+            'modelo': impressora.modelo,
+            'departamento': impressora.departamento.id if impressora.departamento else '',
+            'matricula': impressora.matricula,
+            'endereco_ip': endereco_ip,
+            'endereco_mac': endereco_mac,
+            'descricao': impressora.descricao
+            
+        }}, safe=True)
+
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+@login_required
+@permission_required('dispositivo.change_impressora', raise_exception=True)
+def impressora_atualizar_ajax(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'POST':
+        impressora_id = request.POST.get('impressora_id')
+        form = ImpressoraForm(request.POST)
+        try:
+            if form.put_isvalid(impressora_id):
+                form.put_save(impressora_id)
+                return JsonResponse(data={'data': 'data'}, safe=True)
+        except ValidationError as e:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})

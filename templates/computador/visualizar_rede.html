@@ -50,13 +50,13 @@
             </div>
             <div style='max-height:20vh; min-height: 20vh;' class="card-body text-light text-center text-muted overflow-auto">
                 {% if computador.impressora.count %}
-                <table class="table table-sm table bg-dark text-light text-muted text-center">
-                    <thead>
+                <table class="table table-sm table bg-dark text-light text-muted text-center table-borderless">
+                    <!-- <thead>
                         <th>Nome</th>
                         <th>Impressora</th>
                         <th>IP</th>
                         <th>Remover</th>
-                    </thead>
+                    </thead> -->
                     <tbody>
                         {% for impressora in computador.impressora.all %}
                         <tr>
@@ -68,14 +68,15 @@
                                 {% endfor %}
                             </td>
                             <td>
-                                <i onclick='VincularNovaImpressora("{{impressora.id}}", true)' class="fas fa-link text-danger"></i>
+                                <i onclick='VincularNovaImpressora("{{impressora.id}}", true)' class="fas fa-trash-alt"></i>
+                                
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 {% else %}
-                <p class='text-center text-muted'>Não Disponível</p>
+                <p class='text-center text-muted pt-2 pb-2'>Não Disponível</p>
                 {% endif %}
             </div>
         </div>
@@ -87,13 +88,13 @@
 <div class="modal fade" tabindex="-1" id='modalAdicionarImpressora'>
     <div class="modal-dialog modal-lg">
         <div style='font-family: Arial, Helvetica, sans-serif;' class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Adicionar Impressora</h5>
+            <div class="modal-header" style='background-color:#02aed8;'>
+                <h5 class="modal-title text-light">Vincular Impressora</h5>
                 <span data-bs-dismiss='modal'>
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times text-light"></i>
                 </span>
             </div>
-            <div style='max-height:50vh;' class="modal-body overflow-auto">
+            <div style='max-height:60vh;' class="modal-body overflow-auto">
                 <form id='pesquisa'>
                     <div class="input-group">
                         <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
@@ -101,8 +102,8 @@
                         <button class="btn btn-outline-primary">Procurar</button>
                       </div>
                 </form>
-                <div class="mt-4">
-                    <table class="table table-sm table">
+                <div class="mt-4 p-2">
+                    <table class="table table-sm table table-responsive">
                         <tbody id='tabelaImpressora'>
                         </tbody>
                     </table>
@@ -114,10 +115,13 @@
 <div class="modal fade" tabindex="-1" id='modalAtualizarIpMac'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title">Alterar IP/MAC</h5>
+            <div class="modal-header bg-primary">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
+                    <i class="fas fa-pen pe-2"></i>
+                    Alterar IP/MAC
+                </h5>
                 <span data-bs-dismiss="modal">
-                    <i class="fas fa-plus text-success me-2"></i>
+                    <i class="fas fa-times text-light"></i>
                 </span>
             </div>
             <div class="modal-body">

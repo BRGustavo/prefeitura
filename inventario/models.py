@@ -72,6 +72,13 @@ class PlacaMae(models.Model):
         ('Intel', 'Intel'),
         ('AMD', 'AMD')
     ])
+    ram_suporte = models.CharField(max_length=10, default='DDR2', null=False, choices=[
+        ('DDR1', 'DDR1'),
+        ('DDR2', 'DDR2'),
+        ('DDR3', 'DDR3'),
+        ('DDR4', 'DDR4'),
+        
+    ])
     socket = models.CharField(max_length=50, blank=True)
     descricao = models.TextField(blank=True)
     criado_data = models.DateTimeField(null=True, blank=True, auto_now_add=True)

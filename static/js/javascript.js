@@ -1,6 +1,7 @@
 let timer = null;
 let atualizarAfterModal = false;
 
+
 $('#id_endereco_ip').keyup(function(){
     if(validador == true){
         clearTimeout(timer);
@@ -174,6 +175,67 @@ function visualizarModalApagar(id){
     $('#modalDeletar').modal('show');
 }
 
+$('#modalDepUser').on('show.bs.modal', function (e) {
+    atualizarAfterModal = false;
+    PesquisarFuncionario('');    
+});
+$('#modalDepUser').on('hidden.bs.modal', function (e) {
+    if(atualizarAfterModal == true){
+        location.reload();
+    } 
+});
+$('#pesquisaFuncionario').submit(function(e){
+    let conteudo = $("#pesquisaFuncionario").find('input[name="query"]').val();
+    PesquisarFuncionario(conteudo);
+    return false;
+})
+
+function PesquisarFuncionario(query){
+    let pesquisa = query;
+    $.ajax({
+        type: 'GET',
+        url: forms_urls['pesquisaFuncionario'],
+        data: {
+            'query': pesquisa,
+            'id_computador': forms_urls['id_computador']
+        },
+        success: function(data){
+            $('#tabelaFuncionario').html('');
+           
+            if(data['funcionarios'].length <= 0){
+                let item_novo = $('<tr><td class="text-center">Nada encontrado.</td></tr>');
+                $('#tabelaFuncionario').append(item_novo)
+            }
+            for(let item in data['funcionarios']){
+                let html_item = data['funcionarios'][item].html_item;
+                let nome = data['funcionarios'][item].nome;
+                let marca = data['funcionarios'][item].marca;
+                let ip = data['funcionarios'][item].ip;
+
+                $('#tabelaFuncionario').append(
+                    $(`${html_item}`)
+                ).fadeIn('slow')
+                $('#tabelaFuncionario img').attr('src', `${forms_urls['funcionarioImg']}`);
+            }
+        }
+    });
+}
+function VincularFuncionario(id_funcionario){
+    atualizarAfterModal = true
+    $.ajax({
+        type: 'GET',
+        url: forms_urls['vincularFuncionario'],
+        data: {
+            'id_funcionario': id_funcionario,
+            'id_computador': forms_urls['id_computador'],
+        },
+        success: function(e){
+            let conteudo = $("#pesquisaFuncionario").find('input[name="query"]').val();
+            PesquisarFuncionario(conteudo);
+        }
+    });
+}
+
 $('#modalAdicionarImpressora').on('show.bs.modal', function (e) {
     PesquisarImpressoras('');    
 });
@@ -200,8 +262,10 @@ function PesquisarImpressoras(query){
         },
         success: function(data){
             $('#tabelaImpressora').html('');
+           
             if(data['impressoras'].length <= 0){
-                $('#tabelaImpressora').append('<tr><td class="text-center">Nada encontrado.</td></tr>');
+                let item_novo = $('<tr><td class="text-center">Nada encontrado.</td></tr>');
+                $('#tabelaImpressora').append(item_novo)
             }
             for(let item in data['impressoras']){
                 let html_item = data['impressoras'][item].html_item;
@@ -211,7 +275,7 @@ function PesquisarImpressoras(query){
 
                 $('#tabelaImpressora').append(
                     $(`${html_item}`)
-                )
+                ).fadeIn('slow')
                 $('#tabelaImpressora img').attr('src', `${forms_urls['m4070Img']}`);
             }
         }
@@ -270,6 +334,235 @@ function mandarconteudo(lowe, url=window.location){
             }
         }
     })
+}
+$('#modalAdicionarComputador').on('show.bs.modal', function (e) {
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.computador_novo_ajax,
+        data: {
+            'tipo': 'departamento'
+        },
+        success: function(data){
+            let select = $('#departamento-departamento')
+            select.html("")
+            select.append($(`<option value selected'>---------</option>`))
+            data['departamentos'].forEach(function(item){
+                var elemento = $(`<option value='${item.id}'>${item.nome}</option>`)
+                select.append(elemento);
+            })
+        }
+    });
+});
+
+$('#form-computadornovo').submit(function(e){
+    e.preventDefault()
+    const csrftoken = document.querySelector(`#form-computadornovo [name=csrfmiddlewaretoken]`).value;
+    let usuario = window.document.querySelector("#usuario-usuario").value
+    let senha = window.document.querySelector("#senha-senha").value
+    let departamento = window.document.querySelector("#departamento-departamento").value
+    if(usuario !== null){
+        window.document.querySelector("#id_usuario").value = usuario
+        window.document.querySelector("#id_senha").value = senha
+        
+    }
+    if(departamento !== null){
+        window.document.querySelector('#id_departamento').value = departamento
+    }
+    var serialize = $(`#form-computadornovo`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.computador_novo_ajax,
+        data: serialize,
+        beforeSend: function(e){
+
+            $("#novoComputadorButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalAdicionarComputador').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novoComputadorButton").html("Adicionar")
+
+            $(`#form-computadornovo input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-computadornovo label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+
+    var serialize = $(`#form-computadornovo`).serialize();
+})
+$('#form-impressoranova').submit(function(e){
+    e.preventDefault()
+    const csrftoken = window.document.querySelector('#form-impressoranova input[name=csrfmiddlewaretoken]').value;
+    var serialize = $(`#form-impressoranova`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.impressora_nova_ajax,
+        data: serialize,
+        beforeSend: function(e){
+
+            $("#novaImpressoraButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalImpressora').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novaImpressoraButton").html("Adicionar")
+
+            $(`#form-impressoranova input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-impressoranova label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+})
+$('#modalImpressora').on('show.bs.modal', function(){
+    window.document.querySelectorAll("#modalImpressora input:not([name='csrfmiddlewaretoken']), textarea").forEach(function(e){
+        e.value = ""
+    });
+});
+$('#form-impressoraatualizar').submit(function(e){
+    e.preventDefault()
+    const csrftoken = document.querySelector(`#form-impressoraatualizar [name=csrfmiddlewaretoken]`).value;
+    var serialize = $(`#form-impressoraatualizar`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.impressora_atualizar_ajax,
+        data: serialize,
+        beforeSend: function(e){
+
+            $("#novaImpressoraButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalImpressoraAtualizar').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novaImpressoraButton").html("Adicionar")
+
+            $(`#form-impressoraatualizar input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-impressoraatualizar label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+})
+
+function mostrarImpressoraAtualizar(impressora_id){
+    $.ajax({
+        type:"GET",
+        url: forms_urls.impressora_nova_ajax,
+        data: {
+            'id': impressora_id
+        },
+        success: function(data){
+            for(let item in data.campos){
+                $(`input[name='${item}']`).val(data.campos[item]);
+                $(`textarea[name='descricao']`).val(data.campos['descricao']);
+            }
+        }
+    });
+
+    $("#modalImpressoraAtualizar").modal('show');
+}
+function apagarImpressora(impressora_id){
+    $("#modalApagarImpressora").modal('show');
+    $("#modalApagarImpressora").find("#apagarID").val(impressora_id);
+    
+}
+function confirmarRemoverImpressora(){
+    let impressora_id = $("#modalApagarImpressora").find("#apagarID").val()
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.impressora_delete,
+        data: {
+            'impressora_id':impressora_id
+        },
+        success: function(data){
+            $('modalApagarImpressora').modal('hide');
+            location.reload()
+        }
+    });
+}
+
+function apagarProcessador(id_computador){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.deletar_processador_ajax,
+        data: {
+            'id_computador':id_computador
+        },
+        success: function(data){
+            $('modalRemoverProcessador').modal('hide');
+            location.reload()
+        },
+        error: function (request, status, error) {
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+            }
+        }
+    });
+}
+function apagarPlacaMae(id_computador){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.deletar_placamae_ajax,
+        data: {
+            'id_computador':id_computador
+        },
+        success: function(data){
+            $('modalRemoverPlacaMae').modal('hide');
+            location.reload()
+        },
+        error: function (request, status, error) {
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+            }
+        }
+    });
 }
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});

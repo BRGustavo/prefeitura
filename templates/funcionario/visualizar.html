@@ -48,7 +48,10 @@
                             <div class="col-12 mt-2">
                                 <ul class="list-group">
                                     <li class="list-group-item text-center bg-dark text-muted">
-                                        <b>Nome: </b> {{funcionario.nome}} {{funcionario.sobrenome}}
+                                        <b>Nome: </b> {{funcionario.nome}} 
+                                        {% if funcionario.sobrenome %}
+                                        {{funcionario.sobrenome}}
+                                        {% endif %}
                                     </li>
                                     <li class="list-group-item text-center bg-dark text-muted">
                                         <b>Departamento: </b> <a href="{% url 'departamento_visualizar' funcionario.departamento.id %}">{{funcionario.departamento}}</a> 
@@ -139,7 +142,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-12 col-lg-6">
-                                                <p class='text-muted'><b>Admin Rede:</b> {{funcionario.admin_rede}}</p>
+                                                <p class='text-muted'><b>Admin Local:</b> {{funcionario.admin_rede}}</p>
                                             </div>
                                             <div class="col-12 col-lg-6">
                                                 <p class='text-muted'><b>Proxy:</b> {{funcionario.controle_acesso}}</p>
@@ -210,10 +213,10 @@
     <div class="modal fade" tabindex="-1" id='modalEditFuncionario'>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Funcionário</h5>
+                <div class="modal-header" style='background-color:rgb(184, 106, 106);'>
+                    <h5 class="modal-title text-light">Editar Funcionário</h5>
                     <span data-bs-dismiss='modal'>
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times text-light"></i>
                     </span>
                 </div>
                 <div class="modal-body">

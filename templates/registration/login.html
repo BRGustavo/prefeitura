@@ -62,16 +62,16 @@
         <div class="modal" tabindex="-1" id='modalErro'>
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-body">
+                    <div class="modal-body" style='background-color: #fcdde0; font-family: Arial, Helvetica, sans-serif;'>
                         {% if form.errors %}
-                        <div class="alert alert-danger" role='alert'>
+                        <div class="alert border-0" role='alert'>
                             {% for key, value in form.errors.items %}
                                 {{ value }}
                             {% endfor %}
                         </div>
-                    {% endif %}
+                        {% endif %}
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer" style='background-color: #fcdde0;'>
                         <button class="btn btn-primary" data-bs-dismiss='modal'>Voltar</button>
                     </div>
                 </div>

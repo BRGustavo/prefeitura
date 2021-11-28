@@ -13,9 +13,9 @@ class DepartamentoForm(forms.ModelForm):
         fields = ['predio', 'departamento', 'singla_departamento', 'descricao']
 
     predio = forms.ChoiceField(label='Prédio', choices=CHOICES_PREDIOS, widget=Select(attrs={'class': 'form-control'}))
-    departamento = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
-    singla_departamento = forms.CharField(label='Sigla Departamento', max_length=5, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}), required=False)
-    descricao = forms.CharField(label='Descrição', max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off'}), required=False)
+    departamento = forms.CharField(max_length=255, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: Informática'}))
+    singla_departamento = forms.CharField(label='Sigla Departamento', max_length=5, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder':'Exemplo: TI'}), required=False)
+    descricao = forms.CharField(label='Descrição', max_length=1000, widget=Textarea(attrs={'rows':'3','class':'form-control', 'autocomplete':'off', 'placeholder': 'Informações Complementares...'}), required=False)
 
 
 class FuncionarioForm(forms.ModelForm):

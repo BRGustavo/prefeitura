@@ -4,16 +4,20 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.validators import validate_ipv4_address
 from django.forms import inlineformset_factory
+from macaddress import format_mac, mac_linux
+import netaddr
+from netaddr.strategy.eui48 import mac_bare
 from departamento.forms import FuncionarioForm
 from departamento.models import Departamento, Funcionario
 from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
-from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
+from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, ComputadorFormNovo, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
 from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
 from utils import VerificarIp, VerificarMac
 from django.core.exceptions import ValidationError
 from netaddr import EUI
+from netaddr.core import AddrFormatError
 
 
 @login_required
@@ -23,11 +27,12 @@ def computador_view(request, pagina):
     computadores = Computador.objects.all()
     if pesquisa != '' and pesquisa is not None:
         computadores = computadores.filter(
-            Q(nome_rede__icontains=pesquisa) | Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(id__iexact=pesquisa)
+            Q(nome_rede__icontains=pesquisa) | Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(departamento__singla_departamento__icontains=pesquisa) | Q(ip_computador__ip_address__icontains=pesquisa) | Q(mac_computador__mac_address__icontains=pesquisa)| Q(id__iexact=pesquisa)
         )
     computadores = Paginator(computadores.order_by('id'), 10).get_page(pagina)
     content = {
-        'computadores': computadores
+        'computadores': computadores,
+        'formComputador': ComputadorFormNovo()
     }
     return render(request, template_name='computador/computador.html', context=content)
 
@@ -201,11 +206,26 @@ def computador_visualizar(request, id, pagina='principal'):
         'endereco_mac':computador.mac_computador.first().mac_address if computador.mac_computador.count() >=1 else ''
         })
 
+    formProcessador = ProcessadorForm()
+    processador_pc = Processador.objects.all().filter(computador=computador)
+    if processador_pc.count() >=1:
+        processador_id = get_object_or_404(Processador, pk=processador_pc.first().id) 
+        formProcessador = ProcessadorForm(instance=processador_id)
+
+    formPlacaMae = PlacaMaeForm()
+    placamae_pc = PlacaMae.objects.all().filter(computador=computador)
+    if placamae_pc.count() >=1:
+        placamae_id = get_object_or_404(PlacaMae, pk=placamae_pc.first().id) 
+        formPlacaMae = PlacaMaeForm(instance=placamae_id)
+
     context = {
         'computador': computador,
         'formComputador': form,
         'formInfo': formInfo,
         'formIpMac': formIpMac,
+        'formProcessador': formProcessador,
+        'formPlacaMae': formPlacaMae,
+        'funcionarios': Funcionario.objects.all(),
         
     }
     if request.method == 'POST':
@@ -219,6 +239,10 @@ def computador_visualizar(request, id, pagina='principal'):
         return render(request, template_name='computador/visualizar.html', context=context)
     elif pagina == 'rede':
         return render(request, template_name='computador/visualizar_rede.html', context=context)
+    elif pagina == 'processador':
+        return render(request, template_name="computador/visualizar_processador.html", context=context)
+    elif pagina == 'placa_mae':
+        return render(request, template_name='computador/visualizar_placa_mae.html', context=context)
 
 
 @login_required
@@ -392,157 +416,26 @@ def impressora_view(request, pagina):
     impressoras = Impressora.objects.all()
     if pesquisa != '' and pesquisa is not None:
         impressoras = impressoras.filter(
-            Q(patrimonio__icontains=pesquisa) | Q(nome__icontains=pesquisa) | Q(ip_impressora__ip_address__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(local__icontains=pesquisa) | Q(id__iexact=pesquisa))
+            Q(matricula__icontains=pesquisa) | Q(nome__icontains=pesquisa) | Q(ip_impressora__ip_address__icontains=pesquisa) | Q(mac_impressora__mac_address__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__singla_departamento__icontains=pesquisa)| Q(local__icontains=pesquisa) | Q(id__iexact=pesquisa))
 
     impressoras = Paginator(impressoras.order_by('id'), 10).get_page(pagina)
     content = {
-        'impressoras': impressoras
+        'impressoras': impressoras,
+        'form': ImpressoraForm()
     }
     return render(request, template_name='impressora/impressora.html', context=content)
 
-
 @login_required
-@permission_required('dispositivo.add_impressora', raise_exception=True)
-def impressora_add(request):
-    form = ImpressoraForm()
-    context = {
-        'form': form,
-        'mensagens': []
-    }
-    if request.method == 'POST':
-        form = ImpressoraForm(request.POST)
-        if form.is_valid():
-            ip_data = ''
-            mac_data = ''
-            
-            try:
-                ip_data = VerificarIp(form.cleaned_data.get('endereco_ip'))
-                try:
-                    mac_data = VerificarMac(form.cleaned_data.get('endereco_mac'))
-                    pc_novo = form.save()
-                    impressora_tipo = ContentType.objects.get(model='impressora')
-
-                    if ip_data is not None:
-                        EnderecoIp(ip_address=ip_data,
-                        content_type_id=impressora_tipo.id, parent_object_id=pc_novo.id).save()
-                    if mac_data is not None:
-                        EnderecoMac(mac_address=mac_data,
-                        content_type_id=impressora_tipo.id, parent_object_id=pc_novo.id).save()
-
-                    return redirect(impressora_view, 1)
-
-                except IndexError:
-                    context['mensagens'].append('Esse endereço MAC já está em uso')
-                    return render(request, template_name='impressora/novo.html', context=context)
-
-            except IndexError:
-                context['mensagens'].append('Esse endereço IP já está em uso')
-                return render(request, template_name='impressora/novo.html', context=context)
-
-        else:
-                for valores in form.errors.values():
-                    context['mensagens'].append(valores)
-                
-                context['field_erros'] = form.errors.keys()
-    return render(request, template_name='impressora/novo.html', context=context)
-
-@login_required
-@permission_required('dispositivo.change_impressora', raise_exception=True)
-def impressora_edit(request, id):
-    impressora_db = get_object_or_404(Impressora, pk=id)
-    form = ImpressoraForm(instance=impressora_db)
-    form_ip = EnderecoIp.objects.filter(impressora=impressora_db)
-    form_mac = EnderecoMac.objects.filter(impressora=impressora_db)
-    context = {
-        'form': form,
-        'impressora': impressora_db,
-        'form_ip': form_ip,
-        'form_mac': form_mac,
-        'mensagens': []
-    }
-    if request.method == 'POST':
-        form = ImpressoraForm(request.POST, instance=impressora_db)
-        impressora_objeto_tipo = ContentType.objects.filter(model='impressora').first().id
-        if form.is_valid():
-            endereco_ip_formulario = form.cleaned_data['endereco_ip']
-            endereco_mac_formulario = form.cleaned_data['endereco_mac']
-
-            if len(endereco_ip_formulario) >= 1:
-                # Consulta para ver se esse impressora possui um ip já cadastrado.
-                consulta_impressora_ip = EnderecoIp.objects.filter(impressora=impressora_db)
-
-                if consulta_impressora_ip.count() >= 1:
-                    """Caso exista um ip cadastrado para esse impressora na tabela de ips."""
-                    try: 
-                        if validate_ipv4_address(endereco_ip_formulario) is None:
-                            # Consulta para verificar se há um ip já cadastrado igual ao ip do formulário.
-                            endereco_ip_db = EnderecoIp.objects.filter(ip_address=endereco_ip_formulario)
-                            if endereco_ip_db.count() >= 1:
-                                if endereco_ip_db.first().parent_object_id != impressora_db.id:
-                                    """Caso esse ip já exista e seja de outro dono, vai mostrar uma msg no front."""
-                                    context['mensagens'].append('Você está tentando usar um ip já utilizado por outro dispositivo.')
-                                    return render(request, template_name='impressora/editar.html', context=context)
-                            else:
-                                """Atualizando o ip antigo já vinculado ao outro impressora"""
-                                ip_velho = consulta_impressora_ip.first()
-                                ip_velho.ip_address = endereco_ip_formulario
-                                ip_velho.save()
-
-                    except ValidationError:
-                        """Endereço de ip informado não é valido."""
-                        context['mensagens'].append('Valor digitado não é um ip ou não é um ipv4 válido.')
-                        return render(request, template_name='impressora/editar.html', context=context)
-
-                else:
-                    """Impressora ainda não possui um ip cadastrado."""
-                    try: 
-                        if validate_ipv4_address(endereco_ip_formulario) is None:
-                            # Consultando o ip no banco de dados.
-                            ip_base_dados = EnderecoIp.objects.filter(ip_address=endereco_ip_formulario)
-                            if ip_base_dados.count() >= 1:
-                                """IP já possui outro dispositivo dono, portanto não pode ser inserido."""
-                                context['mensagens'].append('Você está tentando usar um ip já utilizado por outro dispositivo.')
-                                return render(request, template_name='impressora/editar.html', context=context)
-                            else:
-
-                                novo_ip = EnderecoIp(ip_address=endereco_ip_formulario, content_type_id=impressora_objeto_tipo, parent_object_id=impressora_db.id)
-                                novo_ip.save()
-
-                    except ValidationError:
-                        """Endereço de ip informado não é valido."""
-                        context['mensagens'].append('Valor digitado não é um ip ou não é um ipv4 válido.')
-                        return render(request, template_name='impressora/editar.html', context=context)
-
-            else:
-                """Caso o usuário não tenha informado nada no campo ip."""
-                consulta_impressora_ip = EnderecoIp.objects.filter(impressora=impressora_db)
-                if consulta_impressora_ip.count() >= 1:
-                    ip_antigo = consulta_impressora_ip.first()
-                    ip_antigo.delete()
-
-            # Consulta para ver se esse impressora possui um mac já cadastrado.
-            consulta_impressora_mac = EnderecoMac.objects.filter(impressora=impressora_db)
-            if isinstance(endereco_mac_formulario, EUI):
-                if consulta_impressora_mac.count() >=1:
-                    """Caso impressora já possua um mac cadastrado."""
-                    mac_antigo = consulta_impressora_mac.first()
-                    mac_antigo.mac_address = endereco_mac_formulario
-                    mac_antigo.save()
-                else:
-                    mac_novo = EnderecoMac(mac_address=endereco_mac_formulario, content_type_id= impressora_objeto_tipo, parent_object_id=impressora_db.id)
-                    mac_novo.save()
-            else:
-                if consulta_impressora_mac.count() >=1:
-                    consulta_impressora_mac.delete()
-
-            form.save()
-            return redirect(impressora_view, 1)
-        else:
-                for valores in form.errors.values():
-                    context['mensagens'].append(valores)
-                
-                context['field_erros'] = form.errors.keys()       
-    return render(request, template_name='impressora/editar.html', context=context)
+@permission_required('dispositivo.delete_impressora', raise_exception=True)
+def impressora_delete(request):
+    if request.method == 'GET':
+        impressora_id = request.GET.get("impressora_id")
+        impressora = get_object_or_404(Impressora, pk=impressora_id)
+        if impressora:
+            impressora.delete()
+            return JsonResponse(status=200, data={'apagado':True, 'impressora_id':impressora_id}, safe=True)
+        
+    return JsonResponse(status=400, safe=True, data={'data':'data'})
 
 
 def teste_view(request):

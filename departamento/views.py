@@ -48,29 +48,6 @@ def departamento_visualizar(request, id):
 
 
 @login_required
-@permission_required('departamento.change_departamento', raise_exception=True)
-def departamento_edit(request, id):
-    """Função chamada quando o usuário clica em editar o departamento."""
-    departamento_db = get_object_or_404(Departamento, pk=id)
-    form = DepartamentoForm(instance=departamento_db)
-
-    context = {
-        'form': form,
-        'mensagens': []
-    }
-    if request.method == 'POST':
-        form = DepartamentoForm(request.POST, instance=departamento_db)
-        if form.is_valid():
-            form.save()
-            return redirect(departamento_view, 1)
-        else:
-                for valores in form.errors.values():
-                    context['mensagens'].append(valores)
-                    
-                context['field_erros'] = form.errors.keys()
-    return render(request, 'departamento/editar.html', context=context)
-
-@login_required
 @permission_required('departamento.delete_departamento', raise_exception=True)
 def departamento_remover(request, id):
     departamento = get_object_or_404(Departamento, pk=id)
@@ -118,54 +95,6 @@ def funcionario_visualizar(request, id=1):
         'computadores': computadores,
     }
     return render(request, template_name='funcionario/visualizar.html', context=context)
-
-
-
-@login_required
-@permission_required('departamento.add_funcionario', raise_exception=True)
-def funcionario_create(request):
-    """Função responsável por cuidar da criação de um novo usuário"""
-    context = {
-        'form': FuncionarioForm,
-        'mensagens': []
-    }
-
-    if request.method == 'POST':
-        formulario = FuncionarioForm(request.POST)
-        if formulario.is_valid():
-            formulario.save()
-            return redirect(funcionario_view, 1)
-        else:
-                for valores in formulario.errors.values():
-                    context['mensagens'].append(valores)
-                    
-                context['field_erros'] = formulario.errors.keys()
-    
-    return render(request, 'funcionario/novo.html', context=context)
-
-
-@login_required
-@permission_required('departamento.change_funcionario', raise_exception=True)
-def funcionario_edit(request, id):
-    """Função responsável por exibir formulário de alteração funcionário."""
-    funcionario_db = get_object_or_404(Funcionario, pk=id)
-    form = FuncionarioForm(instance=funcionario_db)
-
-    context = {
-        'form': form,
-        'mensagens': []
-    }
-    if request.method == 'POST':
-        form = FuncionarioForm(request.POST, instance=funcionario_db)
-        if form.is_valid():
-            form.save()
-            return redirect(funcionario_view, 1)
-        else:
-                for valores in form.errors.values():
-                    context['mensagens'].append(valores)
-                    
-                context['field_erros'] = form.errors.keys()
-    return render(request, 'funcionario/editar.html', context=context)
 
 @login_required
 @permission_required('departamento.delete_funcionario')

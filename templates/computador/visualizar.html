@@ -13,7 +13,14 @@
             'm4070Img': '{% static "img/m4070.jpg" %}',
             'id_computador': '{{computador.id}}',
             'atualizar_computador_info_ajax': '{% url "atualizar_computador_info_ajax" %}',
-            'verificar_enderecoip_ajax': '{% url "verificar_enderecoip_ajax" %}'
+            'verificar_enderecoip_ajax': '{% url "verificar_enderecoip_ajax" %}',
+            'atualizar_processador_ajax': '{% url "atualizar_processador_ajax" %}',
+            'deletar_processador_ajax': '{% url "deletar_processador_ajax" %}',
+            'pesquisaFuncionario': '{% url "funcionario_pesquisa_ajax" %}',
+            'funcionarioImg': '{% static "img/funcionario.jpg" %}',
+            'vincularFuncionario': '{% url "vincular_funcionario_ajax" %}',
+            'atualizar_placamae_ajax': '{% url "atualizar_placamae_ajax" %}',
+            'deletar_placamae_ajax': '{% url "deletar_placamae_ajax" %}',
         }
         const formularioId = '{{ csrf_token }}';
     </script>
@@ -80,20 +87,20 @@
                   <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                  <ul class="navbar-nav">
-                    <li class="nav-item active">
-                      <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'principal' %}">Home <span class="sr-only">(Página atual)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'rede' %}">Rede</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Processador</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">Placa Mãe</a>
-                      </li>
-                  </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'principal' %}">Home <span class="sr-only">(Página atual)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'rede' %}">Rede</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'processador' %}">Processador</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'placa_mae' %}">Placa Mãe</a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         </div>
@@ -111,17 +118,32 @@
                                     <li class="list-group-item bg-dark text-light">
                                         <div class="col d-flex">
                                             <img style='width:50px; height:50px;' class='rounded-circle me-4' src="{% static 'img/funcionario.jpg' %}" alt="">
-                                            <span>
+                                            <div class="col d-flex justify-content-between">
                                                 {% if computador.funcionario %}
-                                                <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
-                                                    <p class='mb-0 text-muted'>{{computador.funcionario.nome}} {{computador.funcionario.sobrenome}}</p>
-                                                </a>
-                                                <p class='text-muted'>{{computador.departamento.departamento}}</p>
+                                                <span>
+                                                    <div class="d-flex flex-column">
+                                                        <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
+                                                            <p class='mb-0 text-muted'>{{computador.funcionario.nome}}
+                                                            {% if computador.funcionario.sobrenome %}
+                                                            {{computador.funcionario.sobrenome}}
+                                                            {% endif %}
+                                                            </p>
+                                                        </a>
+                                                        {% if computador.funcionario.departamento %}
+                                                        <p class='text-muted'>
+                                                            {{computador.funcionario.departamento.departamento}}
+                                                        </p>
+                                                        {% endif %}
+                                                    </div>
+                                                </span>
                                                 {% else %}
                                                 <p class='mb-0 text-muted'>Não Vinculado</p>
-                                                <p class="text-muted"></p>
                                                 {% endif %}
-                                            </span>
+                                                <span>
+                                                    <i data-bs-toggle='modal' data-bs-target='#modalDepUser' class="far fa-edit text-success"></i>
+                                                </span>
+                                        
+                                            </div>
                                         </div>
                                     </li>
                                     <li class="list-group-item bg-dark text-light">
@@ -146,7 +168,7 @@
                         
                     </div>
                 </div>
-                <div class="col-12 col-lg-8">
+                <div class="col-12 col-lg-8" style="min-height: 52vh;">
                     {% block informacoes %}
                     <div class="card bg-dark border-0">
                         <div class="card-content">
@@ -266,8 +288,11 @@
     <div class="modal fade" tabindex="-1" id='modalAtualizarDescricao'>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Atualizar Descrição</h5>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-light">
+                        <i class="fas fa-pen pe-2"></i>
+                        Atualizar Descrição
+                    </h5>
                     <span data-bs-dismiss='modal'>
                         <i class="fas fa-times"></i>
                     </span>
@@ -278,7 +303,7 @@
                         <div class="form-group">
                             <p>
                                 <label for="id_descricao" class='mt-1'>Descrição</label>
-                                <textarea class='form-control' name="descricao" id="id_descricao" cols="25" rows="10">{{computador.descricao}}</textarea>
+                                <textarea class='form-control' name="descricao" placeholder='Informações complementares...' id="id_descricao" cols="25" rows="10">{{computador.descricao}}</textarea>
                             </p>
                         </div>
                     </form>
@@ -294,10 +319,13 @@
     <div class="modal fade" tabindex="-1" id='modalAtualizarInformacao'>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Atualizar Informações</h5>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-light">
+                        <i class="fas fa-pen pe-2"></i>
+                        Atualizar Informações
+                    </h5>
                     <span data-bs-dismiss='modal'>
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times text-light"></i>
                     </span>
                 </div>
                 <div class="modal-body">
@@ -308,11 +336,11 @@
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
                                     <label for="id_nome_rede">Nome Rede</label>
-                                    <input type="text" name='nome_rede' id='id_nome_rede' value='{{computador.nome_rede}}' class='form-control'>
+                                    <input type="text" name='nome_rede' id='id_nome_rede' value='{{computador.nome_rede}}' class='form-control' autocomplete='off' placeholder="Ex: PRE-001">
                                 </div>
                                 <div class="form-group mt-2">
                                     <label for="id_memoria_ram">Memória RAM</label>
-                                    <input type="text" class='form-control' id='id_memoria_ram' name='memoria_ram' value='{{computador.memoria_ram}}'>
+                                    <input type="text" class='form-control' id='id_memoria_ram' name='memoria_ram' value='{{computador.memoria_ram}}' autocomplete="off" placeholder="Ex: 4 GB">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6">
@@ -322,7 +350,7 @@
                                 </div>
                                 <div class="form-group mt-2">
                                     <label for="id_anydesk">AnyDesk</label>
-                                    <input type="text" class='form-control' id='id_anydesk' name='anydesk' value='{{computador.anydesk}}'>
+                                    <input type="text" class='form-control' id='id_anydesk' name='anydesk' value='{{computador.anydesk}}' autocomplete="off" placeholder="Ex: 317 515 100">
                                 </div>
                                 
                             </div>
@@ -336,7 +364,7 @@
                                 </div>
                                 <div class="form-group mt-2">
                                     <label for="id_gabinete">Gabinete</label>
-                                    <input type="text" class='form-control' id='id_gabinete' name='gabinete' value='{{computador.gabinete.patrimonio|default_if_none:""}}'>
+                                    <input type="text" class='form-control' id='id_gabinete' name='gabinete' value='{{computador.gabinete.patrimonio|default_if_none:""}}' autocomplete="off" placeholder="Número Patrimônio">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6">
@@ -362,6 +390,48 @@
         </div>
     </div>
     {% endblock modals%}
+    <div class="modal fade" tabindex="-1" id='modalDepUser'>
+        <div class="modal-dialog modal-lg">
+            <div style='font-family: Arial, Helvetica, sans-serif;' class="modal-content">
+                <div class="modal-header border-0" style='background-color:#0229d8;'>
+                    <h5 class="modal-title text-light">
+                        <i class="fas fa-link pe-2"></i>
+                        Vincular Funcionário
+                    </h5>
+                    <span data-bs-dismiss='modal'>
+                        <i class="fas fa-times text-light"></i>
+                    </span>
+                </div>
+                <div style='max-height:60vh;' class="modal-body overflow-auto">
+                    <form id='pesquisaFuncionario'>
+                        <div class="input-group">
+                            <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
+                            aria-describedby="search-addon" autocomplete="off"/>
+                            <button class="btn btn-outline-primary">Procurar</button>
+                          </div>
+                    </form>
+                    <div class="mt-4 p-2 bg-light">
+                        <table class="table table-sm table table-responsive">
+                            <tbody id='tabelaFuncionario'>
+                                <tr class='mt-3'>
+                                    <td class='d-flex justify-content-between'>
+                                        <img class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" style='width:50px;' alt="">
+                                        <div class="col ps-3 d-flex flex-column">
+                                            <span><b>Gustavo de Oliveira</b></span> 
+                                            <span class='text-muted'>Departamento de Informática</span>
+                                        </div>
+                                    </td>
+                                    <td class='text-center'>
+                                        <i onclick='VincularFuncionario({funcionario.id})' class="fas fa-link"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'base_listagem.html' %}
+{% load static %}
 
 <!-- Titulo Página -->
 {% block title %}
@@ -15,9 +16,27 @@
 {% endblock botao_pesquisa %}
 
 {% block button_adicionar %}
-<a href='{% url "computador_add" %}' class="btn btn-outline-success">Adicionar</a>
+<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalAdicionarComputador'>Adicionar</button>
 {% endblock %}
 
+{% block style %}
+.card img {
+    width: 5vw;
+}
+.inputplaceholder::placeholder { 
+    color: black;
+    opacity: 0.5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+{% block scripts %}
+    <script>
+        const forms_urls = {
+            'computador_novo_ajax': '{% url "computador_novo_ajax" %}',
+        }
+    </script>
+{% endblock scripts %}
+
+{% endblock style %}
 {% block tabela %}
 <div class="card-body table-responsive bg-dark">
     {% if computadores %}
@@ -25,7 +44,6 @@
         <thead>
             <th scope="col">ID</th>
             <th scope='col'>Nome</th>
-            <th scope='col'>Patrimônio</th>
             <th scope="col">Departamento</th>
             <th scope="col">Funcionario</th>
             <th scope="col">Processador</th>
@@ -39,7 +57,6 @@
             <tr>
                 <th scope="row">{{ computador.id }}</th>
                 <td>{{ computador.nome_rede }}</td>
-                <th>{{ computador.patrimonio }}</th>
                 <td>
                     {% if computador.departamento %}
                     <a href="{% url 'departamento_visualizar' computador.departamento.id %}">
@@ -81,6 +98,121 @@
     {% endif %}
 </div>
 {% endblock tabela %}
+
+
+{% block modals %}
+
+<div class="modal fade" tabindex="-1" id='modalAdicionarComputador'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="container d-flex p-0 justify-content-center rounded">
+                    <div class="col">
+                        <div class="row">
+                            <div class="card p-0 col-12 col-md-4 col-lg-4 bg-success">
+                                <div class="card-content">
+                                    <div class="col d-flex justify-content-center d-flex align-items-center pt-4 pb-3">
+                                        <img class='rounded-circle' src="{% static 'img/patrimonio.png' %}" alt="">
+                                    </div>
+                                    <div class="col p-5 pt-2">
+                                        <h5 class='text-light text-center'>Informações Usuario & Departamento</h5>
+                                        <div class="form-group mt-4">
+                                            <div class="input-group border">
+                                               
+                                                <span class="input-group-text bg-success border-0">
+                                                    <i class="fas fa-user"></i>
+                                                </span>
+                                                <input type="text" id='usuario-usuario' class="form-control bg-success border-0 inputplaceholder" placeholder='Exemplo: gustavo.silva'>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <div class="input-group border">
+                                                <span class="input-group-text bg-success border-0">
+                                                    <i class="fas fa-key"></i>
+                                                </span>
+                                                <input type="password" id='senha-senha' class="form-control bg-success border-0 inputplaceholder" placeholder='Senha Acesso'>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <select name="departamento" id="departamento-departamento" class="form-control inputplaceholder bg-success" style='font-family: Arial, Helvetica, sans-serif;'>
+                                                <option value="">--------------</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-8 col-lg-8 bg-light pb-4">
+                                <div class="col p-3 pb-1 pt-4 d-flex justify-content-between">
+                                    <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-center'>
+                                        <i class="fas fa-tv pe-2"></i>
+                                        Novo Computador
+                                    </h5>
+                                    <span data-bs-dismiss='modal'>
+                                        <i class="fas fa-times text-dark"></i>
+                                    </span>
+                                </div>
+                                <div class="col mt-3">
+                                    <form id='form-computadornovo'>
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            {{formComputador.usuario}}
+                                            {{formComputador.senha}}
+                                            <div class="col" hidden>{{formComputador.departamento}}</div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_nome_rede">Nome Rede</label>
+                                                {{ formComputador.nome_rede}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_sistema_op">Sistema Operacional</label>
+                                                {{ formComputador.sistema_op}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_anydesk">AnyDesk</label>
+                                                {{ formComputador.anydesk}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_processador">Processador</label>
+                                                {{ formComputador.processador}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_memoria_ram">Memória RAM</label>
+                                                {{ formComputador.memoria_ram}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_hd">HD</label>
+                                                {{formComputador.hd}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_ip_endereco">Endereço IP</label>
+                                                {{formComputador.ip_endereco}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_endereco_mac">Endereço MAC</label>
+                                                {{ formComputador.endereco_mac}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_gabinete_patrimonio">Patrimônio Gabinete</label>
+                                                {{ formComputador.gabinete_patrimonio}}
+                                            </div>
+                                            <div class="form-group col-12 col-lg-6 mt-2">
+                                                <label for="id_monitor_patrimonio">Patrimônio Monitor</label>
+                                                {{formComputador.monitor_patrimonio}}
+                                            </div>
+                                            <div class="col-12 mt-3 d-flex justify-content-end">
+                                                <button id='novoComputadorButton' class="btn btn-success">Adicionar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modals %}
 
 {% block nav_paginacao %}
     {% if computadores.has_previous %}

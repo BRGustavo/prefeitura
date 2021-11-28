@@ -1,7 +1,6 @@
 {% extends 'departamento/departamento.html' %}
 
 {% block button_adicionar %}
-<!-- <a href='{% url "funcionario_add" %}' class="btn btn-outline-success">Adicionar</a> -->
 <a class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalFuncionario'>Adicionar</a>
 
 
@@ -47,7 +46,7 @@
             <th scope="col">Departamento</th>
             <th scope='col'>Usuário PC</th>
             <th scope='col'>Acesso</th>
-            <th scope='col'>Adm Rede</th>
+            <th scope='col'>Adm Local</th>
             <th scope='col'>Visualizar</th>
         </thead>
         <tbody>
@@ -55,7 +54,13 @@
             <tr>
                 <th scope="row">{{ funcionario.id }}</th>
                 <td>{{ funcionario.nome }}</td>
-                <td>{{ funcionario.sobrenome }}</td>
+                <td>
+                    {% if funcionario.sobrenome %}
+                    {{ funcionario.sobrenome }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
                 <td>
                     {% if funcionario.departamento %}
                     <a href="{% url 'departamento_visualizar' funcionario.departamento.id%}">{{ funcionario.departamento }}</a>
@@ -83,12 +88,13 @@
 <div class="modal fade" tabindex="-1" id='modalFuncionario'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-user pe-2"></i>
                     Adicionar Funcionário
                 </h5>
                 <span data-bs-dismiss='modal'>
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times text-light"></i>
                 </span>
             </div>
             <div class="modal-body">
@@ -134,7 +140,7 @@
                             </div>
                             <div class="col-12 col-lg-6 mt-3">
                                 <div class="form-group">
-                                    <label for="id_nome">Admin Rede</label>
+                                    <label for="id_nome">Admin Local</label>
                                     {{formFuncionario.admin_rede}}
                                 </div>
                             </div>

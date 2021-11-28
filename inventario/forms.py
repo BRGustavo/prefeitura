@@ -44,7 +44,7 @@ class GabineteForm(forms.ModelForm):
 class PlacaMaeForm(forms.ModelForm):
     class Meta:
         model = PlacaMae
-        fields = ('marca', 'modelo', 'hdmi', 'processador_suporte', 'socket', 'descricao')
+        fields = ('marca', 'modelo', 'hdmi', 'processador_suporte', 'ram_suporte', 'socket', 'descricao')
 
     marca = forms.CharField(label='Marca Placa Mãe', required=True, max_length=50, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: Gigabyte'}))
     modelo = forms.CharField(label='Modelo Placa', max_length=50, required=True, widget=TextInput(attrs={'class':'form-control', 'autocomplete':'off', 'placeholder': 'Ex: Z490M'}))
@@ -54,7 +54,15 @@ class PlacaMaeForm(forms.ModelForm):
         ('Intel', 'Intel'),
         ('AMD', 'AMD')
     ])
-    socket = forms.CharField(required=False, label='Socket Processador', widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off'}))
+    ram_suporte = forms.ChoiceField(label='Memória RAM', widget=Select(attrs={'class':'form-control'}), choices=[
+        ('DDR1', 'DDR1'),
+        ('DDR2', 'DDR2'),
+        ('DDR3', 'DDR3'),
+        ('DDR4', 'DDR4'),
+        
+    ])
+
+    socket = forms.CharField(required=False, label='Socket Processador', widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Socket 1155'}))
     descricao = forms.CharField(label='Descrição', required=False, widget=Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva melhor o dispositivo.', 'rows': '2'}))
 
 

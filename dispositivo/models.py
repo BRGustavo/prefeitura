@@ -42,7 +42,7 @@ CHOICES_SISTEMS = (
 
 
 class EnderecoMac(models.Model):
-    mac_address = MACAddressField(unique=True, blank=True, null=True)
+    mac_address = MACAddressField(unique=True, blank=True, null=True, integer=False)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, blank=True, related_name='mac_parente')
     parent_object_id = models.PositiveIntegerField()
     parent_object = GenericForeignKey("content_type", "parent_object_id")
@@ -90,14 +90,11 @@ class Impressora(models.Model):
         ('Sala', 'Sala'),
         ('Corredor', 'Corredor')
     ))
-    patrimonio = models.CharField(max_length=50, blank=True, null=True, verbose_name='Patrimônio', help_text='Número do patrimônio')
+    matricula = models.CharField(max_length=50, blank=True, null=True, default='', verbose_name='Patrimônio', help_text='Número do patrimônio')
     departamento = models.ForeignKey(Departamento, related_name='impressora', blank=True, null=True, on_delete=CASCADE)
-    sala = models.CharField(max_length=20, blank=True, null=True, verbose_name="Número Sala", help_text='Número de refência ao local onde a impressora está.')
 
     usando_ip = models.BooleanField(verbose_name='Usando IP', help_text='Está conectada pela rede;usando um ip.', default=True, null=False, choices=CHOICES_BOOL)
 
-    pertence_gestpar = models.BooleanField(default=False, null=False, choices=CHOICES_BOOL, verbose_name='Impressora Gestpar', help_text='Impressora alugada')
-    gestpar_matricula = models.CharField(max_length=20, blank=True, null=True)
     descricao = models.TextField(verbose_name='Descrição', blank=True, null=True)
     mac_impressora = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='impressora')
 
@@ -112,6 +109,13 @@ class Impressora(models.Model):
     #     EnderecoIp.objects.filter(content_type='dispositivo | impressora', content_type__id=self.id)
     #     return super(Impressora, self).delete(*args, **kwargs)
 
+    @property
+    def view_mac_impressora(self):
+        if self.mac_impressora is not None:
+            return self.mac_impressora.first()
+        else:
+            return ''
+
 class Computador(models.Model):
 
     class Meta:
@@ -124,8 +128,8 @@ class Computador(models.Model):
     help_text='Funcionário que utilizará o computador.')
     nome_rede = CharField(verbose_name='Nome na Rede', max_length=15, blank=True, null=True)
     gabinete = models.OneToOneField(Gabinete, related_name='computador', blank=True, null=True, on_delete=PROTECT, )
-    placa_mae = models.OneToOneField(PlacaMae, related_name='computador', verbose_name='Placa Mãe', blank=True, null=True, on_delete=PROTECT, )
-    processador = models.OneToOneField(Processador, related_name='computador', blank=True, null=True, on_delete=PROTECT)
+    placa_mae = models.OneToOneField(PlacaMae, related_name='computador', verbose_name='Placa Mãe', blank=True, null=True, on_delete=models.SET_NULL)
+    processador = models.OneToOneField(Processador, related_name='computador', blank=True, null=True, on_delete=models.SET_NULL)
     hd = models.OneToOneField(Hd, blank=True, related_name='computador', null=True, on_delete=PROTECT, )
     monitor = models.ManyToManyField(Monitor, blank=True, related_name='computador')
     teclado = models.OneToOneField(Teclado, related_name='computador', blank=True, null=True, on_delete=PROTECT, )

@@ -1,7 +1,8 @@
 {% extends 'base_listagem.html' %}
-
+{% load static %}
 {% block button_adicionar %}
-<a href='{% url "impressora_add" %}' class="btn btn-outline-success">Adicionar</a>
+
+<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalImpressora'>Adicionar</button>
 {% endblock %}
 
 <!-- Titulo Página -->
@@ -13,6 +14,17 @@
     Impressoras
 {% endblock %}
 
+{% block scripts %}
+    <script>
+        const forms_urls = {
+            'impressora_nova_ajax': '{% url "impressora_nova_ajax" %}',
+            'impressora_atualizar_ajax': '{% url "impressora_atualizar_ajax" %}',
+            'impressora_delete': '{% url "impressora_delete" %}',
+            'token': '{{csrf_token}}'
+        }
+    </script>
+{% endblock scripts %}
+
 {% block tabela %}
 <div class="card-body table-responsive bg-dark">
     {% if impressoras %}
@@ -20,29 +32,49 @@
         <thead>
             <th scope="col">ID</th>
             <th scope='col'>Nome</th>
-            <th scope='col'>Patrimônio</th>
+            <th scope='col'>Identificador</th>
             <th scope="col">Departamento</th>
             <th scope='col'>IP</th>
             <th scope='col'>MAC</th>
+            <th scope='col'>Editar</th>
         </thead>
         <tbody>
             {% for impressora in impressoras %}
             <tr>
                 <th scope="row">{{ impressora.id }}</th>
                 <td>{{ impressora.nome }}</td>
-                <th>{{ impressora.patrimonio }}</th>
-                <td>{{ impressora.departamento }}</td>
+                <th>
+                    {% if impressora.matricula %}
+                        {{ impressora.matricula }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </th>
+                <td>
+                    {% if impressora.departamento %}
+                    {{ impressora.departamento }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
                 <td>
                     {% for ip in impressora.ip_impressora.all %}
                         {{ ip }}
                     {% endfor %}
                 </td>
                 <td>
+                    {% if impressora.mac_impressora.all %}
                     {% for mac in impressora.mac_impressora.all %}
                         {{ mac }}
                     {% endfor %}
+                    {% else %}
+                    -
+                    {% endif %}
                 </td>
-                <td><a href="{% url 'impressora_edit' impressora.id %}"><i class="fas fa-edit"></i></a></td>
+                <td>
+                    <i class="fas fa-trash-alt pe-2" onclick="apagarImpressora('{{impressora.id}}')"></i>
+                    <i class="fas fa-edit pe-1" onclick="mostrarImpressoraAtualizar('{{impressora.id}}')"></i>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -54,6 +86,167 @@
     {% endif %}
 </div>
 {% endblock tabela %}
+
+{% block modals %}
+<div class="modal fade" tabindex="-1" id='modalImpressora'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="container p-0">
+                    <div class="row p-0">
+                        <div class="col-12 col-lg-4 p-5 d-flex justify-content-center d-flex align-items-center" style='background-color: #02aed8;'>
+                            <img style='width:300px;' src="{% static 'img/impressoras.jpg' %}" alt="">
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <div class="col p-3 pb-1 pt-4 d-flex justify-content-between">
+                                <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-center'>
+                                    <i class="fas fa-print pe-2"></i>
+                                    Nova Impressora
+                                </h5>
+                                <span data-bs-dismiss='modal'>
+                                    <i class="fas fa-times text-dark"></i>
+                                </span>
+                            </div>
+                            <div class="col mt-1 mb-3">
+                                <form id='form-impressoranova'>
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_nome">Nome</label>
+                                            {{form.nome}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_modelo">Modelo</label>
+                                            {{form.modelo}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_departamento">Departamento</label>
+                                            {{form.departamento}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_matricula">Patrimônio/Gestpar-ID</label>
+                                            {{form.matricula}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_ip_endereco">Endereço IP</label>
+                                            {{form.ip_endereco}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_endereco_mac">Endereço MAC</label>
+                                            {{form.endereco_mac}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-12 mt-2">
+                                            <label for="id_descricao">Descrição</label>
+                                            {{form.descricao}}
+                                        </div>
+                                        <div class="col-12 mt-3 d-flex justify-content-end">
+                                            <button id='novaImpressoraButton' class="btn text-dark" style='background-color:#02aed8; color:black; font-family: Arial, Helvetica, sans-serif;'>Adicionar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalImpressoraAtualizar'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="container p-0">
+                    <div class="row p-0">
+                        <div class="col-12 col-lg-4 p-5 d-flex justify-content-center d-flex align-items-center" style='background-color: #02aed8;'>
+                            <img style='width:300px;' src="{% static 'img/impressoras.jpg' %}" alt="">
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <div class="col p-3 pb-1 pt-4 d-flex justify-content-between">
+                                <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-center'>
+                                    <i class="fas fa-print pe-2"></i>
+                                    Atualizar Impressora
+                                </h5>
+                                <span data-bs-dismiss='modal'>
+                                    <i class="fas fa-times text-dark"></i>
+                                </span>
+                            </div>
+                            <div class="col mt-1 mb-3">
+                                <form id='form-impressoraatualizar'>
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <input type="hidden" name='impressora_id' id='id_impressora_id' value='None'>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_nome">Nome</label>
+                                            {{form.nome}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_modelo">Modelo</label>
+                                            {{form.modelo}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_departamento">Departamento</label>
+                                            {{form.departamento}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_matricula">Patrimônio/Gestpar-ID</label>
+                                            {{form.matricula}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_ip_endereco">Endereço IP</label>
+                                            {{form.ip_endereco}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_endereco_mac">Endereço MAC</label>
+                                            {{form.endereco_mac}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-12 mt-2">
+                                            <label for="id_descricao">Descrição</label>
+                                            {{form.descricao}}
+                                        </div>
+                                        <div class="col-12 mt-3 d-flex justify-content-end">
+                                            <button id='AtualizarImpressoraButton' class="btn text-dark" style='background-color:#02aed8; color:black; font-family: Arial, Helvetica, sans-serif;'>Atualizar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id='modalApagarImpressora'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-light" style='font-family: Arial, Helvetica, sans-serif;'>
+                <h5>
+                    <i class="fas fa-trash-alt"></i>
+                    Apagar Impressora?
+                </h5>
+                
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body alert-danger">
+                <input id="apagarID" type="hidden" value='0'>
+                <div class="col p-2">
+                    <div class="col" style="font-family: Arial, Helvetica, sans-serif;">
+                        Caso você continue com esse processo a impressora será apagada sem que os computadores a ela vinculados sofra alterações.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer alert-danger">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button onclick='confirmarRemoverImpressora()' class="btn text-light" style='background-color:#d80202; font-family: Arial, Helvetica, sans-serif;'>Apagar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modals %}
 
 {% block nav_paginacao %}
     {% if impressoras.has_previous %}
