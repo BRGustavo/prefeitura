@@ -29,7 +29,7 @@ def computador_view(request, pagina):
         computadores = computadores.filter(
             Q(nome_rede__icontains=pesquisa) | Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(departamento__singla_departamento__icontains=pesquisa) | Q(ip_computador__ip_address__icontains=pesquisa) | Q(mac_computador__mac_address__icontains=pesquisa)| Q(id__iexact=pesquisa)
         )
-    computadores = Paginator(computadores.order_by('id'), 10).get_page(pagina)
+    computadores = Paginator(computadores.order_by('id'), 15).get_page(pagina)
     content = {
         'computadores': computadores,
         'formComputador': ComputadorFormNovo()
@@ -257,7 +257,8 @@ def roteador_view(request, pagina):
         )
     roteadores = Paginator(roteadores.order_by('id'), 10).get_page(pagina)
     content = {
-        'roteadores': roteadores
+        'roteadores': roteadores,
+        'form': RoteadorForm(),
     }
     return render(request, template_name='roteador/roteador.html', context=content)
 
@@ -265,11 +266,9 @@ def roteador_view(request, pagina):
 @login_required
 @permission_required('dispositivo.add_roteador')
 def roteador_add(request):
-    form = RoteadorForm()
-    context = {
-        'form': form,
-        'mensagens': []
-    }
+    campo_erros = []
+    mensagens = []
+
     if request.method == 'POST':
         form = RoteadorForm(request.POST)
         if form.is_valid():
@@ -292,121 +291,74 @@ def roteador_add(request):
                         EnderecoMac(mac_address=mac_data,
                         content_type_id=roteador_tipo.id, parent_object_id=roteador_novo.id).save()
 
-                    return redirect(roteador_view, 1)
+                    return JsonResponse(status=200, data={'data':'data'}, safe=True)
 
                 except IndexError:
-                    context['mensagens'].append('Esse endereço MAC já está em uso')
-                    return render(request, template_name='roteador/novo.html', context=context)
+                    mensagens.append('Esse endereço MAC já está em uso')
+                    campo_erros.append('endereco_mac')
 
             except IndexError:
-                context['mensagens'].append('Esse endereço IP já está em uso')
-                return render(request, template_name='roteador/novo.html', context=context)
-
+                mensagens.append('Esse endereço IP já está em uso')
+                campo_erros.append('endereco_ip')
         else:
-                for valores in form.errors.values():
-                    context['mensagens'].append(valores)
-                
-                context['field_erros'] = form.errors.keys()
-    return render(request, template_name='roteador/novo.html', context=context)
+            for valores in form.errors.values():
+                mensagens.append(valores)
+                for campo in form:
+                    if campo.errors:
+                        campo_erros.append(campo.id_for_label)
+
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
 
 
 @login_required
 @permission_required('dispositivo.change_roteador', raise_exception=True)
-def roteador_edit(request, id):
-    roteador_db = get_object_or_404(Roteador, pk=id)
-    form = RoteadorForm(instance=roteador_db)
-    form_ip = EnderecoIp.objects.filter(roteador=roteador_db)
-    form_mac = EnderecoMac.objects.filter(roteador=roteador_db)
-    context = {
-        'form': form,
-        'roteador': roteador_db,
-        'form_ip': form_ip,
-        'form_mac': form_mac,
-        'mensagens': []
-    }
+def roteador_edit(request):
+    id = 0
+    campo_erros = []
+    mensagens = []
+
+    if request.method == 'GET':
+        id = request.GET.get('roteador_id')
+        roteador = Roteador.objects.filter(id=id).first()
+        ip = ''
+        mac = ''
+        departamento = roteador.departamento.id if roteador.departamento else None
+        if roteador.ip_roteador.count():
+            ip = roteador.ip_roteador.first().ip_address
+        if roteador.mac_roteador.count():
+            mac = roteador.mac_roteador.first().mac_address
+
+        data = {
+            'campos':
+                {
+                    'roteador_id': roteador.id,
+                    'ssid': roteador.ssid,
+                    'senha': roteador.senha,
+                    'modelo': roteador.modelo,
+                    'endereco_ip': ip,
+                    'endereco_mac': mac,
+                    'departamento': departamento,
+                    'descricao': roteador.descricao,
+                }
+        }
+        return JsonResponse(status=200, data=data, safe=True)
+
     if request.method == 'POST':
+        roteador_db = get_object_or_404(Roteador, pk=request.POST.get('roteador_id'))
         form = RoteadorForm(request.POST, instance=roteador_db)
         roteador_objeto_tipo = ContentType.objects.filter(model='roteador').first().id
         if form.is_valid():
-            endereco_ip_formulario = form.cleaned_data['endereco_ip']
-            endereco_mac_formulario = form.cleaned_data['endereco_mac']
-
-            if len(endereco_ip_formulario) >= 1:
-            # Consulta para ver se esse roteador possui um ip já cadastrado.
-                consulta_roteador_ip = EnderecoIp.objects.filter(roteador=roteador_db)
-
-                if consulta_roteador_ip.count() >= 1:
-                    """Caso exista um ip cadastrado para esse roteador na tabela de ips."""
-                    try: 
-                        if validate_ipv4_address(endereco_ip_formulario) is None:
-                            # Consulta para verificar se há um ip já cadastrado igual ao ip do formulário.
-                            endereco_ip_db = EnderecoIp.objects.filter(ip_address=endereco_ip_formulario)
-                            if endereco_ip_db.count() >= 1:
-                                if endereco_ip_db.first().parent_object_id != roteador_db.id:
-                                    """Caso esse ip já exista e seja de outro dono, vai mostrar uma msg no front."""
-                                    context['mensagens'].append('Você está tentando usar um ip já utilizado por outro dispositivo.')
-                                    return render(request, template_name='roteador/editar.html', context=context)
-                            else:
-                                """Atualizando o ip antigo já vinculado ao outro roteador"""
-                                ip_velho = consulta_roteador_ip.first()
-                                ip_velho.ip_address = endereco_ip_formulario
-                                ip_velho.save()
-
-                    except ValidationError:
-                        """Endereço de ip informado não é valido."""
-                        context['mensagens'].append('Valor digitado não é um ip ou não é um ipv4 válido.')
-                        return render(request, template_name='roteador/editar.html', context=context)
-
-                else:
-                        """Roteador ainda não possui um ip cadastrado."""
-                        try: 
-                            if validate_ipv4_address(endereco_ip_formulario) is None:
-                                # Consultando o ip no banco de dados.
-                                ip_base_dados = EnderecoIp.objects.filter(ip_address=endereco_ip_formulario)
-                                if ip_base_dados.count() >= 1:
-                                    """IP já possui outro dispositivo dono, portanto não pode ser inserido."""
-                                    context['mensagens'].append('Você está tentando usar um ip já utilizado por outro dispositivo.')
-                                    return render(request, template_name='roteador/editar.html', context=context)
-                                else:
-
-                                    novo_ip = EnderecoIp(ip_address=endereco_ip_formulario, content_type_id= roteador_objeto_tipo, parent_object_id=roteador_db.id)
-                                    novo_ip.save()
-
-                        except ValidationError:
-                            """Endereço de ip informado não é valido."""
-                            context['mensagens'].append('Valor digitado não é um ip ou não é um ipv4 válido.')
-                            return render(request, template_name='roteador/editar.html', context=context)
-            else:
-                """Caso o usuário não tenha informado nada no campo ip."""
-                consulta_roteador_ip = EnderecoIp.objects.filter(roteador=roteador_db)
-                if consulta_roteador_ip.count() >= 1:
-                    ip_antigo = consulta_roteador_ip.first()
-                    ip_antigo.delete()
-
-            # Consulta para ver se esse roteador possui um mac já cadastrado.
-            consulta_roteador_mac = EnderecoMac.objects.filter(roteador=roteador_db)
-            if isinstance(endereco_mac_formulario, EUI):
-                if consulta_roteador_mac.count() >=1:
-                    """Caso roteador já possua um mac cadastrado."""
-                    mac_antigo = consulta_roteador_mac.first()
-                    mac_antigo.mac_address = endereco_mac_formulario
-                    mac_antigo.save()
-                else:
-                    mac_novo = EnderecoMac(mac_address=endereco_mac_formulario, content_type_id= roteador_objeto_tipo, parent_object_id=roteador_db.id)
-                    mac_novo.save()
-
-            else:
-                if consulta_roteador_mac.count() >=1:
-                    consulta_roteador_mac.delete()
-
+            
             form.save()
-            return redirect(roteador_view, 1)
+            return JsonResponse(status=200, data={'data': 'data'}, safe=True)
         else:
-                for valores in form.errors.values():
-                    context['mensagens'].append(valores)
-                
-                context['field_erros'] = form.errors.keys()       
-    return render(request, template_name='roteador/editar.html', context=context)
+            for valores in form.errors.values():
+                mensagens.append(valores)
+                for campo in form:
+                    if campo.errors:
+                        campo_erros.append(campo.id_for_label)
+
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
 
 
 @login_required

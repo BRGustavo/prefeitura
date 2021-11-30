@@ -565,6 +565,106 @@ function apagarPlacaMae(id_computador){
     });
 }
 
+$('#form-roteadornovo').submit(function(e){
+    e.preventDefault()
+    const csrftoken = window.document.querySelector('#form-roteadornovo input[name=csrfmiddlewaretoken]').value;
+    var serialize = $(`#form-roteadornovo`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.roteador_add,
+        data: serialize,
+        beforeSend: function(e){
+
+            $("#novoRoteadorButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalNovoRoteador').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novoRoteadorButton").html("Adicionar")
+
+            $(`#form-roteadornovo input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-roteadornovo label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+})
+$('#modalNovoRoteador').on('show.bs.modal', function(){
+    window.document.querySelectorAll("#modalNovoRoteador input:not([name='csrfmiddlewaretoken']), textarea").forEach(function(e){
+        e.value = ""
+    });
+});
+
+$('#form-roteadoratualizar').submit(function(e){
+    e.preventDefault()
+    const csrftoken = window.document.querySelector('#form-roteadoratualizar input[name=csrfmiddlewaretoken]').value;
+    var serialize = $(`#form-roteadoratualizar`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.roteador_edit,
+        data: serialize,
+        beforeSend: function(e){
+
+            $("#novoRoteadorButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalAtualizarRoteador').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novoRoteadorButton").html("Adicionar")
+
+            $(`#form-roteadoratualizar input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-roteadoratualizar label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+})
+
+function atualizarRoteador(roteador_id){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.roteador_edit,
+        data: {
+            'roteador_id': roteador_id
+        },
+        success: function(data){
+            campos = data['campos']
+            for(let item in campos){
+                $(`[name=${item}]`).val(campos[item])
+            }
+            $('#modalAtualizarRoteador').modal('show');
+        },
+    });
+}
+
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
 $('#refresh-teclado').click(()=>{ Requisicao('#id_teclado', 'selectTeclado', marca=true)});

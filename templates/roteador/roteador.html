@@ -1,8 +1,8 @@
 {% extends 'departamento/departamento.html' %}
+{% load static %}
 
 {% block button_adicionar %}
-<a href='{% url "roteador_add" %}' class="btn btn-outline-success">Adicionar</a>
-
+<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalNovoRoteador'>Adicionar</button>
 {% endblock %}
 
 <!-- Titulo Página -->
@@ -23,6 +23,10 @@
 
 {% block scripts %}
 <script>
+    forms_urls = {
+        'roteador_add': '{% url "roteador_add" %}',
+        'roteador_edit': '{% url "roteador_edit" %}',
+    }
     $('#pesquisa_btn').click(function(e){
         e.preventDefault();
         $('input[name="query"]').each(function(){
@@ -53,6 +57,7 @@
                 <td>
                     {% if roteador.departamento %}
                     <a href="{% url 'departamento_visualizar' roteador.departamento.id %}">{{ roteador.departamento }}</a>
+
                     {% else %}
                     -
                     {% endif %}
@@ -68,7 +73,7 @@
                         {{ mac }}
                     {% endfor %}
                 </td>
-                <td><a href="{% url 'roteador_edit' roteador.id %}"><i class="fas fa-edit"></i></a></td>
+                <td><i onclick='atualizarRoteador("{{roteador.id}}")' class="fas fa-edit"></i></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -81,6 +86,142 @@
 </div>
 {% endblock tabela %}
 
+{% block modals %}
+<div class="modal fade" tabindex="-1" id='modalNovoRoteador'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="container p-0">
+                    <div class="row p-0">
+                        <div class="col-12 col-lg-4 d-flex" style='background-color: purple;'>
+                            <div class="col-12 p-5 d-flex justify-content-center align-items-center ">
+                                    <img style='width:300px' src="{% static 'img/wireless.png' %}" alt="">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <div class="col p-3 pb-1 pt-4 d-flex justify-content-between">
+                                <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-center'>
+                                    <i class="fas fa-wifi"></i>
+                                    Novo Roteador
+                                </h5>
+                                <span data-bs-dismiss='modal'>
+                                    <i class="fas fa-times text-dark"></i>
+                                </span>
+                            </div>
+                            <div class="col mt-1 mb-3">
+                                <form id='form-roteadornovo'>
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_nome">SSID</label>
+                                            {{form.ssid}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_modelo">Senha</label>
+                                            {{form.senha}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_modelo">Modelo</label>
+                                            {{form.modelo}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_departamento">Departamento</label>
+                                            {{form.departamento}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_ip_endereco">Endereço IP</label>
+                                            {{form.endereco_ip}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_endereco_mac">Endereço MAC</label>
+                                            {{form.endereco_mac}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-12 mt-2">
+                                            <label for="id_descricao">Descrição</label>
+                                            {{form.descricao}}
+                                        </div>
+                                        <div class="col-12 mt-3 d-flex justify-content-end">
+                                            <button id='novoRoteadorButton' class="btn text-light" style='background-color:purple; color:white; font-family: Arial, Helvetica, sans-serif;'>Adicionar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id='modalAtualizarRoteador'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="container p-0">
+                    <div class="row p-0">
+                        <div class="col-12 col-lg-4 d-flex" style='background-color: purple;'>
+                            <div class="col-12 p-5 d-flex justify-content-center align-items-center ">
+                                    <img style='width:300px' src="{% static 'img/wireless.png' %}" alt="">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <div class="col p-3 pb-1 pt-4 d-flex justify-content-between">
+                                <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-center'>
+                                    <i class="fas fa-wifi"></i>
+                                    Atualizar Roteador
+                                </h5>
+                                <span data-bs-dismiss='modal'>
+                                    <i class="fas fa-times text-dark"></i>
+                                </span>
+                            </div>
+                            <div class="col mt-1 mb-3">
+                                <form id='form-roteadoratualizar'>
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <input type="hidden" id='id_roteador_id' name='roteador_id'>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_nome">SSID</label>
+                                            {{form.ssid}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_modelo">Senha</label>
+                                            {{form.senha}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_modelo">Modelo</label>
+                                            {{form.modelo}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_departamento">Departamento</label>
+                                            {{form.departamento}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_ip_endereco">Endereço IP</label>
+                                            {{form.endereco_ip}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-6 mt-2">
+                                            <label for="id_endereco_mac">Endereço MAC</label>
+                                            {{form.endereco_mac}}
+                                        </div>
+                                        <div class="form-group col-12 col-lg-12 mt-2">
+                                            <label for="id_descricao">Descrição</label>
+                                            {{form.descricao}}
+                                        </div>
+                                        <div class="col-12 mt-3 d-flex justify-content-end">
+                                            <button id='novoRoteadorButton' class="btn text-light" style='background-color:purple; color:white; font-family: Arial, Helvetica, sans-serif;'>Atualizar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock modals %}
 {% block nav_paginacao %}
     {% if roteadores.has_previous %}
     <li class="page-item"><a class="page-link" href="{% url 'roteador_view' roteadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>

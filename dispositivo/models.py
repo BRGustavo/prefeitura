@@ -21,7 +21,7 @@ CHOICES_ROTEADORES = [
     ('Huawei', 'Huawei'),
     ('Asus', 'Asus'),
     ('Outro', 'Outro')
-]
+]#Remover
 CHOICES_SISTEMS = (
     ('WinXP/32', 'Windows XP 32 bits'),
     ('Win7/32', 'Windows 7 32 bits'),
@@ -126,7 +126,7 @@ class Computador(models.Model):
     help_text='Departamento ao qual o computador pertence.')
     funcionario = models.ForeignKey(Funcionario, related_name='computador', blank=True, null=True, on_delete=models.SET_NULL,
     help_text='Funcionário que utilizará o computador.')
-    nome_rede = CharField(verbose_name='Nome na Rede', max_length=15, blank=True, null=True)
+    nome_rede = CharField(verbose_name='Nome na Rede', max_length=30, blank=True, null=True)
     gabinete = models.OneToOneField(Gabinete, related_name='computador', blank=True, null=True, on_delete=PROTECT, )
     placa_mae = models.OneToOneField(PlacaMae, related_name='computador', verbose_name='Placa Mãe', blank=True, null=True, on_delete=models.SET_NULL)
     processador = models.OneToOneField(Processador, related_name='computador', blank=True, null=True, on_delete=models.SET_NULL)

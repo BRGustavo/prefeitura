@@ -16,7 +16,7 @@ urlpatterns = [
     # URLs Model Roteador
     path('roteador/<int:pagina>/', views.roteador_view, name='roteador_view'),
     path('roteador/add/', views.roteador_add, name='roteador_add'),
-    path('roteador/edit/<int:id>/', views.roteador_edit, name='roteador_edit'),
+    path('roteador/edit/', views.roteador_edit, name='roteador_edit'),
 
     # URLs Model Impressora
     path('impressora/<int:pagina>/', views.impressora_view, name='impressora_view'),

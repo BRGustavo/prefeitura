@@ -92,10 +92,14 @@ def impressora_pesquisa_ajax(request):
             predio = impressora.departamento.predio if impressora.departamento else 'Não selecionado'
             html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{predio}</td><td>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
             """
+            img_modelo = 'm4070'
+        
+
             data.append({
                 'html_item': html_item,
                 'nome': impressora.nome,
                 'modelo': impressora.modelo,
+                'img_modelo': img_modelo,
                 'ip': impressora.ip_impressora.first().ip_address
             })
         return JsonResponse(data={'impressoras': data}, safe=True)
