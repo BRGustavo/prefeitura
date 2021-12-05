@@ -1,3 +1,4 @@
+from django.core.checks.messages import Error
 from django.core.paginator import Paginator
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -15,9 +16,10 @@ from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
 from utils import VerificarIp, VerificarMac
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from netaddr import EUI
 from netaddr.core import AddrFormatError
+from django.urls import reverse
 
 
 @login_required
@@ -193,7 +195,7 @@ def computador_edit(request, id):
     return render(request, template_name='computador/editar.html', context=context)
 
 @login_required
-@permission_required('dispositivo.deletar_computador', raise_exception=True)
+@permission_required('dispositivo.delete_computador', raise_exception=True)
 def computador_remover(request):
     if request.method == 'GET':
         computador = get_object_or_404(Computador, pk=request.GET.get('id_computador'))
@@ -371,7 +373,6 @@ def roteador_add(request):
                         EnderecoIp(ip_address=ip_data,
                         content_type_id=roteador_tipo.id, parent_object_id=roteador_novo.id).save()
                     if mac_data is not None:
-                        print(mac_data)
                         EnderecoMac(mac_address=mac_data,
                         content_type_id=roteador_tipo.id, parent_object_id=roteador_novo.id).save()
 
@@ -536,53 +537,59 @@ def teste_view(request):
 
 
 @login_required
-def patrimonio_view(request, pagina=1):
+def patrimonio_view(request):
+    items = ''
     if request.method == 'GET':
-        data = []
-        gabinetes = []
-        monitores = []
-        pesquisa = request.GET.get('query')
-        if pesquisa != '' and pesquisa is not None:
-            
-            gabinetes = Gabinete.objects.filter(Q(patrimonio__icontains=pesquisa)).exclude(patrimonio__isnull=True)[0:50]
-            monitores = Monitor.objects.filter(Q(patrimonio__icontains=pesquisa)).exclude(patrimonio__isnull=True)[0:50]
-        else:
-            gabinetes = Gabinete.objects.all().exclude(patrimonio__isnull=True)[0:50]
-            monitores = Monitor.objects.all().exclude(patrimonio__isnull=True)[0:50]
+        query = request.GET.get('query')
+        if query is not None and len(query) >=1:
+            gabinetes = Gabinete.objects.filter(Q(patrimonio__icontains=query))[0:20]
+            monitores = Monitor.objects.filter(Q(patrimonio__icontains=query))[0:20]
 
-        for gabinete in gabinetes:
-            departamento = None
-            pc_gabinete = Computador.objects.filter(gabinete__id=gabinete.id)
-            if pc_gabinete.count() >=1:
-                if pc_gabinete.first().departamento is not None:
-                    departamento = pc_gabinete.first().departamento.departamento
-                elif pc_gabinete.first().funcionario is not None:
-                    departamento = pc_gabinete.first().funcionario.departamento                    
-            data.append(
-                {
-                    'id': gabinete.id,
-                    'departamento': departamento,
-                    'tipo': 'Gabinete',
-                    'emuso': 'Sim',
-                    'patrimonio': gabinete.patrimonio
-                }   
-            )
+            for gabinete in gabinetes:
+                em_uso = 'Parado'
+                departamento = 'Não Vinculado'
+                try:                
+                    link = reverse("computador_visualizar", args=[gabinete.computador.id, 'principal'])
+                    em_uso = f'<a class="text-decoration-none text-muted" href="{link}">Em uso</a>' if gabinete.computador else 'Parado'
+                except ObjectDoesNotExist:
+                    em_uso = 'Não vinculado'
+                
+                try:
+                    departamento = gabinete.computador.departamento if gabinete.computador.departamento else 'Não vinculado'
+
+                    if departamento == 'Não vinculado':
+                        try:
+                            departamento = gabinete.computador.funcionario.departamento if gabinete.computador.funcionario.departamento else 'Não vinculado'
+                        except ObjectDoesNotExist:
+                            departamento = 'Não vinculado'
+
+                except ObjectDoesNotExist:
+                    departamento = 'Não Vinculado'
+
+                items += f"""<tr><th class='text-muted' scope="row">{gabinete.patrimonio}</th><td class='text-muted'>Gabinete</td><td class='text-muted'>{departamento}</td><td class='text-muted'>{em_uso}</td></tr>"""
+
             for monitor in monitores:
-                departamento = None
-                pc_monitor = Computador.objects.filter(monitor__isnull=False, monitor__id__in=[monitor.id])
-                if pc_monitor.count() >=1:
-                    if pc_monitor.first().departamento is not None:
-                        departamento = pc_monitor.first().departamento.departamento
-                    elif pc_monitor.first().funcionario is not None:
-                        departamento = pc_monitor.first().funcionario.departamento                    
-                data.append(
-                    {
-                        'id': monitor.id,
-                        'departamento': departamento,
-                        'tipo': 'Monitor',
-                        'emuso': 'Sim',
-                        'patrimonio': monitor.patrimonio
-                    }   
-                )
-        items = Paginator(data, 12).get_page(pagina)
+                em_uso = 'Parado'
+                departamento = 'Não Vinculado'
+                try:                
+                    em_uso = 'Em uso' if monitor.computador is not None else 'Parado'
+                except ObjectDoesNotExist:
+                    em_uso = 'Não vinculado'
+                
+                try:
+                    pc_monitor = Computador.objects.filter(monitor=monitor).first()
+                    departamento = pc_monitor.departamento if pc_monitor.departamento else 'Não vinculado'
+
+                    if departamento == 'Não vinculado':
+                        try:
+                            departamento = pc_monitor.funcionario.departamento if pc_monitor.funcionario else 'Não vinculado'
+                        except ObjectDoesNotExist:
+                            departamento = 'Não vinculado'
+                            
+                except ObjectDoesNotExist:
+                    departamento = 'Não Vinculado'
+
+                items += f"""<tr><th class='text-muted' scope="row">{monitor.patrimonio}</th><td class='text-muted'>Monitor</td><td class='text-muted'>{departamento}</td><td class='text-muted'>{em_uso}</td></tr>"""
+
+            return JsonResponse(status=200, data={'items': items}, safe=True)
     return render(request, template_name='patrimonios/patrimonio.html', context={'items':items})

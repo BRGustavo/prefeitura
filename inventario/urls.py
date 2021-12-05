@@ -34,6 +34,9 @@ urlpatterns = [
     path('hd/<int:pagina>/', views.hd_view, name='hd_view'),
     path('hd/edit/<int:id>/', views.hd_edit, name='hd_edit'),
 
+     # Fonte URLs
+    path('fonte/', views.fonte_view, name='fonte_view'),
+
      # Placa Mãe URLs
     path('placamae/add/', views.placamae_add, name='placamae_add'),
     path('placamae/<int:pagina>/', views.placamae_view, name='placamae_view'),

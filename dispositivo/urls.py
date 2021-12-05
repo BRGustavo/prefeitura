@@ -44,5 +44,5 @@ urlpatterns = [
     path('',views.teste_view, name='teste'),
 
     # URL Patrimônio
-    path('patrimonio/pesquisa/<int:pagina>/', views.patrimonio_view, name='patrimonio_view')
+    path('patrimonio/pesquisa/', views.patrimonio_view, name='patrimonio_view')
 ]

@@ -295,12 +295,12 @@
                     </span>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-danger">
+                    <div class="col" style="color:black">
                         Caso você realmente continue com o processo, removerá os dados desse funcionário e os computadores vinculados a ele.
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-bs-dismiss='modal' style='font-family: Arial, Helvetica, sans-serif;'>Cancelar</button>
+                    <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
                     <a href="{% url 'funcionario_remover' funcionario.id %}"><button class="btn text-light" style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;'>Apagar</button></a>
                 </div>
             </div>

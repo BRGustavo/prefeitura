@@ -4,39 +4,30 @@
 
 {% block corpo %}
 <main id='primeiro'>
-  <div class="container p-2">
-    <div class="col-12 p-4">
-      <span class='text-center'>
-        <h4>Qual tabela deseja acessar?</h4>
-      </span>
-    </div>
+  <div class="container p-5 bg-dark text-light">
     <div class="row">
-      <div class="col-12 col-lg-6">
-        <div class="card">
-          <div class="card-content">
-            <div class="card-header">
-              <i class="fas fa-shopping-cart fa-2x"></i>
+      <div class="col-12 col-lg-4">
+        <h5>Filtrar por Rede</h5>
+        <ul class="list-group">
+          <li class="list-group-item bg-dark text-light">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id='rede5'>
+              <label for="rede5" class='form-check-label'>Endereços IP da Rede 5</label>
             </div>
-            <div class="card-body">
-              <h5>Gabinetes Leilão</h5>
-              <p>Por aqui você encontrará os items relacionados ao leilão. </p>
+          </li>
+          <li class="list-group-item bg-dark text-light">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id='rede6'>
+              <label for="rede5" class='form-check-label'>Endereços IP da Rede 6</label>
             </div>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
-      <div class="col-12 col-lg-6">
-        <div class="card">
-          <div class="card-content">
-            <div class="card-header">
-
-            </div>
-            <div class="card-body">
-              <h5>Gabinetes em uso</h5>
-              <p>Por aqui você pode consultar os patrimônios e verificar os gabinetes "bons".</p>
-            </div>
-          </div>
+      <div class="col-12 col-lg-8">
+        <div class="input-group">
+          <input type="text" class="form-control rounded" value='Pesquisar'>
+          <button class="btn btn-outline-primary">Pesquisar</button>
         </div>
-        
       </div>
     </div>
   </div>
