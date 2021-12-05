@@ -22,6 +22,8 @@
             'vincularFuncionario': '{% url "vincular_funcionario_ajax" %}',
             'atualizar_placamae_ajax': '{% url "atualizar_placamae_ajax" %}',
             'deletar_placamae_ajax': '{% url "deletar_placamae_ajax" %}',
+            'computador_remover': '{% url "computador_remover" %}',
+            'computador_view': '{% url "computador" 1 %}',
         }
         const formularioId = '{{ csrf_token }}';
     </script>
@@ -33,6 +35,8 @@
     body {
         background-color:rgb(235, 232, 232);
         border-style:none;
+        background-image:  linear-gradient(#bdc3c7, #2c3e50);
+        
     }
     img {
         width: 100px;
@@ -177,7 +181,7 @@
                                 <h5 class='text-muted'>Informações</h5>
                                 <span>
                                     <i data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao' class="fas fa-edit text-success me-2"></i>
-                                    <i class="far fa-trash-alt text-danger"></i>
+                                    <i data-bs-toggle='modal' data-bs-target='#modalRemoverPc' class="far fa-trash-alt text-danger"></i>
                                 </span>
                             </div>
                             <div class="card-body">
@@ -286,6 +290,127 @@
         </div>
     </div>
     {% block modals %}
+
+    <div class="modal fade" tabindex="-1" id='modalRemoverPc'>
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div style='background-color: rgb(204, 84, 84);' class="modal-header border-0 d-flex justify-content-between">
+                    <span class='text-light d-flex flex-row' style='font-family: Arial, Helvetica, sans-serif;'>
+                        <i class="far fa-trash-alt pe-2"></i>
+                        Remover computador?
+                    </span>
+                    <span data-bs-dismiss='modal'>
+                        <i class="fas fa-times text-light"></i>
+                    </span>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="container p-0">
+                        <div class="row">
+                            <div style='background-color: rgb(204, 84, 84);' class="col-12 col-lg-4 d-flex justify-content-center d-flex align-items-center">
+                                <span class=''>
+                                    <img style='width: 170px;' src="{% static 'img/removerpc.jpg' %}" alt="">
+                                </span>
+                            </div>
+                            <div class="col-12 col-lg-8 p-2">
+                                
+                                <h5 class='mt-2 ms-2'>
+                                    <i class="fas fa-cubes pe-2"></i> 
+                                    <b>Mover para o inventário</b>
+                                </h5>
+                                <div class="col-12 m-2 mt-3 p-4 ps-2">
+                                    <ul class="list-group" id='form-remover'>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;">
+                                                <i class="fas fa-hdd pe-1" aria-hidden="true"></i>
+                                                Gabinete 
+                                            </span>
+                                            <span>
+                                                <div class="form-check form-switch">
+                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
+                                                    
+                                                    <input class="form-check-input" type="checkbox" id="manterGabinete" checked>
+                                                  </div>
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;">
+                                                <i class="fas fa-desktop pe-1" aria-hidden="true"></i>
+                                                Monitor 
+                                            </span>
+                                            <span>
+                                                <div class="form-check form-switch">
+                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
+                                                    
+                                                    <input class="form-check-input" type="checkbox" id="manterMonitor" checked>
+                                                  </div>
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;">
+                                                <i class="fas fa-compact-disc pe-1" aria-hidden="true"></i>
+                                                HD 
+                                            </span>
+                                            <span>
+                                                <div class="form-check form-switch">
+                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
+                                                    
+                                                    <input class="form-check-input" type="checkbox" id="manterHd" checked>
+                                                  </div>
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;">
+                                                <i class="fas fa-stream pe-1" aria-hidden="true"></i>
+                                                Placa Mãe 
+                                            </span>
+                                            <span>
+                                                <div class="form-check form-switch">
+                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
+                                                    
+                                                    <input class="form-check-input" type="checkbox" id="manterPlacaMae" checked>
+                                                  </div>
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;">
+                                                <i class="fas fa-microchip pe-1" aria-hidden="true"></i>
+                                                Processador 
+                                            </span>
+                                            <span>
+                                                <div class="form-check form-switch">
+                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
+                                                    
+                                                    <input class="form-check-input" type="checkbox" id="manterProcessador" checked>
+                                                  </div>
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;">
+                                                <i class="fas fa-memory pe-1" aria-hidden="true"></i>
+                                                Memória RAM 
+                                            </span>
+                                            <span>
+                                                <div class="form-check form-switch">
+                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
+                                                    
+                                                    <input class="form-check-input" type="checkbox" id="manterMemoriaRam" checked>
+                                                  </div>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button data-bs-dismiss='modal' class="btn btn primary me-2" style="font-family: Arial, Helvetica, sans-serif;">Cancelar</button>
+                                    <button id='removerPc' class="btn text-light" style="background-color: rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;">Remover</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" tabindex="-1" id='modalAtualizarDescricao'>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">

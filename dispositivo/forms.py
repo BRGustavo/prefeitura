@@ -134,7 +134,7 @@ class ComputadorFormInfo(forms.ModelForm):
             self.fields['monitor2'].initial = Monitor.objects.filter(computador=self.instance)[1].patrimonio
 
     sistema_op = forms.ChoiceField(choices=CHOICES_SISTEMS, widget=Select(attrs={'class': 'form-control'}))
-    nome_rede = forms.CharField(widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: PRE-01'}))
+    nome_rede = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: PRE-01'}))
     anydesk = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Ex: 0000000'}))
     memoria_ram = forms.CharField(required=False, max_length=20, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 8 GB'}))
     gabinete = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Patrimônio Gabinete'})) 
@@ -169,7 +169,7 @@ class ComputadorFormNovo(forms.Form):
         'style': 'font-family: "Arial, Helvetica, sans-serif";',
         'type': 'hidden'
     }))
-    nome_rede = forms.CharField(max_length=20, widget=TextInput(attrs={
+    nome_rede = forms.CharField(required=True, max_length=20, widget=TextInput(attrs={
         'placeholder': 'Exemplo: PRE-10',
         'class': 'form-control',
         'autocomplete': 'off',
@@ -461,3 +461,16 @@ class ImpressoraForm(forms.Form):
                 impressora.update(nome=data['nome'], matricula=data['matricula'], descricao=data['descricao'], modelo=data['modelo'])
         except ValidationError:
             pass
+
+class ComputadorFormRemover(forms.Form):
+    CHOICES_MANTER = (
+        ('Sim', 'Sim'),
+        ('Não', 'Não')
+    )
+
+    manterGabinete = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))
+    manterMonitor = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))
+    manterHd = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))
+    manterPlacaMae = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))
+    manterProcessador = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))
+    manterMemoriaRam = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))

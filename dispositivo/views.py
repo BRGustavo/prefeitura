@@ -10,7 +10,7 @@ from netaddr.strategy.eui48 import mac_bare
 from departamento.forms import FuncionarioForm
 from departamento.models import Departamento, Funcionario
 from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
-from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, ComputadorFormNovo, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
+from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, ComputadorFormNovo, ComputadorFormRemover, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
 from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
@@ -193,6 +193,90 @@ def computador_edit(request, id):
     return render(request, template_name='computador/editar.html', context=context)
 
 @login_required
+@permission_required('dispositivo.deletar_computador', raise_exception=True)
+def computador_remover(request):
+    if request.method == 'GET':
+        computador = get_object_or_404(Computador, pk=request.GET.get('id_computador'))
+        for key,value in dict(request.GET).items():
+            if key == 'manterGabinete':
+                if value[0].lower() == 'sim':
+                    if computador.gabinete and len(computador.gabinete.patrimonio):
+                        computador.gabinete = None
+                        computador.save()
+                    else:
+                        if computador.gabinete:
+                            gabinete = computador.gabinete
+                            computador.gabinete = None
+                            computador.save()
+                            gabinete.delete()
+                else:
+                    gabinete = computador.gabinete.id if computador.gabinete else None
+                    if gabinete is not None:
+                        computador.gabinete = None
+                        computador.save()
+                        Gabinete.objects.filter(id=gabinete).delete()
+            if key == 'manterMonitor':
+                monitores = Monitor.objects.filter(computador=computador)
+                if monitores.count() >=1:
+                    if value[0].lower() == 'sim':
+                        for monitor in monitores:
+                            if len(monitor.patrimonio) >=1:
+                                computador.monitor.remove(monitor)
+                                computador.save()
+                            else:
+                                computador.monitor.remove(monitor)
+                                monitor.delete()
+                    else:
+                        for monitor in monitores:
+                            computador.monitor.remove(monitor)
+                            computador.save()
+                            monitor.delete()
+
+            if key == 'manterHd':
+                hds = Hd.objects.filter(computador=computador)
+                if hds.count() >=1:
+                    if value[0].lower() == 'sim':
+                        for hd in hds:
+                            computador.hd = None
+                            computador.save()
+                    else:
+                        for hd in hds:
+                            computador.hd = None
+                            computador.save()
+                            hd.delete()
+            if key == 'manterPlacaMae':
+                placasMae = PlacaMae.objects.filter(computador=computador)
+                if placasMae.count() >=1:
+                    if value[0].lower() == 'sim':
+                        for placa in placasMae:
+                            computador.placa_mae = None
+                            computador.save()
+                    else:
+                        for placa in placasMae:
+                            computador.placa_mae = None
+                            computador.save()
+                            placa.delete()
+                    
+            if key == 'manterProcessador':
+                processadores = Processador.objects.filter(computador=computador)
+                if processadores.count() >=1:
+                    if value[0].lower() == 'sim':
+                        for processador in processadores:
+                            computador.processador = None
+                            computador.save()
+                    else:
+                        for processador in processadores:
+                            computador.processador = None
+                            computador.save()
+                            processador.delete()
+        EnderecoIp.objects.filter(computador=computador).delete()
+        EnderecoMac.objects.filter(computador=computador).delete()
+        computador.delete()
+        return JsonResponse(status=200, data={'data': 'apagado'}, safe=True)
+        
+    return JsonResponse(status=404, data={'messagem':['Erro teste']}, safe=True)
+
+@login_required
 @permission_required('dispositivo.view_computador', raise_exception=True)
 def computador_visualizar(request, id, pagina='principal'):
     computador = get_object_or_404(Computador, pk=id)
@@ -226,7 +310,7 @@ def computador_visualizar(request, id, pagina='principal'):
         'formProcessador': formProcessador,
         'formPlacaMae': formPlacaMae,
         'funcionarios': Funcionario.objects.all(),
-        
+        'formRemover': ComputadorFormRemover(),
     }
     if request.method == 'POST':
         form = ComputadorFormDescricao(request.POST, instance=computador)
@@ -322,7 +406,7 @@ def roteador_edit(request):
         roteador = Roteador.objects.filter(id=id).first()
         ip = ''
         mac = ''
-        departamento = roteador.departamento.id if roteador.departamento else None
+        departamento = roteador.departamento.id if roteador.departamento else ''
         if roteador.ip_roteador.count():
             ip = roteador.ip_roteador.first().ip_address
         if roteador.mac_roteador.count():
@@ -349,7 +433,40 @@ def roteador_edit(request):
         roteador_objeto_tipo = ContentType.objects.filter(model='roteador').first().id
         if form.is_valid():
             
+            endereco_ip = request.POST.get('endereco_ip')
+            if endereco_ip is not None and len(endereco_ip) >=1:
+                try:
+                    if validate_ipv4_address(endereco_ip) is None:
+                        consulta_db = EnderecoIp.objects.filter(ip_address=endereco_ip)
+                        if consulta_db.count() >=1:
+                            consulta_db = consulta_db.first()
+                            if roteador_objeto_tipo == consulta_db.content_type_id and consulta_db.parent_object_id == roteador_db.id:
+                                pass
+                            else:
+                                mensagens.append('Esse endereço IP já está em uso!')
+                                campo_erros.append('id_endereco_ip')
+                                return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+                        else:
+                            consulta_ip_roteador = EnderecoIp.objects.filter(roteador=roteador_db)
+                            if consulta_ip_roteador.count() >=1:
+                                consulta_ip_roteador.update(ip_address=endereco_ip)
+                            else: 
+                                novo_ip = EnderecoIp(ip_address=endereco_ip, content_type_id=roteador_objeto_tipo, parent_object_id=roteador_db.id).save()
+                                roteador_db.ip_roteador.add(novo_ip)
+
+                except ValidationError:
+                    mensagens.append('Endereço de IP informado não é um endereço IP válido!')
+                    campo_erros.append('id_endereco_ip')
+                    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+            else:
+                consulta_db = EnderecoIp.objects.filter(roteador=roteador_db)
+                if consulta_db.count() >=1:
+                    roteador_db.ip_roteador.remove(consulta_db.first())
+                    consulta_db.delete()
+                
             form.save()
+
             return JsonResponse(status=200, data={'data': 'data'}, safe=True)
         else:
             for valores in form.errors.values():
@@ -389,25 +506,83 @@ def impressora_delete(request):
         
     return JsonResponse(status=400, safe=True, data={'data':'data'})
 
+@login_required
+@permission_required('dispositivo.delete_roteador', raise_exception=True)
+def roteador_delete(request):
+    if request.method == 'GET':
+        roteador_id = request.GET.get("roteador_id")
+        roteador = get_object_or_404(Roteador, pk=roteador_id)
+        if roteador:
+            roteador.delete()
+            return JsonResponse(status=200, data={'apagado':True, 'roteador_id':roteador_id}, safe=True)
+        
+    return JsonResponse(status=400, safe=True, data={'data':'data'})
+
 
 def teste_view(request):
     pagina = 1
-    """Função responsável pelo template de listar os usuários """
     pesquisa = request.GET.get('query')
-    formFuncionario = FuncionarioForm()
-    funcionarios_lista = Funcionario.objects.all()
+    computadores = Computador.objects.all()
     if pesquisa != '' and pesquisa is not None:
-
-        funcionarios_lista = funcionarios_lista.filter(
-            Q(nome__icontains=pesquisa) | Q(sobrenome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(controle_acesso__icontains=pesquisa) | Q(id__iexact=pesquisa) | Q(usuario_pc__icontains=pesquisa)
+        computadores = computadores.filter(
+            Q(nome_rede__icontains=pesquisa) | Q(sistema_op__icontains=pesquisa) | Q(funcionario__nome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(processador__modelo__icontains=pesquisa) | Q(departamento__singla_departamento__icontains=pesquisa) | Q(ip_computador__ip_address__icontains=pesquisa) | Q(mac_computador__mac_address__icontains=pesquisa)| Q(id__iexact=pesquisa)
         )
-
-    funcionarios = Paginator(funcionarios_lista.order_by('id'), 10).get_page(pagina)
-
+    computadores = Paginator(computadores.order_by('id'), 15).get_page(pagina)
     content = {
-        'funcionarios': funcionarios,
-        'pesquisa':pesquisa,
-        'formFuncionario': formFuncionario,
-
+        'computadores': computadores,
+        'formComputador': ComputadorFormNovo()
     }
     return render(request, template_name='teste.html', context=content)
+
+
+@login_required
+def patrimonio_view(request, pagina=1):
+    if request.method == 'GET':
+        data = []
+        gabinetes = []
+        monitores = []
+        pesquisa = request.GET.get('query')
+        if pesquisa != '' and pesquisa is not None:
+            
+            gabinetes = Gabinete.objects.filter(Q(patrimonio__icontains=pesquisa)).exclude(patrimonio__isnull=True)[0:50]
+            monitores = Monitor.objects.filter(Q(patrimonio__icontains=pesquisa)).exclude(patrimonio__isnull=True)[0:50]
+        else:
+            gabinetes = Gabinete.objects.all().exclude(patrimonio__isnull=True)[0:50]
+            monitores = Monitor.objects.all().exclude(patrimonio__isnull=True)[0:50]
+
+        for gabinete in gabinetes:
+            departamento = None
+            pc_gabinete = Computador.objects.filter(gabinete__id=gabinete.id)
+            if pc_gabinete.count() >=1:
+                if pc_gabinete.first().departamento is not None:
+                    departamento = pc_gabinete.first().departamento.departamento
+                elif pc_gabinete.first().funcionario is not None:
+                    departamento = pc_gabinete.first().funcionario.departamento                    
+            data.append(
+                {
+                    'id': gabinete.id,
+                    'departamento': departamento,
+                    'tipo': 'Gabinete',
+                    'emuso': 'Sim',
+                    'patrimonio': gabinete.patrimonio
+                }   
+            )
+            for monitor in monitores:
+                departamento = None
+                pc_monitor = Computador.objects.filter(monitor__isnull=False, monitor__id__in=[monitor.id])
+                if pc_monitor.count() >=1:
+                    if pc_monitor.first().departamento is not None:
+                        departamento = pc_monitor.first().departamento.departamento
+                    elif pc_monitor.first().funcionario is not None:
+                        departamento = pc_monitor.first().funcionario.departamento                    
+                data.append(
+                    {
+                        'id': monitor.id,
+                        'departamento': departamento,
+                        'tipo': 'Monitor',
+                        'emuso': 'Sim',
+                        'patrimonio': monitor.patrimonio
+                    }   
+                )
+        items = Paginator(data, 12).get_page(pagina)
+    return render(request, template_name='patrimonios/patrimonio.html', context={'items':items})

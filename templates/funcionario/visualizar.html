@@ -285,8 +285,11 @@
     <div class="modal fade" tabindex="-1" id='modalDeletar'>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="text-muted">Deseja Remover {{funcionario.nome}}? </h5>
+                <div class="modal-header text-light" style="background-color:rgb(204, 84, 84);">
+                    <h5 style='font-family: Arial, Helvetica, sans-serif;'>
+                        <i class="fas fa-trash-alt"></i>
+                        Deseja remover {{funcionario.nome}}?
+                    </h5>
                     <span data-bs-dismiss='modal'>
                         <i class="fas fa-times"></i>
                     </span>
@@ -297,8 +300,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-bs-dismiss='modal'>Cancelar</button>
-                    <a href="{% url 'funcionario_remover' funcionario.id %}"><button class="btn btn-danger">Apagar</button></a>
+                    <button class="btn btn-primary" data-bs-dismiss='modal' style='font-family: Arial, Helvetica, sans-serif;'>Cancelar</button>
+                    <a href="{% url 'funcionario_remover' funcionario.id %}"><button class="btn text-light" style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;'>Apagar</button></a>
                 </div>
             </div>
         </div>

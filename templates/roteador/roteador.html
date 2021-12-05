@@ -26,6 +26,7 @@
     forms_urls = {
         'roteador_add': '{% url "roteador_add" %}',
         'roteador_edit': '{% url "roteador_edit" %}',
+        'roteador_delete': '{% url "roteador_delete" %}',
     }
     $('#pesquisa_btn').click(function(e){
         e.preventDefault();
@@ -69,11 +70,17 @@
                     {% endfor %}
                 </td>
                 <td>
+                    {% if roteador.mac_roteador.all %}
                     {% for mac in roteador.mac_roteador.all %}
                         {{ mac }}
                     {% endfor %}
+                    {% else %}
+                    -
+                    {% endif %}
                 </td>
-                <td><i onclick='atualizarRoteador("{{roteador.id}}")' class="fas fa-edit"></i></td>
+                <td>
+                    <i class="fas fa-trash-alt pe-2" onclick="apagarRoteador('{{roteador.id}}')"></i>
+                    <i onclick='atualizarRoteador("{{roteador.id}}")' class="fas fa-edit"></i></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -129,7 +136,7 @@
                                             {{form.departamento}}
                                         </div>
                                         <div class="form-group col-12 col-lg-6 mt-2">
-                                            <label for="id_ip_endereco">Endereço IP</label>
+                                            <label for="id_endereco_ip">Endereço IP</label>
                                             {{form.endereco_ip}}
                                         </div>
                                         <div class="form-group col-12 col-lg-6 mt-2">
@@ -180,11 +187,11 @@
                                     <div class="row">
                                         <input type="hidden" id='id_roteador_id' name='roteador_id'>
                                         <div class="form-group col-12 col-lg-6 mt-2">
-                                            <label for="id_nome">SSID</label>
+                                            <label for="id_ssid">SSID</label>
                                             {{form.ssid}}
                                         </div>
                                         <div class="form-group col-12 col-lg-6 mt-2">
-                                            <label for="id_modelo">Senha</label>
+                                            <label for="id_senha">Senha</label>
                                             {{form.senha}}
                                         </div>
                                         <div class="form-group col-12 col-lg-6 mt-2">
@@ -196,7 +203,7 @@
                                             {{form.departamento}}
                                         </div>
                                         <div class="form-group col-12 col-lg-6 mt-2">
-                                            <label for="id_ip_endereco">Endereço IP</label>
+                                            <label for="id_endereco_ip">Endereço IP</label>
                                             {{form.endereco_ip}}
                                         </div>
                                         <div class="form-group col-12 col-lg-6 mt-2">
@@ -220,6 +227,36 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" id='modalApagarRoteador'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-light" style='background-color:rgb(204, 84, 84);font-family: Arial, Helvetica, sans-serif;'>
+                <h5>
+                    <i class="fas fa-trash-alt"></i>
+                    Apagar Roteador?
+                </h5>
+                
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <input id="apagarID" type="hidden" value='0'>
+                <div class="col p-2">
+                    <div class="col" style="font-family: Arial, Helvetica, sans-serif;">
+                        Caso você continue com esse processo o roteador será permanentemente apagado, não sendo possivel recuperar nenhuma informação.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button onclick='confirmarRemoverRoteador()' class="btn text-light" style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;'>Apagar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {% endblock modals %}
 {% block nav_paginacao %}

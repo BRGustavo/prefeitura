@@ -12,11 +12,13 @@ urlpatterns = [
     path('computador/add/', views.computador_create, name='computador_add'),
     path('computador/edit/<int:id>/', views.computador_edit, name='computador_edit'),
     path('computador/visualizar/<int:id>/<str:pagina>/', views.computador_visualizar, name='computador_visualizar'),
+    path('computador/remover/', views.computador_remover, name='computador_remover'),
 
     # URLs Model Roteador
     path('roteador/<int:pagina>/', views.roteador_view, name='roteador_view'),
     path('roteador/add/', views.roteador_add, name='roteador_add'),
     path('roteador/edit/', views.roteador_edit, name='roteador_edit'),
+    path('roteador/ajax/apagarroteador', views.roteador_delete, name='roteador_delete'),
 
     # URLs Model Impressora
     path('impressora/<int:pagina>/', views.impressora_view, name='impressora_view'),
@@ -39,6 +41,8 @@ urlpatterns = [
     path('funcionario/pesquisar/ajax/', ajax.funcionario_pesquisa_ajax, name='funcionario_pesquisa_ajax'),
     path('funcionario/vincular/ajax/', ajax.vincular_funcionario_ajax, name='vincular_funcionario_ajax'),
 
-    path('',views.teste_view, name='teste')
+    path('',views.teste_view, name='teste'),
 
+    # URL Patrimônio
+    path('patrimonio/pesquisa/<int:pagina>/', views.patrimonio_view, name='patrimonio_view')
 ]

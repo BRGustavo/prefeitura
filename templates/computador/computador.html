@@ -28,6 +28,9 @@
     opacity: 0.5;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+{% endblock style %}
+
 {% block scripts %}
     <script>
         const forms_urls = {
@@ -36,7 +39,6 @@
     </script>
 {% endblock scripts %}
 
-{% endblock style %}
 {% block tabela %}
 <div class="card-body table-responsive bg-dark">
     {% if computadores %}

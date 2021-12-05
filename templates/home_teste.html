@@ -146,8 +146,72 @@
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <span>
-                                        <i class="fas fa-network-wired"></i>
+                                        <i class="fas fa-wifi"></i>
                                         Roteadores 
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-start">
+                                    <i id='plus-icon' class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <p class="fs-5 mt-4 mt-lg-3">Consulta</p>
+            <div class="col-12 col-md-4 col-lg-4 m1 mb-2">
+                <a class="link-clicado" href="{% url 'patrimonio_view' 1 %}">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span>
+                                        <i class="far fa-folder-open"></i>
+                                        Consultar Patrimônios 
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-start">
+                                    <i id='plus-icon' class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4 m1 mb-2">
+                <a class="link-clicado" href="#">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span>
+                                        <i class="fas fa-sitemap"></i>
+                                        Consultar endereço IP 
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-start">
+                                    <i id='plus-icon' class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4 m1 ">
+                <a class="link-clicado" href="{% url 'roteador_view' pagina=1 %}">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span>
+                                        <i class="fas fa-stopwatch"></i>
+                                        Itens Leilão 
                                     </span>
                                 </div>
                                 <div class="d-flex align-items-start">
@@ -264,7 +328,7 @@
                     
                     </div>
                 </a>
-            </div>
+            </div>            
         </div>
     </div>
 </main>

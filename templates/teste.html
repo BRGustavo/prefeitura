@@ -1,16 +1,44 @@
-{% if computador.funcionario %}
-                                                <span class='d-flex justify-content-between'>
-                                                    <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
-                                                        <p class='mb-0 text-muted'>{{computador.funcionario.nome}}
-                                                        {% if computador.funcionario.sobrenome %}
-                                                        {{computador.funcionario.sobrenome}}
-                                                        {% endif %}
-                                                        </p>
-                                                    </a>
-                                                    <i data-bs-toggle='modal' data-bs-target='#modalDepUser' class="far fa-edit text-success text-end ps-5"></i>
-                                                </span>
-                                                <p class='text-muted'>{{computador.departamento.departamento}}</p>
-                                                {% else %}
-                                                <p class='mb-0 text-muted'>Não Vinculado</p>
-                                                <p class="text-muted"></p>
-                                                {% endif %}
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block corpo %}
+<main id='primeiro'>
+  <div class="container p-2">
+    <div class="col-12 p-4">
+      <span class='text-center'>
+        <h4>Qual tabela deseja acessar?</h4>
+      </span>
+    </div>
+    <div class="row">
+      <div class="col-12 col-lg-6">
+        <div class="card">
+          <div class="card-content">
+            <div class="card-header">
+              <i class="fas fa-shopping-cart fa-2x"></i>
+            </div>
+            <div class="card-body">
+              <h5>Gabinetes Leilão</h5>
+              <p>Por aqui você encontrará os items relacionados ao leilão. </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="card">
+          <div class="card-content">
+            <div class="card-header">
+
+            </div>
+            <div class="card-body">
+              <h5>Gabinetes em uso</h5>
+              <p>Por aqui você pode consultar os patrimônios e verificar os gabinetes "bons".</p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock corpo %}
