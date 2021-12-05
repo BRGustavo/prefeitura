@@ -92,10 +92,14 @@ def impressora_pesquisa_ajax(request):
             predio = impressora.departamento.predio if impressora.departamento else 'Não selecionado'
             html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{predio}</td><td>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
             """
+            img_modelo = 'm4070'
+        
+
             data.append({
                 'html_item': html_item,
                 'nome': impressora.nome,
                 'modelo': impressora.modelo,
+                'img_modelo': img_modelo,
                 'ip': impressora.ip_impressora.first().ip_address
             })
         return JsonResponse(data={'impressoras': data}, safe=True)
@@ -176,8 +180,15 @@ def atualizar_computador_info_ajax(request):
             # Validação Gabinete
             gabinete = Gabinete.objects.filter(computador=computador).first()
             if len(form.cleaned_data.get('gabinete')) >=1:
-                gabinete.patrimonio = form.cleaned_data.get('gabinete')
-                gabinete.save()
+                if gabinete:
+                    gabinete.patrimonio = form.cleaned_data.get('gabinete')
+                    gabinete.save()
+                else: 
+                    gabinete = Gabinete(patrimonio=form.cleaned_data.get('gabinete'), modelo='Outro')
+                    gabinete.save()
+                    computador.gabinete = gabinete
+                    computador.save()
+
             else:
                 Gabinete.objects.filter(computador=computador).update(patrimonio='')
             
@@ -194,6 +205,7 @@ def atualizar_computador_info_ajax(request):
                         novo_hd.tamanho = form.cleaned_data.get('hd')
                         novo_hd.save()
                         computador.hd = novo_hd
+                        
                 except ValueError:
                     campo_erros.append('id_hd')
                     mensagens.append('Tamanho do HD inválido, use um valor de 0 a 999')
@@ -483,7 +495,7 @@ def impressora_nova_ajax(request):
                 form.save()
                 return JsonResponse(data={'data': 'data'}, safe=True)
             except ValueError as e:
-                mensagens.append('Ocorreu um erro ao tentar salvar o roteador. Tente Novamente.')
+                mensagens.append('Ocorreu um erro ao tentar salvar a impressora. Tente Novamente.')
                 for campo in form:
                     campo_erros.append(campo.id_for_label)
 

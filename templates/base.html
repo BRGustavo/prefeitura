@@ -39,9 +39,11 @@
                     <div class="navbar-nav">
                         
                         {% if user.is_authenticated %}
+                        
                             <a class="nav-item nav-link" href='{% url "home" %}' id='home-menu'>
                                 <i class="fas fa-home"></i> Home
                             </a>
+                            
                             
                             <a class="nav-item nav-link" href='#' id='user-menu'>
                                 <i class="fa fa-user" aria-hidden="true"></i> {{ user.username.capitalize }}
@@ -73,16 +75,23 @@
     {% block footer %}
     <footer class='mt-auto bg-black'>
         <div class="container">
-            <div class="row">
-                <div class="col-12 p-3 pb-0 text-light text-center">
-                    Rua Placídio Leite, 148 - Centro Cívico CEP: 84.990-000 - Tel: (43) 3512-3000
+            
+            <div class="row pb-3">
+                <div class="d-flex flex-row p-5 pb-2 d-flex justify-content-center d-flex align-items-center">
+                    <span class='pe-3'>
+                        <a class='text-decoration-none text-light' targe='_blank' href="https://www.facebook.com/prefeituradearapoti/"><i class="fab fa-facebook-square fa-2x"></i></a>
+                    </span>
+                    <span class='pe-3'>
+                        <a class='text-decoration-none text-light' target="_blank" href="https://github.com/BRGustavo/prefeitura"><i class="fab fa-github fa-2x"></i></a>
+                    </span>
+                    <span class='pe-3'>
+                        <a class='text-decoration-none text-light' target="_blank" href="http://www.arapoti.pr.gov.br:2095/login">
+                        <i class="fas fa-envelope fa-2x"></i></a>
+                    </span>
                 </div>
+                <p class='text-center text-light mb-0'>Rua Placídio Leite, 148 - Centro Cívico</p>
+                <p class='text-center text-light'>2021 ;)</p>
             </div>
-            <!-- <div class="row">
-                <div class="col-12 text-light text-center">
-                    :-P
-                </div>
-            </div> -->
         </div>
     </footer>
     {% endblock footer %}
@@ -92,7 +101,7 @@
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <!-- Bootstrap js -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
+    <script src='{% static "js/bootstrap.bundle.js" %}'></script>
     <script src="{% static 'js/javascript.js' %}"></script>
     <!-- Font Awensome -->
     <script src="https://kit.fontawesome.com/6953b3b378.js" crossorigin="anonymous"></script>

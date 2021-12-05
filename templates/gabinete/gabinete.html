@@ -1,7 +1,7 @@
-{% extends 'departamento/departamento.html' %}
+{% extends 'base_listagem.html' %}
 
 {% block button_adicionar %}
-<a href='{% url "gabinete_add" %}' class="btn btn-success">Adicionar</a>
+<a href='{% url "gabinete_add" %}' class="btn btn-outline-success">Adicionar</a>
 
 {% endblock %}
 
@@ -13,7 +13,7 @@
 
 <!-- Search Bar  -->
 {% block botao_pesquisa %}
-<button type="submit" class="btn btn-primary" id='pesquisa_btn'>Pesquisa</button>
+<button type="submit" class="btn btn-outline-primary" id='pesquisa_btn'>Pesquisa</button>
 {% endblock botao_pesquisa %}
 
 {% block scripts %}
@@ -27,18 +27,18 @@
 </script>
 {% endblock scripts %}
 {% block tabela %}
-<div class="card-body table-responsive bg-light">
+<div class="card-body table-responsive bg-dark">
     {% if gabinetes %}
-    <table class="table table-sm text-center table table-striped">
+    <table class="table table-sm text-center table table-striped text-light text-muted">
         <thead>
             <th scope="col">ID</th>
             <th scope="col">Modelo</th>
             <th scope="col">Patrimônio</th>
             <th scope='col'>Editar</th>
         </thead>
-        <tbody>
+        <tbody class='text-muted'>
             {% for gabinete in gabinetes %}
-            <tr>
+            <tr class='text-light'>
                 <th scope="row">{{ gabinete.id }}</th>
                 <td>{{ gabinete.modelo }}</td>
                 <td>{{ gabinete.patrimonio }}</td>

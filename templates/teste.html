@@ -1,16 +1,35 @@
-{% if computador.funcionario %}
-                                                <span class='d-flex justify-content-between'>
-                                                    <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
-                                                        <p class='mb-0 text-muted'>{{computador.funcionario.nome}}
-                                                        {% if computador.funcionario.sobrenome %}
-                                                        {{computador.funcionario.sobrenome}}
-                                                        {% endif %}
-                                                        </p>
-                                                    </a>
-                                                    <i data-bs-toggle='modal' data-bs-target='#modalDepUser' class="far fa-edit text-success text-end ps-5"></i>
-                                                </span>
-                                                <p class='text-muted'>{{computador.departamento.departamento}}</p>
-                                                {% else %}
-                                                <p class='mb-0 text-muted'>Não Vinculado</p>
-                                                <p class="text-muted"></p>
-                                                {% endif %}
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block corpo %}
+<main id='primeiro'>
+  <div class="container p-5 bg-dark text-light">
+    <div class="row">
+      <div class="col-12 col-lg-4">
+        <h5>Filtrar por Rede</h5>
+        <ul class="list-group">
+          <li class="list-group-item bg-dark text-light">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id='rede5'>
+              <label for="rede5" class='form-check-label'>Endereços IP da Rede 5</label>
+            </div>
+          </li>
+          <li class="list-group-item bg-dark text-light">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id='rede6'>
+              <label for="rede5" class='form-check-label'>Endereços IP da Rede 6</label>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="col-12 col-lg-8">
+        <div class="input-group">
+          <input type="text" class="form-control rounded" value='Pesquisar'>
+          <button class="btn btn-outline-primary">Pesquisar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock corpo %}

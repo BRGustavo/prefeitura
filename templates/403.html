@@ -10,6 +10,8 @@
 <style>
     body {
         background-color:rgb(235, 232, 232);
+    
+        /* background-image:  linear-gradient(#bdc3c7, #2c3e50); */
     }
     #primeiro {
         margin-top: 150px;
@@ -18,10 +20,15 @@
     }
 </style>
 
-
 <main>
     <div class="container" id="primeiro">
-        <p>Falta criar uma página de erro</p>
+        <div class="container p-5 d-flex justify-content-center d-flex align-items-center ">
+            <div class="d-flex flex-column">
+                <h1 class='text-center'>OOPS!</h1>
+                <p><b>{{user.username.capitalize}}</b>, você não possui permissão para acessar essa página!</p>
+                <a href='{% url "home" %}' class="btn btn-success">Voltar</a>
+            </div>
+        </div>
     </div>
 </main>
 {% endblock corpo %}

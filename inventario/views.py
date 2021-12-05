@@ -437,3 +437,9 @@ def monitor_add(request):
                     
                 context['field_erros'] = form.errors.keys()
     return render(request, 'monitor/novo.html', context=context)
+
+
+@login_required
+@permission_required('inventario.view_monitor', raise_exception=True)
+def fonte_view(request):
+    return render(request, template_name='base.html', context={''})

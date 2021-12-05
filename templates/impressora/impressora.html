@@ -20,7 +20,7 @@
             'impressora_nova_ajax': '{% url "impressora_nova_ajax" %}',
             'impressora_atualizar_ajax': '{% url "impressora_atualizar_ajax" %}',
             'impressora_delete': '{% url "impressora_delete" %}',
-            'token': '{{csrf_token}}'
+            'token': '{{csrf_token}}',
         }
     </script>
 {% endblock scripts %}
@@ -221,7 +221,7 @@
 <div class="modal fade" tabindex="-1" id='modalApagarImpressora'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-light" style='font-family: Arial, Helvetica, sans-serif;'>
+            <div class="modal-header text-light" style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;'>
                 <h5>
                     <i class="fas fa-trash-alt"></i>
                     Apagar Impressora?
@@ -231,7 +231,7 @@
                     <i class="fas fa-times text-light"></i>
                 </span>
             </div>
-            <div class="modal-body alert-danger">
+            <div class="modal-body">
                 <input id="apagarID" type="hidden" value='0'>
                 <div class="col p-2">
                     <div class="col" style="font-family: Arial, Helvetica, sans-serif;">
@@ -239,9 +239,9 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer alert-danger">
+            <div class="modal-footer">
                 <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                <button onclick='confirmarRemoverImpressora()' class="btn text-light" style='background-color:#d80202; font-family: Arial, Helvetica, sans-serif;'>Apagar</button>
+                <button onclick='confirmarRemoverImpressora()' class="btn text-light" style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;'>Apagar</button>
             </div>
         </div>
     </div>

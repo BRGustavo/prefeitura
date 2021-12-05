@@ -518,7 +518,26 @@ function confirmarRemoverImpressora(){
             'impressora_id':impressora_id
         },
         success: function(data){
-            $('modalApagarImpressora').modal('hide');
+            $('#modalApagarImpressora').modal('hide');
+            location.reload()
+        }
+    });
+}
+function apagarRoteador(roteador_id){
+    $("#modalApagarRoteador").modal('show');
+    $("#modalApagarRoteador").find("#apagarID").val(roteador_id);
+    
+}
+function confirmarRemoverRoteador(){
+    let roteador_id = $("#modalApagarRoteador").find("#apagarID").val()
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.roteador_delete,
+        data: {
+            'roteador_id':roteador_id
+        },
+        success: function(data){
+            $('#modalApagarRoteador').modal('hide');
             location.reload()
         }
     });
@@ -564,6 +583,144 @@ function apagarPlacaMae(id_computador){
         }
     });
 }
+
+$('#form-roteadornovo').submit(function(e){
+    e.preventDefault()
+    const csrftoken = window.document.querySelector('#form-roteadornovo input[name=csrfmiddlewaretoken]').value;
+    var serialize = $(`#form-roteadornovo`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.roteador_add,
+        data: serialize,
+        beforeSend: function(e){
+
+            $("#novoRoteadorButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalNovoRoteador').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novoRoteadorButton").html("Adicionar")
+
+            $(`#form-roteadornovo input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-roteadornovo label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+})
+$('#modalNovoRoteador').on('show.bs.modal', function(){
+    window.document.querySelectorAll("#modalNovoRoteador input:not([name='csrfmiddlewaretoken']), textarea").forEach(function(e){
+        e.value = ""
+    });
+});
+
+$('#form-roteadoratualizar').submit(function(e){
+    e.preventDefault()
+    const csrftoken = window.document.querySelector('#form-roteadoratualizar input[name=csrfmiddlewaretoken]').value;
+    var serialize = $(`#form-roteadoratualizar`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: forms_urls.roteador_edit,
+        data: serialize,
+        beforeSend: function(e){
+
+            $("#novoRoteadorButton").html("<span class='spinner-border spinner-border-sm' role='status'aria-hidden='true'></span> Carregando<span class='sr-only'>Loading...</span>")
+        },
+        success: function(data){
+            $('.modalAtualizarRoteador').modal('hide')
+            location.reload()
+        },
+        error: function (request, status, error) {
+            $("#novoRoteadorButton").html("Adicionar")
+
+            $(`#form-roteadoratualizar input`).each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+            $(`#form-roteadoratualizar label`).each(function(index){
+                $(this).css('color', 'black');
+            });
+            let info = $.parseJSON(request.responseText);
+            
+            if(info['status'] == 'false'){
+                alert(info['messagem']);
+                for(let erro_id in info['field_erros']){
+                    
+                    $(`#${info['field_erros'][erro_id]}`).each(function(){
+                        $(this).css('border-color', 'red');
+                    })
+                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                }
+            }
+        }
+    })
+})
+
+function atualizarRoteador(roteador_id){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.roteador_edit,
+        data: {
+            'roteador_id': roteador_id
+        },
+        success: function(data){
+            campos = data['campos']
+            for(let item in campos){
+                $(`[name=${item}]`).val(campos[item])
+            }
+            $('#modalAtualizarRoteador').modal('show');
+        },
+    });
+}
+
+$('#removerPc').click(function(e){
+    data = {
+        'id_computador': forms_urls.id_computador,
+    }
+    lista_ids = ['manterGabinete', 'manterMonitor', 'manterHd', 'manterPlacaMae', 'manterProcessador', 'manterMemoriaRam']
+    for(let item in lista_ids){
+        
+        if($(`#${lista_ids[item]}`).is(':checked')){
+            data[lista_ids[item]] = 'Sim'
+        }else {
+            data[lista_ids[item]] = 'Não'
+        }
+    }
+    $.ajax({
+        type: 'GET',
+        data: data,
+        url: forms_urls.computador_remover,
+        success: function(data){
+            $('#modalRemoverPc').modal('hide');
+            window.location.href = forms_urls.computador_view;
+        },
+        error: function (request, status, error) {
+            let info = $.parseJSON(request.responseText)
+            if(info['messagem'].length >=1){
+                for(let item in info['messagem']){
+                    alert(info['messagem'][item])
+                }
+            }else {
+                alert('Ocorreu um erro ao tentar remover o PC.')
+            }
+        }
+    });
+})
+
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
