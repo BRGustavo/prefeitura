@@ -593,3 +593,43 @@ def patrimonio_view(request):
 
             return JsonResponse(status=200, data={'items': items}, safe=True)
     return render(request, template_name='patrimonios/patrimonio.html', context={'items':items})
+
+
+def pesquisar_endereco_ip(request):
+    if request.method == 'GET':
+        enderecos = EnderecoIp.objects.all()
+        data = []
+        query = request.GET.get('query')
+
+        if query is not None and len(query) >=1:
+            enderecos = EnderecoIp.objects.filter(Q(ip_address__icontains=query))
+        
+        for item in enderecos:
+            nome_dispositivo = 'Não Identificado'
+            modelo = ContentType.objects.filter(id=item.content_type_id).first().model
+            
+            if str(modelo) == 'computador':
+                nome_dispositivo = 'Computador'
+            elif str(modelo) == 'impressora':
+                nome_dispositivo = 'Computador'
+            elif str(modelo) == 'roteador':
+                nome_dispositivo = 'Roteador'
+            
+            data.append(f"""
+                <li class="list-group-item bg-dark text-light">
+                <div class="row d-flex align-items-center">
+                  <div class="col-auto">
+                    <i class="fas fa-network-wired text-success"></i>
+                  </div>
+                  <div class="col-auto">
+                    <p class='text-muted mb-0 pb-0'><b>{nome_dispositivo} - {item.ip_address}</b></p>
+                    <p class='mb-0 text-muted'>Endereço MAC: - </p>
+                  </div>
+                </div>
+              </li>
+                """
+            )
+        if query is not None and len(query) >=1:
+            return JsonResponse(status=200, data={'enderecos': data}, safe=True)
+
+    return render(request, template_name='teste.html', context={'enderecos': data})

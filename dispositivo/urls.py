@@ -44,5 +44,6 @@ urlpatterns = [
     path('',views.teste_view, name='teste'),
 
     # URL Patrimônio
-    path('patrimonio/pesquisa/', views.patrimonio_view, name='patrimonio_view')
+    path('patrimonio/pesquisa/', views.patrimonio_view, name='patrimonio_view'),
+    path('agulha/', views.pesquisar_endereco_ip, name='pesquisar_endereco_ip')
 ]
