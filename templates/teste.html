@@ -3,14 +3,44 @@
 
 {% block scripts %}
 <script>
+    $('#rede4').change(function(){
+      ConsultarIpPorRede();
+    })
+    $('#rede5').change(function(){
+      ConsultarIpPorRede();
+    })
+    
+    $('#rede15').change(function(){
+      ConsultarIpPorRede();
+    })
+    
+    $(document).ready(function(){
+      let elementos = ['#rede5', '#rede4', '#rede15']
+      for(let item in elementos){
+        $(elementos[item]).attr('checked', 'true')
+      }
+    });
     $('#btnPesquisa').click(function(){
       let pesquisa = $('#query').val()
-      if(pesquisa.length >=2){
-        $.ajax({
+      if(pesquisa.length >=1){
+        ConsultarIpPorRede()
+      }
+    });
+
+    function ConsultarIpPorRede(){
+      let rede5=$('#rede5').is(':checked');
+      let rede15=$('#rede15').is(':checked');
+      let rede4=$('#rede4').is(':checked');
+      let pesquisa = $('#query').val()
+      $.ajax({
           type: 'GET',
           url: '{% url "pesquisar_endereco_ip" %}',
           data: {
             'query': pesquisa,
+            'rede4': rede4,
+            'rede5': rede5,
+            'rede15': rede15
+  
           },
           success: function(data){
             $('#listaItems').html('');
@@ -22,8 +52,7 @@
             alert('Deu merda!')
           }
         });
-      }
-    });
+    }
 </script>
 {% endblock scripts %}
 
