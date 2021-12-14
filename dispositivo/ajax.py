@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from inventario.forms import PlacaMaeForm, ProcessadorForm
 from .models import *
 from dispositivo.models import *
-from .forms import ComputadorForm, ComputadorFormInfo, ComputadorFormNovo, ImpressoraForm, IpMacFormAtualizar
+from .forms import ComputadorForm, ComputadorFormInfo, ComputadorFormNovo, EnderecoReservadoForm, ImpressoraForm, IpMacFormAtualizar
 from netaddr import EUI
 
 
@@ -90,7 +90,7 @@ def impressora_pesquisa_ajax(request):
 
         for impressora in impressoras:
             predio = impressora.departamento.predio if impressora.departamento else 'Não selecionado'
-            html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{predio}</td><td>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
+            html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{predio}</td><td id='ip_impressora'>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i id='vincular' onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
             """
             img_modelo = 'm4070'
         
@@ -125,7 +125,7 @@ def funcionario_pesquisa_ajax(request):
             if computador.funcionario is not None and computador.funcionario == funcionario:
                 background_cor = 'rgb(170, 255, 170)'
 
-            html_item = f"""<tr class='mt-2' style='background-color:{background_cor};'><td class='d-flex justify-content-between'><img class='rounded-circle' src="" style='width:50px;' alt=""><div class="col ps-3 d-flex flex-column"><span><b>{funcionario.nome} {funcionario.sobrenome}</b></span><span class='text-muted'>{departamento} - {predio}</span></div></td><td class='text-center'><i onclick='VincularFuncionario({funcionario.id})' class="fas fa-link"></i></td></tr>
+            html_item = f"""<tr class='mt-2' style='background-color:{background_cor};'><td class='d-flex justify-content-between'><img class='rounded-circle' src="" style='width:50px;' alt=""><div class="col ps-3 d-flex flex-column"><span><b>{funcionario.nome} {funcionario.sobrenome if funcionario.sobrenome else ''}</b></span><span class='text-muted'>{departamento} - {predio}</span></div></td><td class='text-center'><i onclick='VincularFuncionario({funcionario.id})' class="fas fa-link"></i></td></tr>
             """
             data.append({
                 'html_item': html_item,
@@ -551,3 +551,42 @@ def impressora_atualizar_ajax(request):
                     campo_erros.append(campo.id_for_label)
 
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+
+def salvar_ip_reservado(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'POST':
+        if request.is_ajax():
+            form = EnderecoReservadoForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return JsonResponse(status=200, data={'data': 'ok'}, safe=True)
+            else:
+                for valores in form.errors.values():
+                    mensagens.append(valores)
+                for campo in form:
+                    if campo.errors:
+                        campo_erros.append(campo.id_for_label)
+        
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+
+
+@login_required
+@permission_required('dispositivo.change_enderecoip', raise_exception=True)
+def remover_ip_reservado(request):
+    if request.method == 'GET':
+        if request.is_ajax():
+            id_ip_reservado = request.GET.get('ID')
+            ip_reservado = get_object_or_404(EnderecoIpReservado, pk=id_ip_reservado)
+            print(ip_reservado)
+            if ip_reservado:
+                ip_reservado.delete()
+                return JsonResponse(status=200, data={'mensagem': 'tudo ok!'}, safe=True)
+            else:
+                return JsonResponse(status=400, data={
+                    'mensagem': 'Esse endereço IP não foi marcado como reservado, portanto não é possivel excluí-lo.'
+                }, safe=True)
+        else:
+            return JsonResponse(status=400, data={'mensagem': 'Não foi permitido que você fizesse essa alteração.'}, safe=True)
+    return JsonResponse(status=400, data={'mensagem': ':P'}, safe=True)

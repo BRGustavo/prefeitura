@@ -56,8 +56,8 @@
         </thead>
         <tbody>
             {% for computador in computadores %}
-            <tr>
-                <th scope="row">{{ computador.id }}</th>
+            <tr class='border-0'>
+                <th id='id_pc' scope="row">{{ computador.id }}</th>
                 <td>{{ computador.nome_rede }}</td>
                 <td>
                     {% if computador.departamento %}
@@ -70,7 +70,7 @@
                 </td>
                 <td>
                     {% if computador.funcionario.nome|length > 1 %}
-                    <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">{{ computador.funcionario.nome }}</a>
+                    <a href="{% url 'funcionario' 1 %}">{{ computador.funcionario.nome }}</a>
                     {% else %}
                     {{ computador.funcionario.nome }}
                     {% endif %}
@@ -80,7 +80,7 @@
                 <td>{{ computador.sistema_op }}</td>
                 <td>
                     {% for ip in computador.ip_computador.all %}
-                        {{ ip }}
+                        <span id='ip_endereco'>{{ ip }}</span>
                     {% endfor %}
                 </td>
                 <td>
@@ -124,7 +124,7 @@
                                                 <span class="input-group-text bg-success border-0">
                                                     <i class="fas fa-user"></i>
                                                 </span>
-                                                <input type="text" id='usuario-usuario' class="form-control bg-success border-0 inputplaceholder" placeholder='Exemplo: gustavo.silva' autocomplete="off">
+                                                <input type="text" id='usuario-usuario' class="form-control bg-success border-0 inputplaceholder" placeholder='Exemplo: gustavo.silva' autocomplete="off" style='font-family: Arial, Helvetica, sans-serif;'>
                                             </div>
                                         </div>
                                         <div class="form-group mt-3">

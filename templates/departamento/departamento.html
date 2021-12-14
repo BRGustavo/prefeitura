@@ -28,7 +28,7 @@
         </thead>
         <tbody>
             {% for departamento in departamentos %}
-            <tr>
+            <tr class='border-0'>
                 <th scope="row">{{ departamento.id }}</th>
                 <td>{{ departamento.departamento }}</td>
                 <td>{{ departamento.sigla_departamento }}</td>
@@ -49,7 +49,7 @@
 
 {% block modals %}
 <div class="modal fade" tabindex="-1" id='modalDepartamento'>
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-success">
                 <span class="modal-title">

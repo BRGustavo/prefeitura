@@ -40,7 +40,7 @@
         </thead>
         <tbody>
             {% for impressora in impressoras %}
-            <tr>
+            <tr class='border-0'>
                 <th scope="row">{{ impressora.id }}</th>
                 <td>{{ impressora.nome }}</td>
                 <th>
@@ -140,7 +140,7 @@
                                             {{form.descricao}}
                                         </div>
                                         <div class="col-12 mt-3 d-flex justify-content-end">
-                                            <button id='novaImpressoraButton' class="btn text-dark" style='background-color:#02aed8; color:black; font-family: Arial, Helvetica, sans-serif;'>Adicionar</button>
+                                            <button id='novaImpressoraButton' class="btn text-white" style='background-color:#02aed8; color:black; font-family: Arial, Helvetica, sans-serif;'>Adicionar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -206,7 +206,7 @@
                                             {{form.descricao}}
                                         </div>
                                         <div class="col-12 mt-3 d-flex justify-content-end">
-                                            <button id='AtualizarImpressoraButton' class="btn text-dark" style='background-color:#02aed8; color:black; font-family: Arial, Helvetica, sans-serif;'>Atualizar</button>
+                                            <button id='AtualizarImpressoraButton' class="btn text-white" style='background-color:#02aed8; color:white; font-family: Arial, Helvetica, sans-serif;'>Atualizar</button>
                                         </div>
                                     </div>
                                 </form>

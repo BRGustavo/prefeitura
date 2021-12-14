@@ -721,6 +721,67 @@ $('#removerPc').click(function(e){
     });
 })
 
+// Ativando Modal Deletar Informações do Funcionário.
+function ModalRemoverFuncionario(url=false){
+    $('#modalDeletar').modal('show');
+    if(url != false){
+        $('#modalDeletar #linkRemoverFuncionario').attr('href', url)
+    }
+}
+// Ativando Modal Atualizar Informações do Funcionário.
+function ModalAtualizarFuncionario(id_funcionario, url){
+    $('#modalEditFuncionario').modal('show');
+    $.ajax({
+        type: 'GET',
+        url: url,
+        data: {
+            'id': id_funcionario
+        },
+        success: function(data){
+            $('#modalEditFuncionario #id_nome').val(data.id_nome);
+            $('#modalEditFuncionario #id_sobrenome').val(data.id_sobrenome);
+            $('#modalEditFuncionario #id_senha_pc').val(data.id_senha_pc);
+            $('#modalEditFuncionario #id_usuario_pc').val(data.id_usuario_pc);
+            $('#modalEditFuncionario #id_controle_acesso').val(data.id_controle_acesso);
+            $('#modalEditFuncionario #id_admin_rede').val(data.id_adm_rede);
+            $('#modalEditFuncionario #id_descricao').val(data.id_descricao);
+            $('#modalEditFuncionario #EditarFuncionario').attr('onclick', data.url);
+
+            for(let departamento in data.departamentos){
+                $('#modalEditFuncionario #id_departamento').append(`<option value="${data.departamentos[departamento].id}">${data.departamentos[departamento].valor}</option>`);
+            }
+            $(`#modalEditFuncionario #id_departamento option[value='${data.departamento}']`).attr("selected", "selected");
+        },
+        error: function(response, status, error){
+            alert('Não possivel concluir a operação. Atualize a página.')
+        }
+    })
+    
+}
+function UpdateFuncionario(url){
+    const csrftoken = document.querySelector(`#form-funcionario [name=csrfmiddlewaretoken]`).value;
+    var serialize = $(`#modalEditFuncionario #form-funcionario`).serialize();
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        type: 'POST',
+        url: url,
+        data: serialize,
+        success: function(data){
+            $(`#modalEditFuncionario`).modal('hide');
+            $(`#form-funcionario`).trigger('reset');
+            location.reload();
+        },
+        error: function (request, status, error) {
+            let info = $.parseJSON(request.responseText);
+            if(info['status'] == 'false'){
+                alert("Verifique o formulário.");
+                for(let erro_id in info['field_erros']){
+                    $(`#modalEditFuncionario #${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
+            }
+        }
+    })
+}
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});

@@ -10,8 +10,8 @@ import netaddr
 from netaddr.strategy.eui48 import mac_bare
 from departamento.forms import FuncionarioForm
 from departamento.models import Departamento, Funcionario
-from .models import Computador, EnderecoIp, EnderecoMac, Impressora, MemoriaRam, Roteador
-from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, ComputadorFormNovo, ComputadorFormRemover, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
+from .models import Computador, EnderecoIp, EnderecoIpReservado, EnderecoMac, Impressora, MemoriaRam, Roteador
+from .forms import ComputadorForm, ComputadorFormDescricao, ComputadorFormInfo, ComputadorFormNovo, ComputadorFormRemover, EnderecoReservadoForm, IpMacFormAtualizar, RoteadorForm, ImpressoraForm
 from inventario.forms import *
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
@@ -533,7 +533,7 @@ def teste_view(request):
         'computadores': computadores,
         'formComputador': ComputadorFormNovo()
     }
-    return render(request, template_name='teste.html', context=content)
+    return render(request, template_name='usuario.html', context=content)
 
 
 @login_required
@@ -603,13 +603,14 @@ def pesquisar_endereco_ip(request):
         rede4 = request.GET.get('rede4') 
         rede5 = request.GET.get('rede5') 
         rede15 = request.GET.get('rede15')
+        reservado = request.GET.get('reservado')
         retornar_json = False
 
         if query is not None and len(query) >=1:
             enderecos = EnderecoIp.objects.filter(Q(ip_address__icontains=query))
         
-        if rede4 == 'false' and rede5=='false' and rede15 == 'false':
-            rede4, rede5, rede15 = ('true', 'true', 'true')
+        if rede4 == 'false' and rede5=='false' and rede15 == 'false' and reservado == 'false':
+            rede4, rede5, rede15, reservado = ('true', 'true', 'true', 'true')
         
         for item in enderecos:
 
@@ -623,33 +624,74 @@ def pesquisar_endereco_ip(request):
             
             if str(modelo) == 'computador':
                 nome_dispositivo = 'Computador'
+                nome_dispositivo = f"""
+                <a class='text-decoration-none text-muted' href='{reverse("computador_visualizar", args=[item.parent_object_id, 'principal'])}'>Computador</a>"""
             elif str(modelo) == 'impressora':
                 nome_dispositivo = 'Impressora'
             elif str(modelo) == 'roteador':
                 nome_dispositivo = 'Roteador'
-            
-            if '192.168.4' in str(item.ip_address) and rede4 == 'false':
-                continue
+            elif str(modelo) == 'enderecoipreservado':
+                nome_dispositivo = 'Reservado'
+
+            teste_logico = nome_dispositivo == 'Reservado' and reservado == 'false'
+            if ('192.168.4' in str(item.ip_address) and rede4 == 'false'):
+                if nome_dispositivo == 'Reservado':
+                    if teste_logico:
+                        continue
+                else:
+                    continue
             elif '192.168.5' in str(item.ip_address) and rede5 == 'false':
-                continue
+                if nome_dispositivo == 'Reservado':
+                    if teste_logico:
+                        continue
+                else:
+                    continue
             elif '192.168.15' in str(item.ip_address) and rede15 == 'false':
-                continue 
+                if nome_dispositivo == 'Reservado':
+                    if teste_logico:
+                        continue
+                else:
+                    continue
+            elif teste_logico:
+                continue
             
-            data.append(f"""
-                <li class="list-group-item bg-dark text-light">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-auto">
-                            <i class="fas fa-network-wired text-success"></i>
+            
+            if nome_dispositivo != 'Reservado':
+                data.append(f"""
+                    <li class="list-group-item bg-dark text-light">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-auto">
+                                <i class="fas fa-network-wired text-success"></i>
+                            </div>
+                            <div class="col-auto">
+                                <p class='text-muted mb-0 pb-0'><b>{nome_dispositivo} - {item.ip_address}</b></p>
+                                <p class='mb-0 text-muted'>Endereço MAC: {mac} </p>
+                            </div>
                         </div>
-                        <div class="col-auto">
-                            <p class='text-muted mb-0 pb-0'><b>{nome_dispositivo} - {item.ip_address}</b></p>
-                            <p class='mb-0 text-muted'>Endereço MAC: {mac} </p>
+                    </li>
+                    """
+                )
+            else:
+                objeto_reservado = EnderecoIpReservado.objects.filter(id=item.parent_object_id).first()
+                titulo = objeto_reservado.titulo if objeto_reservado.titulo else 'Reservado'
+                data.append(f"""
+                    <li class="list-group-item bg-dark text-light">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-auto">
+                                <i class="fas fa-network-wired text-danger"></i>
+                            </div>
+                            <div class="col-auto">
+                                <p class='text-muted mb-0 pb-0'><b>{titulo} - {item.ip_address}</b></p>
+                                <p class='mb-0 text-muted'>Endereço MAC não disponível </p>
+                            </div>
+                            <div class="col d-flex flex-row-reverse d-flex align-items-center">
+                                <i onclick="RemoverIPReservado('{objeto_reservado.id}')" class="far fa-trash-alt text-danger"></i>
+                            </div>
                         </div>
-                    </div>
-                </li>
-                """
-            )
+                    </li>
+                    """
+                )
         if (query is not None and len(query) >=1) or request.is_ajax():
             return JsonResponse(status=200, data={'enderecos': data}, safe=True)
 
-    return render(request, template_name='teste.html', context={'enderecos': data})
+    return render(request, template_name='consulta_ip.html', context={'enderecos': data, 'form': EnderecoReservadoForm()})

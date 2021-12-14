@@ -30,7 +30,7 @@
         })
     });
     var forms_urls = {
-        funcionario: '{% url "funcionario_ajax_add" %}'
+        funcionario: '{% url "funcionario_ajax_add" %}',
     }
 </script>
 {% endblock scripts %}
@@ -47,11 +47,11 @@
             <th scope='col'>Usuário PC</th>
             <th scope='col'>Acesso</th>
             <th scope='col'>Adm Local</th>
-            <th scope='col'>Visualizar</th>
+            <th scope='col'>Opções</th>
         </thead>
         <tbody>
             {% for funcionario in funcionarios %}
-            <tr>
+            <tr class='border-0'>
                 <th scope="row">{{ funcionario.id }}</th>
                 <td>{{ funcionario.nome }}</td>
                 <td>
@@ -71,7 +71,12 @@
                 <td>{{ funcionario.usuario_pc }}</td>
                 <td>{{ funcionario.controle_acesso }}</td>
                 <td>{{ funcionario.admin_rede }}</td>
-                <td><a href="{% url 'funcionario_visualizar' funcionario.id %}"><i class="fas fa-eye"></i></a></td>
+                <td class='p-2'>
+                    <div class="d-flex flex-row">
+                        <i class="fas fa-user-edit pe-3" onclick='ModalAtualizarFuncionario("{{funcionario.id}}", `{% url "funcionario_edit_form_ajax" %}`)'></i>
+                        <i class="fas fa-trash-alt" onclick='ModalRemoverFuncionario(`{% url "funcionario_remover" funcionario.id %}`)'></i>
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -85,8 +90,9 @@
 {% endblock tabela %}
 
 {% block modals %}
+<!-- Adicionar Funcionario Modal -->
 <div class="modal fade" tabindex="-1" id='modalFuncionario'>
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-success">
                 <h5 class="modal-title text-light">
@@ -161,6 +167,119 @@
         </div>
     </div>
 </div>
+<!-- Modal Remover Funcionario -->
+<div class="modal fade" tabindex="-1" id='modalDeletar'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-light" style="background-color:rgb(204, 84, 84);">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;'>
+                    <i class="fas fa-trash-alt"></i>
+                    Deseja remover {{funcionario.nome}}?
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <div class="col" style="color:black">
+                    Caso você realmente continue com o processo, removerá os dados desse funcionário e os computadores vinculados a ele.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <a id='linkRemoverFuncionario' href=""><button class="btn text-light" style='background-color:rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;'>Apagar</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Atualizar Funcionario -->
+<div class="modal fade" tabindex="-1" id='modalEditFuncionario'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style='background-color:rgb(184, 106, 106);'>
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-user pe-2"></i>
+                    Editar Funcionário
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form method='POST' id='form-funcionario'>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mt-2">
+                            <div class="form-group">
+                                <label for="id_nome">Nome <span class='text-danger'>*</span></label>
+                                <input type="text" class="form-control" placeholder='Exemplo: Gustavo' name='nome' id='id_nome'>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 mt-2">
+                            <div class="form-group">
+                                <label for="id_sobrenome">Sobrenome</label>
+                                <input type="text" class="form-control" placeholder='Exemplo: De Oliveira' name='sobrenome' id='id_sobrenome'>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="form-group">
+                                <label for="id_departamento">Departamento <span class='text-danger'>*</span></label>
+                                <select name="departamento" class="form-control" required="" id="id_departamento" name='departamento'>
+                                    <option value="" selected="">---------</option>
+                                  
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 mt-3">
+                            <div class="form-group">
+                                <label for="id_usuario_pc">Usuário PC</label>
+                                <input type="text" class="form-control" placeholder='Exemplo: gustavo.oliveira' name='usuario_pc' id='id_usuario_pc'>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 mt-3">
+                            <div class="form-group">
+                                <label for="id_senha_pc">Senha PC</label>
+                                <input type="text" class="form-control" placeholder='Exemplo: 123' id='id_senha_pc'>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 mt-3">
+                            <div class="form-group">
+                                <label for="id_controle_acesso">Acesso Proxy</label>
+                                <select name="controle_acesso" class="form-control" id="id_controle_acesso">
+                                    <option value="Pessimista">Pessimista</option>
+                                    <option value="Otimista">Otimista</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 mt-3">
+                            <div class="form-group">
+                                <label for="id_admin_rede">Admin Rede</label>
+                                <select name="admin_rede" class="form-control" id="id_admin_rede">
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="form-group">
+                                <label for="id_descricao">Descrição</label>
+                                <textarea name="descricao" cols="40" rows="3" class="form-control" autocomplete="off" placeholder="Informações complementares sobre o usuário." maxlength="1000" id="id_descricao"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; background-color:rgb(184, 106, 106); color:white;' class="btn ps-3 pe-3" id='EditarFuncionario'>Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 {% endblock modals %}
 
 {% block nav_paginacao %}

@@ -206,12 +206,12 @@
                                     {% for funcionario in funcionarios %}
                                     <tr>
                                         <th scope="row">{{ funcionario.id }}</th>
-                                        <td><a href="{% url 'funcionario_visualizar' funcionario.id %}">{{ funcionario.nome }} {{funcionario.sobrenome}}</a></td>
+                                        <td><a href="{% url 'funcionario' 1 %}">{{ funcionario.nome }} {% if funcionario.sobrenome %}{{funcionario.sobrenome}} {% endif %}</a></td>
                                         <td>{{ funcionario.departamento }}</td>
                                         <td>{{ funcionario.usuario_pc }}</td>
                                         <td>{{ funcionario.controle_acesso }}</td>
                                         <td>{{ funcionario.admin_rede }}</td>
-                                        <td><a href="{% url 'funcionario_visualizar' funcionario.id %}"><i class="fas fa-eye"></i></a></td>
+                                        <td><a href="{% url 'funcionario' 1 %}"><i class="fas fa-eye"></i></a></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -278,7 +278,7 @@
     </div>
 </main>
 <div class="modal fade" tabindex="-1" id='modalEditDepartamento'>
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header" style='background-color:rgb(184, 106, 106);'>
                 <h5 class="modal-title text-light">

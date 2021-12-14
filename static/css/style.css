@@ -89,6 +89,11 @@ p label {
     transition: 1.2s
 }
 
+/* Funcionarios  */
+#modalDeletar {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 /* Responsive */
 @media (min-width: 1200px) {
     #primeiro {

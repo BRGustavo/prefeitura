@@ -15,13 +15,7 @@ CHOICES_BOOL = (
     (True, 'Sim'),
     (False, 'Não')
 )
-CHOICES_ROTEADORES = [
-    ('TP-LINK', 'TP-Link'),
-    ('D-Link', 'D-Link'),
-    ('Huawei', 'Huawei'),
-    ('Asus', 'Asus'),
-    ('Outro', 'Outro')
-]#Remover
+
 CHOICES_SISTEMS = (
     ('WinXP/32', 'Windows XP 32 bits'),
     ('Win7/32', 'Windows 7 32 bits'),
@@ -68,7 +62,7 @@ class Roteador(models.Model):
         
     ssid = models.CharField(max_length=100, verbose_name="SSID", null=False, help_text="Nome visivel da rede.")
     senha = models.CharField(max_length=100, null=True, blank=True)
-    modelo = models.CharField(max_length=50, null=False, choices=CHOICES_ROTEADORES)
+    modelo = models.CharField(max_length=50, null=True, default='TP-LINK')
     multimodo = models.CharField(max_length=1, default='N', choices=[
         ('N', 'Não'),
         ('S', 'Sim')
@@ -167,3 +161,14 @@ class MemoriaRam(models.Model):
     frequencia = models.FloatField(blank=True, null=True, verbose_name='Frequência')
     descricao = models.TextField(blank=True, null=True, verbose_name='Descrição')
     computador = models.ForeignKey('Computador', related_name='memoria', null=True, on_delete=models.SET_NULL)
+
+
+class EnderecoIpReservado(models.Model):
+    class Meta:
+        verbose_name='Endereco IP Reservado'
+        verbose_name_plural = 'Endereços IP Reservados'
+    
+    data = models.DateField(auto_created=True, auto_now=True, null=True,)
+    titulo = models.CharField(max_length=20, null=True, blank=True, default='Reservado')
+    ip_reservado = GenericRelation(EnderecoIp,  object_id_field='parent_object_id', related_query_name='reservado', on_delete=CASCADE)
+    descricao = models.TextField(blank=True, null=True, verbose_name='Descrição')

@@ -60,5 +60,8 @@ class Funcionario(models.Model):
     descricao = models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
-        return f'{self.nome} {self.sobrenome} - {self.departamento.sigla_departamento}'
+        if self.sobrenome:
+            return f'{self.nome} - {self.departamento.sigla_departamento}'
+        else:
+            return f'{self.nome} - {self.departamento.sigla_departamento}'
     
