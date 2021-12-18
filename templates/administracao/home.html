@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block corpo %}
+<style>
+    h1 {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .img-icone {
+        width: 5vw;
+    }
+    body {
+        background-color:rgb(235, 232, 232);
+    }
+    .card:hover {
+        transform: scale(1.02);
+        transition: 1.2s;
+        border: black solid 1px;
+    }
+    a {
+        list-style: none;
+        text-decoration: none;
+        color:black;
+    }
+</style>
+<main id='primeiro'>
+    <div class="container">
+        <div class="col-12 pt-3 ps-3 mt-2 mb-4">
+            <h1>Bem-Vindo, {{user.username.capitalize}}</h1>
+            <p>let's start! </p>
+        </div>
+        <div class="col-12 mt-4">
+            <div class="row">
+                <div class="col-12 col-lg-6 mb-2">
+                    <a href="{% url 'admin_usuarios' %}">
+                        <div class="card border-rounded">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-auto p-3">
+                                            <img class="img-icone" src="{% static 'img/funcionarios.png' %}" alt="">
+                                        </div>
+                                        <div class="col-12 col-lg-8 pt-3 pb-3">
+                                            <h5>Usuários</h5>
+                                            <p>Lista todos os usúarios com acesso a plataforma.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 col-lg-6 mb-2">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-auto p-3">
+                                        <img class="img-icone" src="{% static 'img/database.png' %}" alt="">
+                                    </div>
+                                    <div class="col-12 col-lg-8 pt-3 pb-3">
+                                        <h5>Banco de Dados</h5>
+                                        <p>Fazer ou restaurar um backup.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock corpo %}

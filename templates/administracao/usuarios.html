@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Usuários Administração
+{% endblock title %}
+
+{% block scripts %}
+<script>
+    form_urls = {
+        'remover_usuario_ajax': '{% url "remover_usuario_ajax" %}',
+    }
+</script>
+{% endblock scripts %}
+
+{% block corpo %}
+<style>
+    .texto {
+        font-family: Arial, Helvetica, sans-serif;
+        color:white;
+    }
+</style>
+<main id='primeiro'>
+    <div class="container mt-2 mb-4">
+        <div class="row">
+            <!-- Bloco esquerdo -->
+            <div class="col-12 col-lg-4 mb-2">
+                <div class="input-group">
+                    <input type="search" class='form-control' placeholder="Pesquisar Grupos">
+                    <button class="btn btn-primary me-1">Pesquisar</button>
+                    <button class="btn btn-success">Adicionar</button>
+                </div>
+                <div class="col-12 mt-2 border border-secondary border-bottom-0 overflow-auto" style="max-height: 70vh;">
+                    {% for grupo in grupos %}
+                    <div class="col-12 border-bottom border-secondary p-2">
+                        <div class="row">
+                            <div class="col-auto">
+                                <img class='border-rounded' src="{% static 'img/grupo.png' %}" style='width: 3vw;' alt="">
+                            </div>
+                            <div class="col d-flex justify-content-between">
+                                <span class='d-flex align-items-center'>
+                                    <b>{{grupo.name}}</b>
+                                </span>
+                                <span class='d-flex align-items-center'>
+                                    <i class="fas fa-user-edit pe-2"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!--  -->
+
+            <!-- Bloco direito -->
+            <div class="col-12 col-lg-8">
+                <div class="input-group">
+                    <input type="search" class='form-control border border-secondary' placeholder="Pesquisar Usuários">
+                    <button class='btn btn-primary'>Pesquisar</button>
+                    <button data-bs-toggle='modal' data-bs-target='#modalCriarUsuario' class="btn btn-success ms-1">Adicionar</button>
+                </div>
+                <div class="col-12 mt-2 border border-secondary overflow-auto" style="max-height: 70vh;">
+                    {% for usuario in usuarios %}
+                    <div class="col-12 border-bottom border-secondary">
+                        <div class="row p-2">
+                            <div class="col-auto">
+                                <img style='width: 3vw;' class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="">
+                            </div>
+                            <div class="col d-flex justify-content-between">
+                                <span>
+                                    <b>
+                                        {% if usuario.first_name %}
+                                        {{usuario.first_name.capitalize}}
+                                        {% elif usuario.username %}
+                                        {{usuario.username.capitalize}}
+                                        {% endif %}
+                                        {% if usuario.last_name %}
+                                        {{usuario.last_name.capitalize}}
+                                        {% endif %}
+                                    </b>
+                                    <p class='mb-0'>
+                                        {% if usuario.is_superuser %}
+                                        Superuser
+                                        {% elif usuario.is_staff %}
+                                        Administrador
+                                        {% else %}
+                                        Normal 
+                                        {% endif %}
+                                    </p>
+                                </span>
+                                <span class='d-flex align-items-center'>
+                                    <i class="fas fa-user-edit pe-2"></i>
+                                    <i class="fas fa-trash-alt" onclick='ModalRemoverUsuario("{{usuario.id}}")'></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" tabindex="-1" id="modalCriarUsuario">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary texto">
+                <h5>
+                    <i class="fas fa-user-plus pe-2x"></i>
+                    Adicionar Novo Usuário
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light texto"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="#id_username">Nome de Usuário</label>
+                        <input type="text" placeholder='Exemplo: joao' name='username' id='id_username' class='form-control'>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="#id_password1">Senha de Usuário</label>
+                        <input type="password" placeholder='Digite uma senha' name='password1' id='id_password1' class='form-control'>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="#id_password2">Confirmar Senha</label>
+                        <input type="password" placeholder='Confirme a senha anterior' name='password2' id='id_password2' class='form-control'>
+                    </div>
+                    <div class="form-group mt-3">
+                        <div class="col ps-3">
+                            <li>Sua senha não pode ser muito parecida com o resto das suas informações pessoais.</li>
+                            <li>Sua senha precisa conter pelo menos 8 caracteres.</li>
+                            <li>Sua senha não pode ser uma senha comumente utilizada.</li>
+                            <li>Sua senha não pode ser inteiramente numérica.</li>
+                        </div>
+                    </div>
+                    <div class="form-group d-flex justify-content-end">
+                        <button class="btn btn-primary texto">Adicionar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalRemoverFuncionario'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class='texto'>
+                    <i class="fas fa-trash-alt pe-2"></i>
+                    Remover Usuário
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light texto"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <span style="font-family: Arial, Helvetica, sans-serif;">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam ea, eius soluta adipisci dolorem magni! Deleniti vitae omnis quae exercitationem ad error rerum. Nobis modi a, incidunt hic ducimus porro?
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button data-bs-dismiss='modal' class="btn btn secondary border border-primary" style="color: black; font-family:Arial, Helvetica, sans-serif;">Cancelar</button>
+                <button id='btnRemover' class='btn btn-danger texto'>Remover</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock corpo %}

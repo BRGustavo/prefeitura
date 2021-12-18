@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block corpo %}
+<style>
+    body {
+        background-color:rgb(235, 232, 232);
+    }
+    .list-group-item {
+        background-color: var(--bg-dark);
+        color: var(--text-muted);
+    }
+    .list-group-item:hover {
+        transform: scale(1.02);
+        transition: 1.2s;
+    }
+    .cardizinhos .card:hover {
+        transform:  scale(1.2);
+        transition: 1.3s;
+        color: green;
+    }
+    .cardFuncionario:hover{
+        transform:  scale(1.001);
+        transition: 1.3s;
+        
+    }
+    .grupos ul li {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+    }
+</style>
+<main id='primeiro'>
+    <div class="container-fluid mb-3">
+        <div class="row">
+            <div class="col-12 col-lg-3">
+                <div class="card bg-dark text-muted mb-2">
+                    <div class="card-content">
+                        <div class="card-header p-2">
+                            <h5 class='p-2'>Dashboard</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <i class="fas fa-user-friends pe-2" aria-hidden="true"></i>
+                                Usuários
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-database pe-2"></i>
+                                Database
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-project-diagram pe-2"></i>
+                                API's
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-9 mb-2">
+                <div class="card bg-dark text-muted">
+                    <div class="card-content">
+                        <div class="card-header p-2">
+                            <h5 class='p-2'><i class="fas fa-seedling pe-2"></i>Informações</h5>
+                        </div>
+                        <div class="card-body cardizinhos p-4">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card bg-dark">
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <span class="d-flex flex-row d-flex justify-content-center"> 
+                                                    <h5><i class="fas fa-user-friends pe-2" aria-hidden="true"></i>{{funcionario}}</h5>
+                                                </span>
+                                                <h6 class='text-center'>Funcionários</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-dark">
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <span class="d-flex flex-row d-flex justify-content-center"> 
+                                                    <h5><i class="fas fa-laptop-code pe-2" aria-hidden="true"></i>{{computador}}</h5>
+                                                </span>
+                                                <h6 class='text-center'>Computadores</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-dark">
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <span class="d-flex flex-row d-flex justify-content-center"> 
+                                                    <h5><i class="fas fa-print pe-2" aria-hidden="true"></i>{{impressora}}</h5>
+                                                </span>
+                                                <h6 class='text-center'>Impressoras</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-dark">
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <span class="d-flex flex-row d-flex justify-content-center"> 
+                                                    <h5><i class="fas fa-wifi pe-2" aria-hidden="true"></i>{{roteador}}</h5>
+                                                </span>
+                                                <h6 class='text-center'>Roteadores</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex flex-lg-row-reverse">
+            <div class="col-12 col-lg-9">
+                <div class="card bg-dark text-muted mb-2">
+                    <div class="card-content">
+                        <div class="card-header p-2">
+                            <h5 class='p-2'><i class="fas fa-users pe-2"></i>Acesso</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row overflow-auto mh-90" style="max-height: 55vh;">
+                                {% for usuario in usuarios %}
+                                <div class="col-12 d-flex justify-content-between p-1 pb-2 mb-3 cardFuncionario">
+                                    <div class="col-auto">
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <img class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="imgFuncionario" style="width: 3vw;">
+                                            </div>
+                                            <div class="col-auto d-flex flex-column">
+                                                <span>
+                                                    {% if usuario.is_superuser %}
+                                                    <b class='text-danger'>{{usuario.username.capitalize}} {{usuario.last_name.capitalize }}</b>
+                                                    {% elif usuario.is_staff %}
+                                                    <b class='text-primary'>{{usuario.username.capitalize}} {{usuario.last_name.capitalize }}</b>
+                                                    {% else %}
+                                                    <b class='text-success'>{{usuario.username.capitalize}} {{usuario.last_name.capitalize }}</b>
+                                                    {% endif %}
+                                                </span>
+                                                <span>
+                                                    {% if usuario.is_superuser %}
+                                                        Superusuario
+                                                    {% elif usuario.is_staff %}
+                                                    Administrador
+                                                    {% else %}
+                                                    Normal
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto d-flex align-items-center">
+                                        {% if usuario.is_superuser %}
+                                        {% else %}
+                                        <i class="fas fa-user-edit pe-2 ps-2"></i>
+                                        <i class="fas fa-trash-alt pe-2 ps-2"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-3">
+                <div class="card bg-dark text-muted mb-2 h-50">
+                    <div class="card-content">
+                        <div class="card-header p-2">
+                            <h5 class='p-2'>
+                                <!-- <i class="fas fa-info-circle"></i>
+                                Grupos. -->
+                            </h5>
+                        </div>
+                        <div class="card-body grupos">
+                            <ul class="list-group">
+                                <li class="list-group-item text-danger">
+                                    Superusuario
+                                </li>
+                                <li class="list-group-item text-primary">
+                                    Administrador
+                                </li>
+                                <li class="list-group-item text-success">
+                                    Normal
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="card bg-dark text-muted h-50">
+                    <div class="card-content">
+                        <div class="card-header p-2">
+                            <h5 class='p-2'>
+                                <i class="fas fa-info-circle"></i>
+                                Bibliotecas.
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <i class="fab fa-python pe-2"></i>Python 3.8.10
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fab fa-bootstrap pe-2"></i>Bootstrap v5
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fab fa-js pe-2"></i>Jquery 3.6.0
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fab fa-phoenix-framework pe-2"></i></i>Django 3.2.8 
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock corpo %}
+

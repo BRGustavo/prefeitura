@@ -782,6 +782,33 @@ function UpdateFuncionario(url){
         }
     })
 }
+function ModalRemoverUsuario(id){
+    $('#modalRemoverFuncionario').modal('show');
+    $('#modalRemoverFuncionario #btnRemover').attr('onclick', `RemoverUsuario('${id}')`)
+}
+function RemoverUsuario(id){
+    $.ajax({
+        type: 'GET',
+        url: form_urls.remover_usuario_ajax,
+        data: {
+            'id': id,
+
+        },
+        success: function(data){
+            $('#modalRemoverFuncionario').modal('hide');
+            location.reload();
+        },
+        error: function(request, status, error){
+            let info = $.parseJSON(request.responseText);
+            if(info['mensagem'].length >=1){
+                alert(info['mensagem']);
+            }else {
+                alert('Não foi possivel concluir essa operação.')
+            }
+        }
+    });
+}
+
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
