@@ -83,20 +83,6 @@ def funcionario_view(request, pagina=1):
     return render(request, template_name='funcionario/funcionario.html', context=content)
 
 @login_required
-@permission_required('departamento.view_funcionario', raise_exception=True)
-def funcionario_visualizar(request, id=1):
-    funcionario = get_object_or_404(Funcionario, pk=id)
-    form = FuncionarioForm(instance=funcionario)
-    computadores = Computador.objects.filter(funcionario=funcionario)
-
-    context = {
-        'form': form,
-        'funcionario': funcionario,
-        'computadores': computadores,
-    }
-    return render(request, template_name='funcionario/visualizar.html', context=context)
-
-@login_required
 @permission_required('departamento.delete_funcionario')
 def funcionario_remover(request, id):
     funcionario = get_object_or_404(Funcionario, pk=id)

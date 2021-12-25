@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect
+from django.urls.base import reverse
 
 from departamento.models import Funcionario
 from departamento.views import departamento_view
@@ -48,8 +49,35 @@ def funcionario_edit_ajax(request, id):
             for campo in form:
                 if campo.errors:
                     campo_erros.append(campo.id_for_label)
+            
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
 
+def funcionario_edit_form_ajax(request):
+    if request.method == 'GET':
+        if request.is_ajax():
+            id_funcionario = request.GET.get('id')
+            funcionario = get_object_or_404(Funcionario, pk=id_funcionario)
+            departamentos = Departamento.objects.all()
+            
+            url_atualizar = reverse(funcionario_edit_ajax, args=[funcionario.id])
+            lista_departamentos = [{
+                'id': dep.id,
+                'valor': dep.departamento
+            } for dep in departamentos]
+
+            return JsonResponse(status=200, data={
+                'id_nome': funcionario.nome,
+                'id_sobrenome': funcionario.sobrenome,
+                'id_usuario_pc': funcionario.usuario_pc,
+                'id_senha_pc': funcionario.senha_pc,
+                'id_controle_acesso': funcionario.controle_acesso,
+                'id_adm_rede': funcionario.admin_rede,
+                'id_descricao': funcionario.descricao,
+                'departamentos': lista_departamentos,
+                'departamento': funcionario.departamento.id,
+                'url': f'UpdateFuncionario("{url_atualizar}")'
+            }, safe=True)
+    return JsonResponse(status=400, data={'mensagem': 'problema'}, safe=True)
 
 @login_required
 @permission_required('departamento.add_departamento', raise_exception=True)
@@ -115,3 +143,5 @@ def departamento_ajax_deletar(request):
         return JsonResponse(data=data, status=200)
 
     return JsonResponse(status=404, data={'status':'false','field_erros': campo_erros})
+
+    

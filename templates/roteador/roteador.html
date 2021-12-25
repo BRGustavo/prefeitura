@@ -51,7 +51,7 @@
         </thead>
         <tbody>
             {% for roteador in roteadores %}
-            <tr>
+            <tr class='border-0'>
                 <th scope="row">{{ roteador.id }}</th>
                 <td>{{ roteador.ssid }}</td>
                 <td>{{ roteador.modelo }}</td>
@@ -100,9 +100,9 @@
             <div class="modal-body p-0">
                 <div class="container p-0">
                     <div class="row p-0">
-                        <div class="col-12 col-lg-4 d-flex" style='background-color: purple;'>
+                        <div class="col-12 col-lg-4 d-flex" style='background-color: #02aed8;'>
                             <div class="col-12 p-5 d-flex justify-content-center align-items-center ">
-                                    <img style='width:300px' src="{% static 'img/wireless.png' %}" alt="">
+                                    <img style='width:20vw' src="{% static 'img/wireless.png' %}" alt="">
                             </div>
                         </div>
                         <div class="col-12 col-lg-8">
@@ -148,7 +148,7 @@
                                             {{form.descricao}}
                                         </div>
                                         <div class="col-12 mt-3 d-flex justify-content-end">
-                                            <button id='novoRoteadorButton' class="btn text-light" style='background-color:purple; color:white; font-family: Arial, Helvetica, sans-serif;'>Adicionar</button>
+                                            <button id='novoRoteadorButton' class="btn text-light" style='background-color: #02aed8; color:white; font-family: Arial, Helvetica, sans-serif;'>Adicionar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -166,9 +166,9 @@
             <div class="modal-body p-0">
                 <div class="container p-0">
                     <div class="row p-0">
-                        <div class="col-12 col-lg-4 d-flex" style='background-color: purple;'>
+                        <div class="col-12 col-lg-4 d-flex" style='background-color: #02aed8;'>
                             <div class="col-12 p-5 d-flex justify-content-center align-items-center ">
-                                    <img style='width:300px' src="{% static 'img/wireless.png' %}" alt="">
+                                    <img style='width:20vw' src="{% static 'img/wireless.png' %}" alt="">
                             </div>
                         </div>
                         <div class="col-12 col-lg-8">
@@ -215,7 +215,7 @@
                                             {{form.descricao}}
                                         </div>
                                         <div class="col-12 mt-3 d-flex justify-content-end">
-                                            <button id='novoRoteadorButton' class="btn text-light" style='background-color:purple; color:white; font-family: Arial, Helvetica, sans-serif;'>Atualizar</button>
+                                            <button id='novoRoteadorButton' class="btn text-light" style='background-color:#02aed8; color:white; font-family: Arial, Helvetica, sans-serif;'>Atualizar</button>
                                         </div>
                                     </div>
                                 </form>

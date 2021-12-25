@@ -14,8 +14,8 @@ urlpatterns = [
 
     #URLs Model Funcionario
     path('funcionario/<int:pagina>/', views.funcionario_view, name='funcionario'),
-    path('funcionario/visualizar/<int:id>/', views.funcionario_visualizar, name='funcionario_visualizar'),
     path('funcionario/remover/<int:id>/', views.funcionario_remover, name='funcionario_remover'),
+    path('funcionari/editarform_ajax/', ajax.funcionario_edit_form_ajax, name='funcionario_edit_form_ajax'),
 
     #Ajax URL
     path('funcionario/ajax/add/',ajax.funcionario_add_ajax, name='funcionario_ajax_add'),

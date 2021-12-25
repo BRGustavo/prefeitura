@@ -50,7 +50,7 @@
                             </a>
                             {% if user.is_staff %}
 
-                            <a class="nav-item nav-link" href='{{ BASE_URL }}/admin/'>
+                            <a class="nav-item nav-link" href='{% url "admin_home"  %}'>
                                 <i class="fas fa-user-cog" aria-hidden="true"></i> Administração
                             </a>
                             {% endif %}

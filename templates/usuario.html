@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Funcionário{% endblock title %}
+
+{% block corpo %}
+<style>
+    body {
+        background-color:rgb(235, 232, 232);
+        border-style:none;
+    }
+</style>
+
+<main id='primeiro' >
+    <div class="container mb-3" id='profile'>
+        <!-- Informação Titulo e botões -->
+        <div class="card mb-3">
+            <div class="card-content bg-dark">
+                <div class="card-body p-4 ">
+                    <h4 class='pb-3'>Gustavo de Oliveira</h4>
+                    <div class="col d-flex flex-row">
+                        <span class='pe-3'>Editar</span>
+                        <span>Deletar</span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Card Principal -->
+        <div class="card" id='esquerdo-info'>
+            <div class="card-content bg-dark" style="background-color: white;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-lg-3">
+                            <div class="col d-flex justify-content-center p-1 mb-3">
+                                <img id='img-perfil' class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="img-profile-funcionario">
+                            </div>
+                            <div class="col-12" id='tabela-info'>
+                                <ul class="list-group">
+                                    <li class="list-group-item"><b class='text-muted'>Nome:</b> Gustavo</li>
+                                    <li class="list-group-item"><b class='text-muted'>Sobrenome:</b> Oliveira</li>
+                                    <li class="list-group-item"><b class='text-muted'>Departamento:</b> Informática</li>
+                                    <li class="list-group-item"><b class='text-muted'>Telefone:</b> (43)444466-55321</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8 ">
+                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptas cumque cupiditate soluta molestiae. Consectetur, doloremque atque? Dolores dolor, labore consequuntur dignissimos nisi ex reprehenderit eos doloremque aperiam? Eum, esse sed.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock corpo %}

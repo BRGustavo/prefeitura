@@ -80,13 +80,18 @@ p label {
 }
 
 #tabelaFuncionario tr:hover{
-    transform: scale(1.04);
+    transform: scale(1.02);
     transition: 1.2s
 }
 
 #tabelaImpressora tr:hover{
-    transform: scale(1.04);
+    transform: scale(1.02);
     transition: 1.2s
+}
+
+/* Funcionarios  */
+#modalDeletar {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Responsive */

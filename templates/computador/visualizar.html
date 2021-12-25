@@ -10,8 +10,8 @@
         const forms_urls = {
             'pesquisarImpressora': '{% url "impressora_pesquisa_ajax" %}',
             'vincularNovaImpressora': '{% url "vincular_impressora_ajax" %}',
-            'm4070Img': '{% static "img/m4070.jpg" %}',
-            'm2020Img': '{% static "img/m2020.jpeg" %}',
+            'm4070Img': '{% static "img/m4070.png" %}',
+            'm2020Img': '{% static "img/m2020.png" %}',
             'id_computador': '{{computador.id}}',
             'atualizar_computador_info_ajax': '{% url "atualizar_computador_info_ajax" %}',
             'verificar_enderecoip_ajax': '{% url "verificar_enderecoip_ajax" %}',
@@ -48,10 +48,15 @@
     p a {
         text-decoration: none;
         color:black;
+        font-family: Arial, Helvetica, sans-serif;
     }
+    p {
+        font-family: Arial, Helvetica, sans-serif;
+        color: black;
+    }
+    
     .img-centro {
-        background-image: url('{% static "img/teste.jpg" %}');
-        background-position-y: 0;
+        background-image: url('{% static "img/teste2.jpg" %}');
     }
 </style>
 <main>
@@ -67,7 +72,7 @@
                 <p class='text-dark mb-1'> 
                     <i class="fas fa-user"></i>
                     {% if computador.funcionario %}
-                    <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">{{computador.funcionario}}</a>
+                    <a href="{% url 'funcionario' 1 %}">{{computador.funcionario}}</a>
                     {% else %}
                     Não Vinculado
                     {% endif %}
@@ -127,7 +132,7 @@
                                                 {% if computador.funcionario %}
                                                 <span>
                                                     <div class="d-flex flex-column">
-                                                        <a href="{% url 'funcionario_visualizar' computador.funcionario.id %}">
+                                                        <a href="{% url 'funcionario' 1 %}">
                                                             <p class='mb-0 text-muted'>{{computador.funcionario.nome}}
                                                             {% if computador.funcionario.sobrenome %}
                                                             {{computador.funcionario.sobrenome}}
@@ -308,7 +313,7 @@
                         <div class="row">
                             <div style='background-color: rgb(204, 84, 84);' class="col-12 col-lg-4 d-flex justify-content-center d-flex align-items-center">
                                 <span class=''>
-                                    <img style='width: 170px;' src="{% static 'img/removerpc.jpg' %}" alt="">
+                                    <img style='width: 170px;' src="{% static 'img/removerpc.png' %}" alt="">
                                 </span>
                             </div>
                             <div class="col-12 col-lg-8 p-2">
@@ -443,7 +448,7 @@
     </div>
 
     <div class="modal fade" tabindex="-1" id='modalAtualizarInformacao'>
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h5 class="modal-title text-light">
@@ -517,7 +522,7 @@
     </div>
     {% endblock modals%}
     <div class="modal fade" tabindex="-1" id='modalDepUser'>
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div style='font-family: Arial, Helvetica, sans-serif;' class="modal-content">
                 <div class="modal-header border-0" style='background-color:#0229d8;'>
                     <h5 class="modal-title text-light">

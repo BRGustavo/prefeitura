@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Usuários Administração
+{% endblock title %}
+
+{% block scripts %}
+<script>
+    form_urls = {
+        'remover_usuario_ajax': '{% url "remover_usuario_ajax" %}',
+        'adicionar_usuario_ajax': '{% url "adicionar_usuario_ajax" %}',
+    }
+</script>
+{% endblock scripts %}
+
+{% block corpo %}
+<style>
+    body {
+        background-color:rgb(235, 232, 232);
+    }
+    .texto {
+        font-family: Arial, Helvetica, sans-serif;
+        color:white;
+    }
+
+</style>
+<main id='primeiro'>
+    <div class="container mt-1 mb-4">
+        <div class="row  p-3 rounded">        
+            <div class="col-12 col-lg-12">
+                <div class="input-group">
+                    
+                    <input type="search" class='form-control p-2 border-primary' placeholder="Pesquisar">
+                    <button class='btn btn-primary'>Pesquisar</button>
+
+                </div>
+
+                <div class="col-12 mt-2">
+                    {% for usuario in usuarios %}
+                    <div class="col-12 shadow p-1 mb-1 bg-white rounded">
+                        <div class="row p-2">
+                            <div class="col-auto">
+                                <img style='width: 3vw;' class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="">
+                            </div>
+                            <div class="col d-flex justify-content-between">
+                                <span class='text-dark'>
+                                    <b>
+                                        {% if usuario.first_name %}
+                                        {{usuario.first_name.capitalize}}
+                                        {% elif usuario.username %}
+                                        {{usuario.username.capitalize}}
+                                        {% endif %}
+                                        {% if usuario.last_name %}
+                                        {{usuario.last_name.capitalize}}
+                                        {% endif %}
+                                    </b>
+                                    <p class='mb-0'>
+                                        {% if usuario.is_superuser %}
+                                        Superuser
+                                        {% elif usuario.is_staff %}
+                                        Administrador
+                                        {% else %}
+                                        Normal 
+                                        {% endif %}
+                                    </p>
+                                </span>
+                                <span class='d-flex align-items-center text-dark'>
+                                    <i class="fas fa-user-edit pe-2"></i>
+                                    <i class="fas fa-trash-alt" onclick='ModalRemoverUsuario("{{usuario.id}}")'></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex justify-content-end mt-2">
+                        <button data-bs-toggle='modal' data-bs-target='#modalCriarUsuario' class="btn btn-success ms-1 d-flex">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" tabindex="-1" id="modalCriarUsuario">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success texto">
+                <h5>
+                    <i class="fas fa-user-plus pe-2x"></i>
+                    Adicionar Novo Usuário
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light texto"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form id='form-adicionarFun'>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="#id_username">Nome de Usuário</label>
+                        <input type="text" placeholder='Exemplo: joao' name='username' id='id_username' class='form-control'>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="#id_password1">Senha de Usuário</label>
+                        <input type="password" placeholder='Digite uma senha' name='password1' id='id_password1' class='form-control'>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="#id_password2">Confirmar Senha</label>
+                        <input type="password" placeholder='Confirme a senha anterior' name='password2' id='id_password2' class='form-control'>
+                    </div>
+                    <div class="form-group mt-3">
+                        <div class="col ps-3">
+                            <li>Sua senha não pode ser muito parecida com o resto das suas informações pessoais.</li>
+                            <li>Sua senha precisa conter pelo menos 8 caracteres.</li>
+                            <li>Sua senha não pode ser uma senha comumente utilizada.</li>
+                            <li>Sua senha não pode ser inteiramente numérica.</li>
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+            <div class="modal-footer">
+                <button id='btnAddUsuario' class="btn btn-success texto">Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalRemoverFuncionario'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class='texto'>
+                    <i class="fas fa-trash-alt pe-2"></i>
+                    Remover Usuário
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light texto"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <span style="font-family: Arial, Helvetica, sans-serif;">
+                    Você tem certeza que deseja remover esse usuário?<br>
+                    Caso você remova, não será possivel recuperar as informações vinculadas a este usuário.
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button data-bs-dismiss='modal' class="btn btn secondary border border-primary" style="color: black; font-family:Arial, Helvetica, sans-serif;">Cancelar</button>
+                <button id='btnRemover' class='btn btn-danger texto'>Remover</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock corpo %}

@@ -16,7 +16,7 @@ from macaddress.fields import MACAddressFormField
 from netaddr.eui import EUI
 
 from inventario.models import Hd, Monitor, Mouse, PlacaMae, Processador, Teclado
-from .models import Computador, EnderecoIp, EnderecoMac, Gabinete, Impressora, MemoriaRam, Roteador, CHOICES_ROTEADORES, CHOICES_SISTEMS
+from .models import Computador, EnderecoIp, EnderecoIpReservado, EnderecoMac, Gabinete, Impressora, MemoriaRam, Roteador, CHOICES_SISTEMS
 from departamento.models import Departamento, Funcionario
 from django.db.models import Q 
 
@@ -84,7 +84,7 @@ class RoteadorForm(forms.ModelForm):
 
     ssid = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Exemplo: Sala do Empreendedor', 'autocomplete': 'off'}))
     senha = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 12345', 'autocomplete': 'off'}))
-    modelo = forms.ChoiceField(required=True, choices=CHOICES_ROTEADORES, widget=forms.Select(attrs={'class': 'form-control', 'autocomplete': 'off'}))
+    modelo = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Ex: TP-LINK'}))
     departamento = forms.ModelChoiceField(required=False, queryset=Departamento.objects.all(), widget=forms.Select(attrs={'class': 'form-control', 'autocomplete': 'off'}))
     descricao = forms.CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva melhor o dispositivo.', 'rows':'4'}))
     endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Exemplo: 192.168.15.20'}))
@@ -338,7 +338,7 @@ class ComputadorFormNovo(forms.Form):
 class ImpressoraForm(forms.Form):
     nome = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Corredor Informática.'}))
     modelo = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: Samsung'}))
-    matricula = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: GEST-123'}))
+    matricula = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: GEST-123', 'autocomplete': 'off'}))
     departamento = forms.ModelChoiceField(required=False, queryset=Departamento.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
     descricao = forms.CharField(required=False, widget=Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva melhor o dispositivo.',
     'rows': '4'}))
@@ -474,3 +474,42 @@ class ComputadorFormRemover(forms.Form):
     manterPlacaMae = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))
     manterProcessador = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))
     manterMemoriaRam = forms.ChoiceField(choices=CHOICES_MANTER, widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'checked':''}))
+
+
+class EnderecoReservadoForm(forms.Form):
+    
+    titulo = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Exemplo: IP de Broadcast'}))
+    ip_reservado = forms.CharField(required=True, widget=TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'placeholder': 'Ex: 192.168.5.255'}))
+    descricao = forms.CharField(required=False, widget=Textarea(attrs={'rows':'8','class':'form-control', 'autocomplete':'off', 'placeholder': 'É reservado por quê?'}))
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        enderecoip = cleaned_data.get('ip_reservado')
+
+        if enderecoip is not None and len(enderecoip) >=1:
+            try:
+                if validate_ipv4_address(enderecoip) is None:
+                    consulta_db = EnderecoIp.objects.filter(ip_address=enderecoip)
+                    if consulta_db.count() >=1:
+                        raise forms.ValidationError({'ip_reservado': 'O IP informádo já está sendo usado, remova-o primeiramente para marca-lo como reservado.'})
+            except ValidationError as e:
+                raise forms.ValidationError({'ip_reservado': 'Endereço IP informado não é um endereço IPV4 válido ou está em uso.'})
+
+        else:
+            raise forms.ValidationError({'ip_reservado', 'Endereço de IP não foi informado.'})
+
+        return cleaned_data
+    
+    def save(self):
+        cleaned_data = self.cleaned_data
+        titulo = cleaned_data.get('titulo')
+        enderecoip = cleaned_data.get('ip_reservado')
+        descricao = cleaned_data.get('descricao')
+        if self.is_valid():
+            novo_ip_reservado = EnderecoIpReservado(titulo=titulo, descricao=descricao)
+            novo_ip_reservado.save()
+            tipo = ContentType.objects.filter(model='enderecoipreservado').first().id
+            ip_novo = EnderecoIp(ip_address=enderecoip, content_type_id=tipo, parent_object_id=novo_ip_reservado.id)
+
+            ip_novo.save()
+        

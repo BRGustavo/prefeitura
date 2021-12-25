@@ -44,5 +44,8 @@ urlpatterns = [
     path('',views.teste_view, name='teste'),
 
     # URL Patrimônio
-    path('patrimonio/pesquisa/', views.patrimonio_view, name='patrimonio_view')
+    path('patrimonio/pesquisa/', views.patrimonio_view, name='patrimonio_view'),
+    path('agulha/', views.pesquisar_endereco_ip, name='pesquisar_endereco_ip'),
+    path('agula/ajax_salvar_reservado/', ajax.salvar_ip_reservado, name='salvar_ip_reservado'),
+    path('agula/ajax_removerip_reservado/', ajax.remover_ip_reservado, name='remover_ip_reservado'),
 ]
