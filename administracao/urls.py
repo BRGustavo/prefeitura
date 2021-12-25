@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.admin_home, name='admin_home'),
     path('usuarios/', views.admin_usuarios, name='admin_usuarios'),
 
+    path('usuario/ajax/adicionarUsuario/', ajax.adicionar_usuario_ajax, name='adicionar_usuario_ajax'),
     path('usuario/ajax/removerUsuario/', ajax.remover_usuario_ajax, name='remover_usuario_ajax'),
 
 ]

@@ -809,6 +809,35 @@ function RemoverUsuario(id){
     });
 }
 
+$('#btnAddUsuario').click(function(){
+    let data = $('#form-adicionarFun').serialize()
+    const csrftoken = document.querySelector(`#form-adicionarFun [name=csrfmiddlewaretoken]`).value;
+    $.ajax({
+        csrfmiddlewaretoken: csrftoken,
+        url: form_urls.adicionar_usuario_ajax,
+        type: 'POST',
+        data: data,
+        beforeSend: function(){
+            $('#form-adicionarFun  input').each(function(index){
+                $(this).css('border-color', '#ced4da');
+            });
+        },
+        success: function(data){
+            $('').modal('hide');
+            location.reload();
+        },
+        error: function(request, status, error){
+            let info = $.parseJSON(request.responseText);
+            if(info['status'] == 'false'){
+                alert(info['mensagem'][0])
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
+            }
+        }
+    });
+    return false;
+})
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});

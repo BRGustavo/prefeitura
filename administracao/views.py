@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
 from account.models import CustomizadoUserModel
@@ -23,10 +24,5 @@ def admin_usuarios(request):
         'grupos': Group.objects.all(),
         'formUsuario': UserCreationForm(),
     }
-    if request.method == 'POST':
-        usuario = UserCreationForm(request.POST)
-        if usuario.is_valid():
-            usuario.save()
-        else:
-            pass
+    
     return render(request, template_name='administracao/usuarios.html', context=data)
