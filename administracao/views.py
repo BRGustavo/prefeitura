@@ -26,3 +26,10 @@ def admin_usuarios(request):
     }
     
     return render(request, template_name='administracao/usuarios.html', context=data)
+
+@login_required
+def admin_permissoes(request):
+    data = {
+        'grupos': Group.objects.all(),
+    }
+    return render(request, template_name='administracao/permissoes.html', context=data)

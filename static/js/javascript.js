@@ -809,6 +809,32 @@ function RemoverUsuario(id){
     });
 }
 
+function ModalEditarUsuario(id){
+    $.ajax({
+        type: 'GET',
+        url: form_urls.dados_usuario_ajax,
+        data: {
+            'id': id,
+        },
+        beforeSend: function(){
+            $("#modalEditarUser").modal('show');
+        },
+        success: function(data){
+
+            for(let item in data['corpo']){
+                $(`#modalEditarUser #${item}`).val(data['corpo'][item]);
+            }
+            for(let item in data['fora']){
+                window.document.querySelector(`#${item}`).innerHTML = data['fora'][item] 
+            }
+            for(let item in data['campos']){
+                $(`#id_c${item}`).attr('checked', 'checked');
+            }
+        }
+    });
+
+}
+
 $('#btnAddUsuario').click(function(){
     let data = $('#form-adicionarFun').serialize()
     const csrftoken = document.querySelector(`#form-adicionarFun [name=csrfmiddlewaretoken]`).value;
@@ -838,6 +864,51 @@ $('#btnAddUsuario').click(function(){
     });
     return false;
 })
+
+
+$('.item-user').on('mouseover', function(){
+    $(this).parent().addClass('lista-u');
+  }).on('mouseout', function(){
+    $(this).parent().removeClass('lista-u');
+  })
+
+
+
+$('#chkVisulAll').change(function(){
+    lista = ['add_funcionario', 'add_computador', 'add_impressora', 'add_roteador', 'view_funcionario', 'view_computador', 'view_impressora', 'view_roteador', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'delete_funcionario', 'delete_computador', 'delete_impressora', 'delete_roteador']
+
+    if($('#chkVisulAll').is(':checked')){
+        lista.forEach(function(item){
+            $(`#modalEditarUser #id_c${item}`).attr('checked', 'checked');
+        });
+    }else{
+        lista.forEach(function(item){
+            $(`#modalEditarUser #id_c${item}`).removeAttr('checked', 'checked');
+        });
+    }
+});
+function AdmEditarUsuario(){
+    let form = $('#form-editarUsuario').serialize()
+    console.log(form)
+    $.ajax({
+        type: 'GET',
+        url: form_urls.editar_usuario_ajax,
+        data: form,
+        success: function(data) {
+            location.reload();
+        },
+        error: function(request, status, error){
+            let info = $.parseJSON(request.responseText);
+            if(info['status'] == 'false'){
+                alert(info['mensagem'][0])
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
+            }
+        }
+    });
+}
+
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
