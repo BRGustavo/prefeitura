@@ -29,7 +29,7 @@
             <!-- Sem container-fluid. inicialmente -->
             <nav class='navbar navbar-expand-lg navbar-default fixed-top navbar-dark'>
                 <a href="/" class='navbar-brand'>
-                    <img src="{% static 'img/logoNatal.png' %}" id="logo" alt="Logo"><span style='color:rgba(255,255,255,.55);'>Prefeitura Municípal de Arapoti</span>
+                    <img src="{% static 'img/logo.png' %}" id="logo" alt="Logo"><span id='titulo-nav' style='color:rgba(255,255,255,.55);'>Prefeitura Municípal de Arapoti</span>
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbar-links" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,8 +43,7 @@
                             <a class="nav-item nav-link" href='{% url "home" %}' id='home-menu'>
                                 <i class="fas fa-home"></i> Home
                             </a>
-                            
-                            
+  
                             <a class="nav-item nav-link" href='#' id='user-menu'>
                                 <i class="fa fa-user" aria-hidden="true"></i> {{ user.username.capitalize }}
                             </a>

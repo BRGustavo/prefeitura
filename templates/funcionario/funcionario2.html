@@ -1,4 +1,4 @@
-{% extends 'departamento/departamento.html' %}
+{% extends 'base_listagem2.html' %}
 {% load static %}
 
 {% block button_adicionar %}
@@ -36,34 +36,11 @@
 </script>
 {% endblock scripts %}
 
-<!-- Computador -->
 {% block tabela %}
-<div class="card-body table-responsive bg-dark clarear">
+<!-- Computador -->
+<div class="card-body table-responsive bg-dark esconder">
     {% if funcionarios %}
 
-    <div class="row mobile p-0">
-        <div class="col text-light p-0">
-            {% for funcionario in funcionarios %}
-            <div class="row mt-1 p-0">
-                <div class="col-auto p-0 m-0">
-                    <img class='rounded-circle' style='width:6vh;' src="{% static 'img/funcionario.jpg' %}" alt="funcionario img">
-                </div>
-                <div class="col d-flex justify-content-between">
-                    <span style="font-family: Arial, Helvetica, sans-serif;">
-                        <p class="m-0 text-muted"><b>{{funcionario.nome}} {% if funcionario.sobrenome %}{{funcionario.sobrenome}}{% endif%}</b></p>
-                        <p>{{funcionario.departamento.departamento}}</p>
-                    </span>
-                    <span class='text-muted'>
-                        <div class="d-flex flex-row">
-                            <i class="fas fa-user-edit pe-3" onclick='ModalAtualizarFuncionario("{{funcionario.id}}", `{% url "funcionario_edit_form_ajax" %}`)'></i>
-                            <i class="fas fa-trash-alt" onclick='ModalRemoverFuncionario(`{% url "funcionario_remover" funcionario.id %}`)'></i>
-                        </div>
-                    </span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
     <table class="table table-sm table bg-dark text-light text-muted text-center esconder">
         <thead>
             <th scope="col">ID</th>
@@ -114,8 +91,12 @@
     {% endif %}
 </div>
 {% endblock tabela %}
+<!--  -->
 
+<!-- Mobile -->
+{% block tabela_mobile %}
 
+{% endblock tabela_mobile %}
 {% block modals %}
 <!-- Adicionar Funcionario Modal -->
 <div class="modal fade" tabindex="-1" id='modalFuncionario'>

@@ -533,7 +533,7 @@ def teste_view(request):
         'computadores': computadores,
         'formComputador': ComputadorFormNovo()
     }
-    return render(request, template_name='usuario.html', context=content)
+    return render(request, template_name='teste.html', context=content)
 
 
 @login_required
@@ -658,7 +658,7 @@ def pesquisar_endereco_ip(request):
             
             if nome_dispositivo != 'Reservado':
                 data.append(f"""
-                    <li class="list-group-item bg-dark text-light">
+                    <li class="list-group-item">
                         <div class="row d-flex align-items-center">
                             <div class="col-auto">
                                 <i class="fas fa-network-wired text-success"></i>
@@ -675,7 +675,7 @@ def pesquisar_endereco_ip(request):
                 objeto_reservado = EnderecoIpReservado.objects.filter(id=item.parent_object_id).first()
                 titulo = objeto_reservado.titulo if objeto_reservado.titulo else 'Reservado'
                 data.append(f"""
-                    <li class="list-group-item bg-dark text-light">
+                    <li class="list-group-item ">
                         <div class="row d-flex align-items-center">
                             <div class="col-auto">
                                 <i class="fas fa-network-wired text-danger"></i>

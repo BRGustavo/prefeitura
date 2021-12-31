@@ -69,13 +69,7 @@ Usuários Administração
                                         {% endif %}
                                     </b>
                                     <p class='mb-0'>
-                                        {% if usuario.is_superuser %}
-                                        Superuser
-                                        {% elif usuario.is_staff %}
-                                        Administrador
-                                        {% else %}
-                                        Normal 
-                                        {% endif %}
+                                        {{usuario.UsuarioPerfil.nivel}}
                                     </p>
                                 </span>
                                 <span class='d-flex align-items-center text-dark'>
@@ -198,7 +192,7 @@ Usuários Administração
                                 </li>
                                 <li class='list-group-item'>
                                     <i class="fas fa-birthday-cake pe-2"></i>
-                                    <span class='li-texto'>
+                                    <span class='li-texto' id='id_birthdaym'>
                                         14/08/2003
                                     </span>
                                 </li>

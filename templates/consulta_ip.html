@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Endereço IP{% endblock title %}
+
 {% block scripts %}
 <script>
     $('#rede4').change(function(){
@@ -107,129 +109,134 @@
 {% endblock scripts %}
 
 {% block corpo %}
+
 <style>
-  body {
-        background-color:rgb(235, 232, 232);
-        border-style:none;
-        background-image:  linear-gradient(#bdc3c7, #a6aeb4);
-        
+    .lista-normal {
+        background-color: #353D41;
+        border: none;
+        color: white;
+        font-family: Arial, Helvetica, sans-serif;
     }
 </style>
 
-<main id='primeiro'>
-  <div class="container pb-3 p-lg-5 pt-5 bg-dark text-light mb-4 rounded">
+<main>
     <div class="row">
-      <div class="col-12 col-lg-4 pb-2 pb-lg-0">
-        <h5 class='text-muted'>Filtrar por Rede</h5>
-        <ul class="list-group">
-          <li class="list-group-item bg-dark text-muted">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id='rede4'>
-              <label for="rede4" class='form-check-label'>Endereços IP da Rede 4</label>
+        <div class="col-0 col-lg-3 enderecos-nav">
+            <div id='primeiro' class="container text-light text-muted sticky-top pt-2 ">
+                <h5>Listagem endereços</h5>
+                <div class="row pt-3">
+                    <ul class="list-group">
+                        <li class="list-group-item lista-normal">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id='rede4'>
+                                <label for="rede4" class='form-check-label'>Endereços IP da Rede 4</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item lista-normal">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id='rede5'>
+                                <label for="rede5" class='form-check-label'>Endereços IP da Rede 5</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item lista-normal">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id='rede15'>
+                                <label for="rede15" class='form-check-label'>Endereços IP da Rede 15</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item lista-normal">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id='reservado'>
+                                <label for="reservado" class='form-check-label pe-2'>Endereços IP Reservados</label>
+                                <i data-bs-toggle='modal' data-bs-target='#modalReservarIp' class="fas fa-plus text-success"></i>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-          </li>
-          <li class="list-group-item bg-dark text-muted">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id='rede5'>
-              <label for="rede5" class='form-check-label'>Endereços IP da Rede 5</label>
-            </div>
-          </li>
-          <li class="list-group-item bg-dark text-muted">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id='rede15'>
-              <label for="rede15" class='form-check-label'>Endereços IP da Rede 15</label>
-            </div>
-          </li>
-          <li class="list-group-item bg-dark text-muted">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id='reservado'>
-              <label for="reservado" class='form-check-label pe-2'>Endereços IP Reservados</label>
-              <i data-bs-toggle='modal' data-bs-target='#modalReservarIp' class="fas fa-plus text-success"></i>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="col-12 col-lg-8">
-        <div class="input-group">
-          <input type="text" class="form-control rounded border-secondary bg-dark text-light" placeholder="Pesquisar" id='query' autocomplete="off">
-          <button class="btn btn-outline-primary" id='btnPesquisa'>Pesquisar</button>
         </div>
-        <div class="col-12 mt-3">
-          <div class="col-12 overflow-auto" style='max-height: 60vh; min-height: 30vh;'>
-            <ul class="list-group" id='listaItems'>
-              {% for item in enderecos %}
-              {{item|safe}}
-              {% endfor %}
-            </ul>
+        <div class="col mb-3" id='segundo'>
+            <div class="input-group pt-1">
+                <input type="text" class="form-control rounded border-secondary" placeholder="Pesquisar" id='query' autocomplete="off">
+                <button class="btn btn-outline-primary" id='btnPesquisa'>Pesquisar</button>
+              </div>
+              <div class="col-12 mt-3">
+                <div class="col-12">
+                  <ul class="list-group" id='listaItems'>
+                    {% for item in enderecos %}
+                    {{item|safe}}
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
     </div>
-  </div>
 </main>
-
 <!-- Bloco Modal -->
 <div class="modal fade" tabindex="-1" id='modalReservarIp'>
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header d-flex justify-content-between bg-primary">
-        <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-light'>
-          <i class="fas fa-shield-alt pe-2"></i>
-            Reservar Endereço IP
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-between bg-primary">
+          <h5 style='font-family: Arial, Helvetica, sans-serif;' class='text-light'>
+            <i class="fas fa-shield-alt pe-2"></i>
+              Reservar Endereço IP
+            </h5>
+          <span data-bs-dismiss="modal">
+              <i class="fas fa-times text-light"></i>
+          </span>
+        </div>
+        <div class="modal-body">
+          <div class="col-12 p-2">
+            <form method='POST' id='form-ReservarIP'>
+              {%csrf_token %}
+              <div class="form-group mb-2">
+                <label for="id_titulo">Titulo Reserva</label>
+                {{form.titulo}}
+              </div>
+              <div class="form-group mb-2">
+                <label for="id_ip_reservado">Endereço IP Reservado</label>
+                {{form.ip_reservado}}
+              </div>
+              <div class="form-group mb-2">
+                <label for="id_descricao">Descrição</label>
+                {{form.descricao}}
+              </div>
+              <div class="form-group d-flex justify-content-end">
+                <button class="btn btn-primary" style='font-family: Arial, Helvetica, sans-serif;'>Adicionar</button>
+              </div>
+            </form>
+        </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  
+  <!-- Modal Remover IP Reservado -->
+  <div class="modal fade" tabindex="-1" id='ModalRemoverIpReservado'>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-light d-flex justify-content-between" style='background-color: rgb(204, 84, 84);'>
+          <h5 style="font-family: Arial, Helvetica, sans-serif;">
+            <i class="far fa-trash-alt text-light fa-1x pe-2"></i>
+            Remover IP Reservado
           </h5>
-        <span data-bs-dismiss="modal">
+          <span data-bs-dismiss='modal'>
             <i class="fas fa-times text-light"></i>
-        </span>
-      </div>
-      <div class="modal-body">
-        <div class="col-12 p-2">
-          <form method='POST' id='form-ReservarIP'>
-            {%csrf_token %}
-            <div class="form-group mb-2">
-              <label for="id_titulo">Titulo Reserva</label>
-              {{form.titulo}}
-            </div>
-            <div class="form-group mb-2">
-              <label for="id_ip_reservado">Endereço IP Reservado</label>
-              {{form.ip_reservado}}
-            </div>
-            <div class="form-group mb-2">
-              <label for="id_descricao">Descrição</label>
-              {{form.descricao}}
-            </div>
-            <div class="form-group d-flex justify-content-end">
-              <button class="btn btn-primary" style='font-family: Arial, Helvetica, sans-serif;'>Adicionar</button>
-            </div>
-          </form>
-      </div>
+          </span>
+        </div>
+        <div class="modal-body" style='font-family: Arial, Helvetica, sans-serif;'>
+            Você tem certeza que deseja remover esse endereço de IP reservado? Caso você remova, será possivel utiliza-lo por outro dispositivo.
+        </div>
+        <div class="modal-footer">
+          <button data-bs-dismiss='modal' class="btn btn-outline-secondary"style='font-family: Arial, Helvetica, sans-serif; color:black;'>Cancelar</button>
+          <button id='btnRemoverIP' class="btn btn-danger" style='font-family: Arial, Helvetica, sans-serif;'>Remover</button>
+        </div>
       </div>
     </div>
   </div>
-
-</div>
-
-<!-- Modal Remover IP Reservado -->
-<div class="modal fade" tabindex="-1" id='ModalRemoverIpReservado'>
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header text-light d-flex justify-content-between" style='background-color: rgb(204, 84, 84);'>
-        <h5 style="font-family: Arial, Helvetica, sans-serif;">
-          <i class="far fa-trash-alt text-light fa-1x pe-2"></i>
-          Remover IP Reservado
-        </h5>
-        <span data-bs-dismiss='modal'>
-          <i class="fas fa-times text-light"></i>
-        </span>
-      </div>
-      <div class="modal-body" style='font-family: Arial, Helvetica, sans-serif;'>
-          Você tem certeza que deseja remover esse endereço de IP reservado? Caso você remova, será possivel utiliza-lo por outro dispositivo.
-      </div>
-      <div class="modal-footer">
-        <button data-bs-dismiss='modal' class="btn btn-outline-secondary"style='font-family: Arial, Helvetica, sans-serif; color:black;'>Cancelar</button>
-        <button id='btnRemoverIP' class="btn btn-danger" style='font-family: Arial, Helvetica, sans-serif;'>Remover</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+  
+    
 {% endblock corpo %}

@@ -52,7 +52,7 @@ header .navbar {
     width: 100px;
 }
 
-#primeiro {
+#primeiro, #segundo {
     margin-top: 100px;
     font-family: 'Times New Roman', Times, serif;
 }
@@ -91,7 +91,13 @@ p label {
     transform: scale(1.02);
     transition: 1.2s
 }
-
+.enderecos-nav {
+    min-height: 100vh; 
+    background-color: #353D41;
+}
+.mobile {
+    display: none;
+}
 /* Funcionarios  */
 #modalDeletar {
     font-family: Arial, Helvetica, sans-serif;
@@ -99,10 +105,44 @@ p label {
 
 /* Responsive */
 @media (min-width: 1200px) {
+    
     #primeiro {
         margin-top: 100px;
     }
 }
+@media (max-width: 600px) { 
+    #titulo-nav {
+        /* display: none; */
+        font-size: 0.9rem;
+    }
+    .enderecos-nav {
+        max-height: max-content;
+        min-height: min-content;
+        background-color: white;
+    }
+    .enderecos-nav h5 {
+        color: black;
+    }
+    .enderecos-nav li {
+        background-color: white;
+        color: black;   
+    }
+    #segundo {
+        margin-top: 0px;
+    }
+    .esconder {
+        display:none;
+    }
+    .mobile {
+        display: inline;
+    }
+    @media (min-width: 992px) { 
+        #titulo-nav {
+            display:inline;
+        }
+    
+    }
+ }
 
 /* Footer */
 .rodapeText{

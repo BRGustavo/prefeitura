@@ -23,10 +23,6 @@
         text-decoration: none;
         color:black;
     }
-    #primeiro {
-        margin-top: 150px;
-        font-family: 'Times New Roman', Times, serif;
-    }
 
     /* Responsive */
     @media (min-width: 576px) { 
@@ -50,7 +46,7 @@
 
         <div class="row">
             <!-- Departamentos & Funcionários -->
-            <p class='fs-5 mt-0 mt-sm-5 mt-xs-4 mt-lg-4'>Departamentos & Funcionários</p>
+            <p class='fs-5 mt-2 mt-sm-5 mt-xs-4 mt-lg-4'>Departamentos & Funcionários</p>
             <div class="col-12 col-md-4 col-lg-4 col-xl-4 mt-1 mb-2">
                 <a class="link-clicado" href="{% url 'departamento' pagina=1 %}">
                     <div class="card">
@@ -146,7 +142,7 @@
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <span>
-                                        <i class="fas fa-network-wired"></i>
+                                        <i class="fas fa-wifi"></i>
                                         Roteadores 
                                     </span>
                                 </div>
@@ -159,6 +155,70 @@
                 </div>
                 </a>
             </div>
+            <p class="fs-5 mt-4 mt-lg-3">Consulta</p>
+            <div class="col-12 col-md-4 col-lg-4 m1 mb-2">
+                <a class="link-clicado" href="{% url 'patrimonio_view' %}">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span>
+                                        <i class="far fa-folder-open"></i>
+                                        Consultar Patrimônios 
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-start">
+                                    <i id='plus-icon' class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4 m1 mb-2">
+                <a class="link-clicado" href="{% url 'pesquisar_endereco_ip' %}">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span>
+                                        <i class="fas fa-sitemap"></i>
+                                        Consultar endereço IP 
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-start">
+                                    <i id='plus-icon' class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <!-- <div class="col-12 col-md-4 col-lg-4 m1 ">
+                <a class="link-clicado" href="{% url 'roteador_view' pagina=1 %}">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span>
+                                        <i class="fas fa-stopwatch"></i>
+                                        Itens Leilão 
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-start">
+                                    <i id='plus-icon' class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div> -->
             <!-- Inventário -->
             <p class='fs-5 mt-4 mt-lg-3'>Inventário</p>
             <div class="col-12 col-lg-6 mb-2">
@@ -264,7 +324,7 @@
                     
                     </div>
                 </a>
-            </div>
+            </div>            
         </div>
     </div>
 </main>

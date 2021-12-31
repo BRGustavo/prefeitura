@@ -2,11 +2,12 @@ from django.contrib.auth import login
 from django.contrib.auth.backends import UserModel
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Group, User, Permission
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
-
-from account.models import CustomizadoUserModel
+from django.db.models import Q
+from account.models import UsuarioPerfil
+from datetime import datetime
 
 
 @login_required
@@ -31,6 +32,7 @@ def adicionar_usuario_ajax(request):
         usuario = UserCreationForm(request.POST)
         if usuario.is_valid():
             usuario.save()
+
             return JsonResponse(status=200, data={'mensagem': 'ok'}, safe=True)
         else:
             for valores in usuario.errors.values():
@@ -47,16 +49,28 @@ def dados_usuario_ajax(request):
     if request.method == 'GET':
         id = request.GET.get('id')
         usuario = User.objects.filter(id=id).first()
+        perfil_usuario = UsuarioPerfil.objects.filter(usuario=usuario)
+        
+        if perfil_usuario.count() <= 0:
+            perfil_usuario = UsuarioPerfil(usuario=usuario)
+            perfil_usuario.save()
+            perfil_usuario = UsuarioPerfil.objects.filter(usuario=usuario)
+        
+        perfil_usuario = perfil_usuario.first()
+
         data = {
             'corpo': {
                 'id_first_name': usuario.first_name,
                 'id_last_name': usuario.last_name,
                 'id_email': usuario.email,
                 'id_usuario': usuario.id,
+                'id_nivel': perfil_usuario.nivel,
+                'id_birthday': str(perfil_usuario.aniversario).replace('-', '/'),
             },
             'fora': {
                 'id_usernamem': usuario.username,
                 'id_emailm': usuario.email,
+                'id_birthdaym': str(perfil_usuario.aniversario).replace('-', '/'),
                 'nome_usuario': f'{usuario.first_name} {usuario.last_name}'
             }
             
@@ -108,6 +122,30 @@ def editar_usuario_ajax(request):
                             permissao = Permission.objects.get(codename=valor)
                             usuario.user_permissions.add(permissao)
 
+                perfil_usuario = UsuarioPerfil.objects.filter(usuario=usuario)
+                if perfil_usuario.count() >=1:
+                    perfil_usuario.first()
+                else:
+                    perfil_usuario = UsuarioPerfil(usuario=usuario)
+                    perfil_usuario.save()
+                
+                birth = request.GET.get('birthday')
+                if birth is not None and len(str(birth)) >=1:
+                    data = datetime.today()
+                    try:
+                        data = datetime.strptime(birth, '%d/%m/%Y')
+                    except ValueError:
+                        try:
+                            data = datetime.strptime(birth, '%d/%m/%y')
+                        except ValueError:
+                            data = datetime.strptime(birth, '%Y/%m/%d')
+
+                    perfil_usuario.update(aniversario=data)
+                
+                nivel_admin = request.GET.get('nivel')
+                if nivel_admin is not None and len(nivel_admin) >=1:
+                    perfil_usuario.update(nivel=nivel_admin)
+                
                 return JsonResponse(status=200, data={'mensagem': 'ok'}, safe=True)
             else:
                 mensagens.append('Campo inválido.')
@@ -115,10 +153,11 @@ def editar_usuario_ajax(request):
                 campo_erros.append('id_last_name') if funcao_verificar_nulo(last_name) is False else None
                 campo_erros.append('id_email') if funcao_verificar_nulo(email) is False else None
 
-            for item in request.GET:
-                print(request.GET.get(item))
         else:
             mensagens.append('Usuário não existe.')
             campo_erros.append('id_first_name')
             
     return JsonResponse(status=404, data={'status':'false','mensagem': mensagens, 'field_erros': campo_erros})
+
+
+# 

@@ -1,7 +1,8 @@
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
-from account.models import CustomizadoUserModel
+from account.models import UsuarioPerfil
+# from account.models import CustomizadoUserModel
 from departamento.models import Funcionario
 from dispositivo.models import Computador, Roteador, Impressora
 from django.contrib.auth import get_user_model
@@ -13,6 +14,7 @@ def admin_home(request):
     return render(request, template_name='administracao/home.html')
 
 @login_required
+# @permission_required('auth.add_user', raise_exception=True)
 def admin_usuarios(request):
     User = get_user_model()
     data = {
@@ -28,6 +30,7 @@ def admin_usuarios(request):
     return render(request, template_name='administracao/usuarios.html', context=data)
 
 @login_required
+@permission_required('auth.view_group')
 def admin_permissoes(request):
     data = {
         'grupos': Group.objects.all(),
