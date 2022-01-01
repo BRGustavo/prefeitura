@@ -8,7 +8,7 @@ from sistema.settings import BASE_DIR
 from account.views import index as home_index
 
 urlpatterns = [
-    # path('admin/', admin.site.urls), # Painel de admin padrão do django.
+    path('admin/', admin.site.urls), # Painel de admin padrão do django.
     path('accounts/', include('account.urls')),
     path('departamento/', include('departamento.urls')),
     path('dispositivo/', include('dispositivo.urls')),

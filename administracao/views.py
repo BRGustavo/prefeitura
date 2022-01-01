@@ -14,7 +14,7 @@ def admin_home(request):
     return render(request, template_name='administracao/home.html')
 
 @login_required
-# @permission_required('auth.add_user', raise_exception=True)
+@permission_required('auth.view_user', raise_exception=True)
 def admin_usuarios(request):
     User = get_user_model()
     data = {

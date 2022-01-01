@@ -21,19 +21,19 @@
     {% if departamentos %}
     
     {% for departamento in departamentos %}
-    <div class="row mobile p-0">
+    <div class="row mobile p-0 mt-2">
         <div class="col text-light p-0">
             <div class="row p-0">
-                <div class="col-auto">
+                <div class="col-auto d-flex align-items-center">
                     <i class="fas fa-building text-muted"></i>
                 </div>
-                <div class="col m-0 d-flex justify-content-between">
+                <div class="col m-0 d-flex justify-content-between pt-1">
                     <!-- Departamento -->
-                    <span style="font-family: Arial, Helvetica, sans-serif;">
+                    <span style="font-family: Arial, Helvetica, sans-serif;" >
                         <p class='m-0 text-muted'>{{departamento.departamento}}</p>
                         <p>{{departamento.predio}}</p>
                     </span>
-                    <span>
+                    <span class='d-flex align-items-center'>
                         <a href="{% url 'departamento_visualizar' departamento.id %}"><i class="fas fa-eye"></i></a>
                     </span>
                 </div>

@@ -658,7 +658,7 @@ def pesquisar_endereco_ip(request):
             
             if nome_dispositivo != 'Reservado':
                 data.append(f"""
-                    <li class="list-group-item">
+                    <li class="list-group-item" style="font-family: Arial, Helvetica, sans-serif;">
                         <div class="row d-flex align-items-center">
                             <div class="col-auto">
                                 <i class="fas fa-network-wired text-success"></i>
@@ -675,7 +675,7 @@ def pesquisar_endereco_ip(request):
                 objeto_reservado = EnderecoIpReservado.objects.filter(id=item.parent_object_id).first()
                 titulo = objeto_reservado.titulo if objeto_reservado.titulo else 'Reservado'
                 data.append(f"""
-                    <li class="list-group-item ">
+                    <li class="list-group-item" style="font-family: Arial, Helvetica, sans-serif;">
                         <div class="row d-flex align-items-center">
                             <div class="col-auto">
                                 <i class="fas fa-network-wired text-danger"></i>

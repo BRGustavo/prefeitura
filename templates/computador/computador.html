@@ -40,9 +40,31 @@
 {% endblock scripts %}
 
 {% block tabela %}
-<div class="card-body table-responsive bg-dark">
+<div class="card-body table-responsive bg-dark text-muted" >
     {% if computadores %}
-    <table class="table table-sm table bg-dark text-light text-muted text-center">
+    <!-- Mobile -->
+    <div class="col-12 m-0 mb-3 p-0 mobile" style='font-family: Arial, Helvetica, sans-serif;'>
+        {% for computador in computadores %}
+        <div class="row mt-1 p-2 shadow">
+            <div class="col-auto p-0 d-flex align-items-center">
+                <i class="fas fa-desktop 2x"></i>
+            </div>
+            <div class="col ms-2 d-flex justify-content-between">
+                <span>
+                    <p class='mb-0 text-muted'><b>{{computador.nome_rede}} - {% for ip in computador.ip_computador.all %}{{ip}}{% endfor %}</b></p>
+                    <p class='mt-0 mb-0'>{% for mac in computador.mac_computador.all %}{{mac}}{% endfor %}</p>
+                </span>
+                <span class='d-flex align-items-center'>
+                    <a href="{% url 'computador_visualizar' computador.id 'principal' %}"><i class="fas fa-eye"></i></a>
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <!-- Computador -->
+    <table class="table table-sm table bg-dark text-light text-muted text-center esconder">
         <thead>
             <th scope="col">ID</th>
             <th scope='col'>Nome</th>

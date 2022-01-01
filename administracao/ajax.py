@@ -1,6 +1,6 @@
 from django.contrib.auth import login
 from django.contrib.auth.backends import UserModel
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group, User, Permission
 from django.http.response import JsonResponse
@@ -11,6 +11,7 @@ from datetime import datetime
 
 
 @login_required
+@permission_required('auth.delete_user', raise_exception=True)
 def remover_usuario_ajax(request):
     if request.method == 'GET':
         if request.is_ajax():
@@ -25,6 +26,7 @@ def remover_usuario_ajax(request):
     return JsonResponse(status=400, data={'mensagem': 'Você não pode acessar esta página. :P'}, safe=True)
 
 @login_required
+@permission_required('auth.add_user', raise_exception=True)
 def adicionar_usuario_ajax(request):
     if request.method == 'POST':
         mensagens = []
@@ -45,6 +47,7 @@ def adicionar_usuario_ajax(request):
 
 
 @login_required
+@permission_required('auth.view_user', raise_exception=True)
 def dados_usuario_ajax(request):
     if request.method == 'GET':
         id = request.GET.get('id')
@@ -90,6 +93,7 @@ def dados_usuario_ajax(request):
 
 
 @login_required
+@permission_required('auth.change_user', raise_exception=True)
 def editar_usuario_ajax(request):
     if request.method == 'GET':
         mensagens = []
