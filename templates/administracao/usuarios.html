@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'teste.html' %}
 {% load static %}
 
 {% block title %}
@@ -16,79 +16,73 @@ Usuários Administração
 </script>
 {% endblock scripts %}
 
-{% block corpo %}
-<style>
-    body {
-        background-color:rgb(235, 232, 232);
-    }
-    .texto {
-        font-family: Arial, Helvetica, sans-serif;
-        color:white;
-    }
-    .li-texto {
-        font-family: Arial, Helvetica, sans-serif;
-    }
-    .input-modal input {
-        border: solid rgba(185, 179, 179, 0.562) 1px;
-    }
-    .lista-u {
-        transform: scale(1.01);
-        transition: 1s;
-        margin-left: 13px;
-        
-    }
-</style>
-<main id='primeiro'>
-    <div class="container mt-1 mb-4">
-        <div class="row  p-3 rounded">        
-            <div class="col-12 col-lg-12">
-                <!-- <div class="input-group">
-                    
-                    <input type="search" class='form-control p-2 border-secondary rounded' placeholder="Pesquisar usuários">
-                    <button class='btn btn-primary'>Pesquisar</button>
+{% block style %}
+body {
+    background-color:rgb(235, 232, 232);
+}
+.texto {
+    font-family: Arial, Helvetica, sans-serif;
+    color:white;
+}
+.li-texto {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.input-modal input {
+    border: solid rgba(185, 179, 179, 0.562) 1px;
+}
+.lista-u {
+    transform: scale(1.01);
+    transition: 1s;
+    margin-left: 13px;
+    
+}
+{% endblock style %}
 
-                </div> -->
+{% block tabela %}
 
-                <div class="col-12 mt-2">
-                    {% for usuario in usuarios %}
-                    <div class="col-12 shadow p-1 mb-1 bg-white rounded">
-                        <div class="row p-2 item-user">
-                            <div class="col-auto">
-                                <img style='width: 3vw;' class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="">
-                            </div>
-                            <div class="col d-flex justify-content-between">
-                                <span class='text-dark'>
-                                    <b>
-                                        {% if usuario.first_name %}
-                                        {{usuario.first_name.capitalize}}
-                                        {% elif usuario.username %}
-                                        {{usuario.username.capitalize}}
-                                        {% endif %}
-                                        {% if usuario.last_name %}
-                                        {{usuario.last_name.capitalize}}
-                                        {% endif %}
-                                    </b>
-                                    <p class='mb-0'>
-                                        {{usuario.UsuarioPerfil.nivel}}
-                                    </p>
-                                </span>
-                                <span class='d-flex align-items-center text-dark'>
-                                    <i class="fas fa-user-edit pe-2" data-bs-toggle='modal' onclick='ModalEditarUsuario("{{usuario.id}}")'></i>
-                                    <i class="fas fa-trash-alt" onclick='ModalRemoverUsuario("{{usuario.id}}")'></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    <div class="d-flex justify-content-end mt-2">
-                        <button data-bs-toggle='modal' data-bs-target='#modalCriarUsuario' class="btn btn-secondary ms-1 d-flex">Adicionar</button>
-                    </div>
-                </div>
-            </div>
+{% for usuario in usuarios %}
+<div class="col-12 shadow p-1 mb-1 bg-white rounded fonte-arial">
+    <div class="row p-2 item-user">
+        <div class="col-auto p-0 d-flex justify-content-center d-flex align-items-center">
+            <img style='width: 6vh;' class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="">
+        </div>
+        <div class="col d-flex justify-content-between">
+            <span class='text-dark'>
+                <b>
+                    {% if usuario.first_name %}
+                    {{usuario.first_name.capitalize}}
+                    {% elif usuario.username %}
+                    {{usuario.username.capitalize}}
+                    {% endif %}
+                    {% if usuario.last_name %}
+                    {{usuario.last_name.capitalize}}
+                    {% endif %}
+                </b>
+                <p class='mb-0'>
+                    {{usuario.UsuarioPerfil.nivel}}
+                </p>
+            </span>
+            <span class='d-flex align-items-center text-dark'>
+                <i class="fas fa-user-edit pe-2" data-bs-toggle='modal' onclick='ModalEditarUsuario("{{usuario.id}}")'></i>
+                <i class="fas fa-trash-alt" onclick='ModalRemoverUsuario("{{usuario.id}}")'></i>
+            </span>
         </div>
     </div>
-</main>
+</div>
+{% endfor %}
+{% endblock tabela %}
 
+{% block button_adicionar%}
+<div class="d-flex justify-content-end mt-0 fonte-arial">
+    <button data-bs-toggle='modal' data-bs-target='#modalCriarUsuario' class="btn btn-success ms-1 d-flex">Adicionar</button>
+</div>
+{% endblock button_adicionar %}
+
+{% block botao_pesquisa %}
+<button type="submit" class="btn btn-primary fonte-arial" id='pesquisa_btn'>Pesquisa</button>
+{% endblock botao_pesquisa %}
+
+{% block modals %}
 <div class="modal fade" tabindex="-1" id="modalCriarUsuario">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -472,5 +466,4 @@ Usuários Administração
         </div>
     </div>
 </div>
-
-{% endblock corpo %}
+{% endblock modals %}

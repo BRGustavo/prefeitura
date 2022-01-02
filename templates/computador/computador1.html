@@ -1,23 +1,6 @@
-{% extends 'base_listagem.html' %}
+{% extends 'teste.html' %}
 {% load static %}
 
-<!-- Titulo Página -->
-{% block title %}
-    Computadores
-{% endblock title %}
-
-{% block titulo_lista %}
-    Computadores
-{% endblock %}
-
-<!-- Search Bar  -->
-{% block botao_pesquisa %}
-<button type="submit" class="btn btn-outline-primary" id='pesquisa_btn'>Pesquisa</button>
-{% endblock botao_pesquisa %}
-
-{% block button_adicionar %}
-<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalAdicionarComputador'>Adicionar</button>
-{% endblock %}
 
 {% block style %}
 .card img {
@@ -31,98 +14,137 @@
 
 {% endblock style %}
 
+
 {% block scripts %}
     <script>
         const forms_urls = {
             'computador_novo_ajax': '{% url "computador_novo_ajax" %}',
         }
     </script>
-{% endblock scripts %}
+{% endblock scripts %}  
 
 {% block tabela %}
-<div class="card-body table-responsive bg-dark text-muted" >
-    {% if computadores %}
-    <!-- Mobile -->
-    <div class="col-12 m-0 mb-3 p-0 mobile" style='font-family: Arial, Helvetica, sans-serif;'>
-        {% for computador in computadores %}
-        <div class="row mt-1 p-2 shadow">
-            <div class="col-auto p-0 d-flex align-items-center">
-                <i class="fas fa-desktop 2x"></i>
+{% if computadores %}
+
+{% for computador in computadores %}
+<div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
+    <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
+        <i class="fas fa-laptop-code fa-2x " aria-hidden="true"></i>
+    </div>
+    <div class="col-10 mt-0 item-filho hidden ms-4 ms-lg-4 p-lg-2">
+        <div class="row m-0 p-0">
+            <div class="col-12 col-lg-4 mb-lg-2">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-0 p-0">
+                        <b>Nome Rede:</b> {{computador.nome_rede}}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Sistema Operacional:</b>{% if computador.sistema_op %} {{computador.sistema_op}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Memória RAM:</b>{% if computador.memoria_ram %} {{computador.memoria_ram}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>HD:</b>{% if computador.hd %} {{computador.hd.tamanho}}{% else %} Indisponível {% endif %}
+                    </li>
+                </ul>
             </div>
-            <div class="col ms-2 d-flex justify-content-between">
-                <span>
-                    <p class='mb-0 text-muted'><b>{{computador.nome_rede}} - {% for ip in computador.ip_computador.all %}{{ip}}{% endfor %}</b></p>
-                    <p class='mt-0 mb-0'>{% for mac in computador.mac_computador.all %}{{mac}}{% endfor %}</p>
-                </span>
-                <span class='d-flex align-items-center'>
-                    <a href="{% url 'computador_visualizar' computador.id 'principal' %}"><i class="fas fa-eye"></i></a>
-                </span>
+            <div class="col-12 col-lg-4">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>AnyDesk:</b>{% if computador.anydesk %} {{computador.anydesk}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Processador:</b>
+                        {% if computador.processador %}
+                        {{computador.processador.modelo}}
+                        {% if computador.processador.frequencia %}
+                            {{computador.processador.frequencia }} Ghz
+                        {% endif %}
+                        {% else %}
+                        Indisponivel
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Placa Mãe:</b>
+                        {% if computador.placa_mae %}
+                        {{computador.placa_mae.marca}} - {{computador.placa_mae.modelo }}
+                        {% else %}
+                        Indisponivel
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Gabinete Patrimônio</b>
+                        {% if computador.gabinete.patrimonio %}
+                        {{ computador.gabinete.patrimonio }}
+                        {% else %}
+                        Indisponível
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-4">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Endereço IP:</b> 
+                        {% if computador.ip_computador.count %}
+                        {{computador.ip_computador.first.ip_address }}
+                        {% else %}
+                        Indisponível
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Endereço MAC:</b>
+                        {% if computador.mac_computador.count %}
+                        {{computador.mac_computador.first.mac_address}}
+                        {% else %}
+                        Indisponível
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Placa Mãe:</b>
+                        {% if computador.placa_mae %}
+                        {{computador.placa_mae.marca}} - {{computador.placa_mae.modelo }}
+                        {% else %}
+                        Indisponivel
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Gabinete Patrimônio</b>
+                        {% if computador.gabinete.patrimonio %}
+                        {{ computador.gabinete.patrimonio }}
+                        {% else %}
+                        Indisponível
+                        {% endif %}
+                    </li>
+                </ul>
             </div>
         </div>
-        {% endfor %}
+    </div>
+    <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+        <div class='item-esconder'>
+            <p class='mb-0 mt-2 '><b>{{computador.nome_rede}}</b></p>
+            <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                <p class='mb-0 mt-0'>IP: {% for ip in computador.ip_computador.all %}{{ip}}{% endfor %}</p>
+                <p class='mb-0 mt-0 ps-lg-2'>MAC: {% for mac in computador.mac_computador.all %}{{mac}}{%endfor %}</p>
+            </span>
+        </div>
+        <span class='d-flex align-items-center d-flex me-4 text-dark'>
+            <a href="{% url 'computador_visualizar' computador.id 'principal' %}"><i class="fas fa-eye"></i></a>
+        </span>
     </div>
 
-
-    <!-- Computador -->
-    <table class="table table-sm table bg-dark text-light text-muted text-center esconder">
-        <thead>
-            <th scope="col">ID</th>
-            <th scope='col'>Nome</th>
-            <th scope="col">Departamento</th>
-            <th scope="col">Funcionario</th>
-            <th scope="col">Processador</th>
-            <th scope='col'>OS</th>
-            <th scope='col'>IP</th>
-            <th scope='col'>MAC</th>
-            <th scope='col'>Visualizar</th>
-        </thead>
-        <tbody>
-            {% for computador in computadores %}
-            <tr class='border-0 '>
-                <th id='id_pc' scope="row">{{ computador.id }}</th>
-                <td>{{ computador.nome_rede }}</td>
-                <td>
-                    {% if computador.departamento %}
-                    <a href="{% url 'departamento_visualizar' computador.departamento.id %}">
-                        {{ computador.departamento }}
-                    </a>
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-                <td>
-                    {% if computador.funcionario.nome|length > 1 %}
-                    <a href="{% url 'funcionario' 1 %}">{{ computador.funcionario.nome }}</a>
-                    {% else %}
-                    {{ computador.funcionario.nome }}
-                    {% endif %}
-
-                </td>
-                <td>{{ computador.processador.modelo }}</td>
-                <td>{{ computador.sistema_op }}</td>
-                <td>
-                    {% for ip in computador.ip_computador.all %}
-                        <span id='ip_endereco'>{{ ip }}</span>
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for mac in computador.mac_computador.all %}
-                        {{ mac }}
-                    {% endfor %}
-                </td>
-                <td><a href="{% url 'computador_visualizar' computador.id 'principal' %}"><i class="fas fa-eye"></i></a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class='text-center'>
-        <p>Nada Encontrado</p>
-    </div>
-    {% endif %}
 </div>
-{% endblock tabela %}
+{% endfor %}
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <h5 class='fonte-arial text-center'>Nada encontrado</h5>
+    </div>
+</div>
 
+{% endif %}
+{% endblock tabela %}
 
 {% block modals %}
 
@@ -238,14 +260,23 @@
 </div>
 {% endblock modals %}
 
+{% block button_adicionar %}
+<button class="btn btn-success fonte-arial" data-bs-toggle='modal' data-bs-target='#modalAdicionarComputador'>Adicionar</button>
+{% endblock %}
+
+{% block botao_pesquisa %}
+<button type="submit" class="btn btn-primary fonte-arial" id='pesquisa_btn'>Pesquisa</button>
+{% endblock botao_pesquisa %}
+
+
 {% block nav_paginacao %}
     {% if computadores.has_previous %}
-    <li class="page-item"><a class="page-link" href="{% url 'computador' computadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'computador' computadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
     {% if computadores.has_other_pages %}
-    <li class="page-item active"><a class="page-link"  href="#">{{ computadores.number }}</a></li>
+    <li class="page-item active text-dark fonte-arial text-decoration-none"><a class="page-link"  href="#">{{ computadores.number }}</a></li>
     {% endif %}
     {% if computadores.has_next %}
-    <li class="page-item"><a class="page-link" href="{% url 'computador' computadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'computador' computadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}
 {% endblock nav_paginacao %}

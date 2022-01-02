@@ -730,7 +730,7 @@ function ModalRemoverFuncionario(url=false){
 }
 // Ativando Modal Atualizar Informações do Funcionário.
 function ModalAtualizarFuncionario(id_funcionario, url){
-    $('#modalEditFuncionario').modal('show');
+    
     $.ajax({
         type: 'GET',
         url: url,
@@ -738,6 +738,8 @@ function ModalAtualizarFuncionario(id_funcionario, url){
             'id': id_funcionario
         },
         success: function(data){
+            $('#modalEditFuncionario').modal('show');
+            
             $('#modalEditFuncionario #id_nome').val(data.id_nome);
             $('#modalEditFuncionario #id_sobrenome').val(data.id_sobrenome);
             $('#modalEditFuncionario #id_senha_pc').val(data.id_senha_pc);

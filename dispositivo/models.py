@@ -110,6 +110,10 @@ class Impressora(models.Model):
         else:
             return ''
 
+    @property
+    def url_img(self):
+        return f'img/{str(self.modelo).lower()}.png'
+
 class Computador(models.Model):
 
     class Meta:

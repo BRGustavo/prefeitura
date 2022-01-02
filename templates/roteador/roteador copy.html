@@ -1,8 +1,8 @@
-{% extends 'teste.html' %}
+{% extends 'departamento/departamento.html' %}
 {% load static %}
 
 {% block button_adicionar %}
-<button class="btn btn-success fonte-arial" data-bs-toggle='modal' data-bs-target='#modalNovoRoteador'>Adicionar</button>
+<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalNovoRoteador'>Adicionar</button>
 {% endblock %}
 
 <!-- Titulo Página -->
@@ -14,11 +14,11 @@
     Roteadores
 {% endblock %}
 <!--  -->
-
+<!--  -->
 
 <!-- Search Bar  -->
 {% block botao_pesquisa %}
-<button type="submit" class="btn btn-primary fonte-arial" id='pesquisa_btn'>Pesquisa</button>
+<button type="submit" class="btn btn-outline-primary" id='pesquisa_btn'>Pesquisa</button>
 {% endblock botao_pesquisa %}
 
 {% block scripts %}
@@ -36,94 +36,61 @@
     });
 </script>
 {% endblock scripts %}
-
 {% block tabela %}
+<div class="card-body table-responsive bg-dark">
+    {% if roteadores %}
+    <table class="table table-sm table bg-dark text-light text-muted text-center">
+        <thead>
+            <th scope="col">ID</th>
+            <th scope="col">SSID</th>
+            <th scope="col">Modelo</th>
+            <th scope="col">Departamento</th>
+            <th scope='col'>IP</th>
+            <th scope='col'>MAC</th>
+            <th scope='col'>Editar</th>
+        </thead>
+        <tbody>
+            {% for roteador in roteadores %}
+            <tr class='border-0'>
+                <th scope="row">{{ roteador.id }}</th>
+                <td>{{ roteador.ssid }}</td>
+                <td>{{ roteador.modelo }}</td>
+                <td>
+                    {% if roteador.departamento %}
+                    <a href="{% url 'departamento_visualizar' roteador.departamento.id %}">{{ roteador.departamento }}</a>
 
-{% if roteadores %}
-{% for roteador in roteadores %}
-<div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
-    <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
-        <i class="fas fa-wifi fa-2x"></i>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    
+                    {% for ip in roteador.ip_roteador.all %}
+                        {{ ip }}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if roteador.mac_roteador.all %}
+                    {% for mac in roteador.mac_roteador.all %}
+                        {{ mac }}
+                    {% endfor %}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    <i class="fas fa-trash-alt pe-2" onclick="apagarRoteador('{{roteador.id}}')"></i>
+                    <i onclick='atualizarRoteador("{{roteador.id}}")' class="fas fa-edit"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class='text-center'>
+        <p>Nada Encontrado</p>
     </div>
-    <div class="col-10 mt-0 item-filho hidden ms-4 ms-lg-4 p-lg-2">
-        <div class="row m-0 p-0">
-            <div class="col-12 col-lg-4 mb-lg-2">
-                <ul class='list-group'>
-                    <li class="list-group-item mt-0 p-0">
-                        <b>SSID:</b> {{roteador.ssid}}
-                    </li>
-                    <li class="list-group-item mt-1 p-0">
-                        <b>Senha:</b>{% if roteador.senha %} {{roteador.senha}}{% else %} Indisponível {% endif %}
-                    </li>
-                    <li class="list-group-item mt-1 p-0">
-                        <b>Departamento:</b>{% if roteador.departamento %} {{roteador.departamento.departamento}}{% else %} Indisponível {% endif %}
-                    </li>
-                    <li class="list-group-item mt-1 p-0">
-                        <b>Prédio:</b>{% if roteador.departamento %} {{roteador.departamento.predio}}{% else %} Indisponível {% endif %}
-                    </li>
-                </ul>
-            </div>
-            <div class="col-12 col-lg-4">
-                <ul class='list-group'>
-                    <li class="list-group-item mt-1 p-0">
-                        <b>Modelo:</b>{% if roteador.modelo %} {{roteador.modelo}}{% else %} Indisponível {% endif %}
-                    </li>
-                    <li class="list-group-item mt-1  p-0">
-                        <b>Endereço IP:</b> 
-                        {% if roteador.ip_roteador.count %}
-                        {{roteador.ip_roteador.first.ip_address }}
-                        {% else %}
-                        Indisponível
-                        {% endif %}
-                    </li>
-                    <li class="list-group-item mt-1  p-0">
-                        <b>Endereço MAC:</b>
-                        {% if roteador.mac_roteador.count %}
-                        {{roteador.mac_roteador.first.mac_address}}
-                        {% else %}
-                        Indisponível
-                        {% endif %}
-                    </li>
-                </ul>
-            </div>
-            <div class="col-12 col-lg-4">
-                <ul class='list-group'>
-                    <li class="list-group-item mt-1  p-0">
-                        <b>Descricao:</b>
-                        {% if roteador.descricao %}
-                        {{roteador.descricao}}
-                        {% else %}
-                        Não possuo nenhuma informação ;c
-                        {% endif %}
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
-        <div class='item-esconder'>
-            <p class='mb-0 mt-2 '><b>{{roteador.ssid}}</b></p>
-            <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
-                <p class='mb-0 mt-0'>IP: {% for ip in roteador.ip_roteador.all %}{{ip}}{% endfor %}</p>
-                <p class='mb-0 mt-0 ps-lg-2'>{% if roteador.mac_roteador.count %}- MAC: {% for mac in roteador.mac_roteador.all %}{{mac}}{%endfor %}{% endif %}</p>
-            </span>
-        </div>
-        <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
-            <i onclick='atualizarRoteador("{{roteador.id}}")' class="fas fa-edit  pe-lg-3 mb-2 mb-lg-0"></i>
-            <i class="fas fa-trash-alt pe-2" onclick="apagarRoteador('{{roteador.id}}')"></i>
-        </span>
-    </div>
+    {% endif %}
 </div>
-
-{% endfor %}
-{% else %}
-<div class="row">
-    <div class="col-12 shadow p-3">
-        <h5 class='fonte-arial text-center'>Nada encontrado</h5>
-    </div>
-</div>
-{% endif %}
-
 {% endblock tabela %}
 
 {% block modals %}

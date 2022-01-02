@@ -36,7 +36,7 @@ def computador_view(request, pagina):
         'computadores': computadores,
         'formComputador': ComputadorFormNovo()
     }
-    return render(request, template_name='computador/computador.html', context=content)
+    return render(request, template_name='computador/computador1.html', context=content)
 
 
 @login_required
@@ -625,7 +625,7 @@ def pesquisar_endereco_ip(request):
             if str(modelo) == 'computador':
                 nome_dispositivo = 'Computador'
                 nome_dispositivo = f"""
-                <a class='text-decoration-none text-muted' href='{reverse("computador_visualizar", args=[item.parent_object_id, 'principal'])}'>Computador</a>"""
+                <a class='text-decoration-none' href='{reverse("computador_visualizar", args=[item.parent_object_id, 'principal'])}'>Computador</a>"""
             elif str(modelo) == 'impressora':
                 nome_dispositivo = 'Impressora'
             elif str(modelo) == 'roteador':
@@ -664,8 +664,8 @@ def pesquisar_endereco_ip(request):
                                 <i class="fas fa-network-wired text-success"></i>
                             </div>
                             <div class="col-auto">
-                                <p class='text-muted mb-0 pb-0'><b>{nome_dispositivo} - {item.ip_address}</b></p>
-                                <p class='mb-0 text-muted'>Endereço MAC: {mac} </p>
+                                <p class='text mb-0 pb-0'><b>{nome_dispositivo} - {item.ip_address}</b></p>
+                                <p class='mb-0 text-dark'>Endereço MAC: {mac} </p>
                             </div>
                         </div>
                     </li>
@@ -676,13 +676,13 @@ def pesquisar_endereco_ip(request):
                 titulo = objeto_reservado.titulo if objeto_reservado.titulo else 'Reservado'
                 data.append(f"""
                     <li class="list-group-item" style="font-family: Arial, Helvetica, sans-serif;">
-                        <div class="row d-flex align-items-center">
+                        <div class="row d-flex align-items-center text-black">
                             <div class="col-auto">
                                 <i class="fas fa-network-wired text-danger"></i>
                             </div>
                             <div class="col-auto">
-                                <p class='text-muted mb-0 pb-0'><b>{titulo} - {item.ip_address}</b></p>
-                                <p class='mb-0 text-muted'>Endereço MAC não disponível </p>
+                                <p class=' mb-0 pb-0'><b>{titulo} - {item.ip_address}</b></p>
+                                <p class='mb-0'>Endereço MAC não disponível </p>
                             </div>
                             <div class="col d-flex flex-row-reverse d-flex align-items-center">
                                 <i onclick="RemoverIPReservado('{objeto_reservado.id}')" class="far fa-trash-alt text-danger"></i>

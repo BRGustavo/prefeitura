@@ -1,51 +1,50 @@
+{% extends 'basel.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title%}Prefeitura Municipal{% endblock title %}</title>
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
-    <!-- BootStrap5 -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
-
-    {% block script_css %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    {% endblock script_css %}
-
-    <!-- Fontes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
-    
-</head>
-<body class='d-flex flex-column min-vh-100'>
-
-    <div class="dropdown">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-          Dropdown link
-        </a>
-      
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <li><a class="dropdown-item" href="#">Action</a></li>
-          <li><a class="dropdown-item" href="#">Another action</a></li>
-          <li><a class="dropdown-item" href="#">Something else here</a></li>
-        </ul>
+{% block corpo %}
+<style>
+  {% block style %}
+  
+  {% endblock style %}
+</style>
+<div class="container-fluid">
+  <div class='col-12 p-0 m-0 mt-3'>
+    <div class="row p-0 m-0">
+      <div class="col-12 p-0 m-0 pe-1 texto-menu">
+        <form>
+            <div class="input-group">
+                <input type="search" name='query' class="form-control text-black rounded border-secondary fonte-arial" placeholder="Pesquisar" aria-label="Search"
+                aria-describedby="search-addon" autocomplete="off"/>
+                {% block botao_pesquisa %}
+                <button type="submit" class="btn btn-primary texto-menu">Procurar</button>
+                {% endblock botao_pesquisa%}
+              </div>
+        </form>
       </div>
+      
+    </div>
+  </div>
+  <div class="col-12 mt-2 p-2">
+    {% block tabela %}
+    {% endblock tabela%}
+  </div>
+  <div class="col p-0 m-0 mt-3 d-flex justify-content-end">
+    {% block button_adicionar %}
+      <a href='{{ BASE_DIR }}/departamento/departamento/add' class="btn btn-success texto-menu fonte-arial">Adicionar</a>
+      {% endblock button_adicionar %}
+  </div>
+  <div class="col-12 m-3 mb-3">
+    <div class="container d-flex justify-content-center ">
+      <nav aria-label='Paginador navegação'>
+          <ul class="pagination">
+          {% block nav_paginacao %}
+          {% endblock nav_paginacao %}
+          </ul>
+      </nav>
+    </div>
+  </div>
+</div>  
 
-    <!-- Jquery -->
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <!-- Bootstrap js -->
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src='{% static "js/propper.min.js" %}'></script>
-    <script src='{% static "js/bootstrap.bundle.min.js" %}'></script>
-    
-    <script src="{% static 'js/javascript.js' %}"></script>
-    <!-- Font Awensome -->
-    <script src="https://kit.fontawesome.com/6953b3b378.js" crossorigin="anonymous"></script>
+{% endblock corpo %}
 
-</body>
-</html>
+

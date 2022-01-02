@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title%}Prefeitura Municipal{% endblock title %}</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+    <!-- BootStrap5 -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
+
+    {% block script_css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% endblock script_css %}
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+    
+</head>
+<body class='d-flex flex-column min-vh-100'>
+    <div class="row p-0 m-0">
+        <div class="col-auto side-nav p-0 sticky-top" id='nav-side'>
+          <div class="col p-lg-3 pt-1">
+            <span class='d-flex flex-column flex-lg-row p-lg-1 d-flex'>
+              <span class='col-12 col-lg-auto d-flex justify-content-center mt-2 mt-lg-0'> 
+                  <img class='icone-menu' style='max-width: 10vw; max-height: 10vh;' src="{% static 'img/logo.png'%}" alt="">
+                </span>
+              <h4 class='texto-menu hidden ps-2 text-center pt-1 p-2' style='color:rgba(255,255,255,.55);'>Prefeitura Municipal de Arapoti</h4>
+            </span>
+    
+            <div class="mt-3 p-0 m-0">
+              <ul class="list-group p-0" id='nav-menu-items'>
+                <a class='text-decoration-none' href="{% url 'home'%}">
+                  <li class="list-group-item d-flex flex-row text-center">
+                    <span class='icone'>
+                      <i class="fas fa-home fa-2x" aria-hidden="true"></i>
+                    </span>
+                    <span class='ps-2 d-flex align-items-center'>
+                      <h5 class='texto-menu hidden'>Home</h5>
+                    </span>
+                  </li>
+                </a>
+                <a class='text-decoration-none' href="{% url 'departamento' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3 ">
+                      <span class='icone'>
+                        <i class="fas fa-building fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Departamentos</h5>
+                      </span>
+                    </li>
+                </a>
+                <a class='text-decoration-none' href="{% url 'funcionario' 1%}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3 ">
+                      <span class='icone'>
+                        <i class="fas fa-user-friends fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Funcionários</h5>
+                      </span>
+                    </li>
+                </a>
+                <a class='text-decoration-none' href="{% url 'computador' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3 ">
+                      <span class='icone'>
+                        <i class="fas fa-laptop-code fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Computador</h5>
+                      </span>
+                    </li>
+                </a>
+                <a class='text-decoration-none' href="{% url 'impressora_view' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3 ">
+                      <span class='icone'>
+                        <i class="fas fa-print fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Impressora</h5>
+                      </span>
+                    </li>
+                </a>
+                <a class='text-decoration-none' href="{% url 'roteador_view' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                      <span class='icone'>
+                        <i class="fas fa-wifi fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Roteador</h5>
+                      </span>
+                    </li>
+                </a>
+                <a class='text-decoration-none' href="{% url 'patrimonio_view' %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                      <span class='icone'>
+                        <i class="far fa-folder-open fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Patrimônios</h5>
+                      </span>
+                    </li>
+                </a>
+                <a class='text-decoration-none' href="{% url 'pesquisar_endereco_ip' %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                      <span class='icone'>
+                        <i class="fas fa-sitemap fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Consulta IP</h5>
+                      </span>
+                    </li>
+                </a>
+                {% if user.is_staff %}
+                <a class='text-decoration-none' href="{% url 'admin_home' %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                      <span class='icone'>
+                        <i class="fas fa-user-cog fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Administração</h5>
+                      </span>
+                    </li>
+                </a>
+                {% endif %}
+                <a class='text-decoration-none' href="{% url 'logout' %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                        <span class='icone'>
+                            <i class="fa fa-sign-out fa-2x" aria-hidden="true"></i>
+                        </span>
+                        <span class='ps-2 d-flex align-items-center'>
+                          <h5 class='texto-menu hidden'>Sair</h5>
+                        </span>
+                    </li>
+                </a>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col p-0 m-0 corpo-body" id=''>
+            {% block corpo %}
+
+            {% endblock corpo %}
+        </div>
+      </div>
+      {% block modals %}
+      {% endblock modals %}
+
+    {% block footer %}
+    <footer class='mt-auto bg-black footer'>
+        <div class="container">
+            
+            <div class="row pb-3">
+                <div class="d-flex flex-row p-5 pb-2 d-flex justify-content-center d-flex align-items-center">
+                    <span class='pe-3'>
+                        <a class='text-decoration-none text-light' targe='_blank' href="https://www.facebook.com/prefeituradearapoti/"><i class="fab fa-facebook-square fa-2x"></i></a>
+                    </span>
+                    <span class='pe-3'>
+                        <a class='text-decoration-none text-light' target="_blank" href="https://github.com/BRGustavo/prefeitura"><i class="fab fa-github fa-2x"></i></a>
+                    </span>
+                    <span class='pe-3'>
+                        <a class='text-decoration-none text-light' target="_blank" href="http://www.arapoti.pr.gov.br:2095/login">
+                        <i class="fas fa-envelope fa-2x"></i></a>
+                    </span>
+                </div>
+                <p class='text-center text-light mb-0'>Rua Placídio Leite, 148 - Centro Cívico</p>
+                <p class='text-center text-light'>2021 ;)</p>
+            </div>
+        </div>
+    </footer>
+    {% endblock footer %}
+    
+
+    <!-- Jquery -->
+    
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src='{% static "js/propper.min.js" %}'></script>
+    <script src='{% static "js/bootstrap.bundle.min.js" %}'></script>
+    
+    <script src="{% static 'js/javascript.js' %}"></script>
+    <!-- Font Awensome -->
+    <script src="https://kit.fontawesome.com/6953b3b378.js" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function(){
+        if(window.matchMedia('(max-device-width: 600px)').matches){
+        $('.icone i').removeClass('fa-2x')
+        }
+        })
+        $('#nav-side').click(function(){
+            
+            $('.texto-menu').toggleClass('hidden');
+            if(window.matchMedia('(max-device-width: 600px)').matches){
+                $(this).toggleClass('col-10');
+                $('.icone i').toggleClass('fa-2x');
+                $('.corpo-body').toggleClass('hidden');
+                $
+            }else {
+                $(this).toggleClass('col-3');
+            }
+            $(this).toggleClass('col-auto');
+        });
+        $('#nav-side .list-group-item').on('mouseover', function(){
+            $(this).addClass('shadow')
+            }).on('mouseout', function(){
+            $(this).removeClass('shadow')
+        })
+        $('.item-pai').click(function(){
+            $(this).children('.item-filho').toggleClass('hidden');
+            $(this).find('.item-esconder').toggleClass('hidden');
+        });
+    </script>
+    <!-- Scripts JS -->
+    {% block scripts %}
+
+    {% endblock scripts %}
+</body>
+</html>
