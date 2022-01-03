@@ -124,7 +124,14 @@ p label {
 .item-filho li {
     border: none;
 }
-  /*  */
+.lista-u {
+    transform: scale(1.01);
+    transition: 1s;
+    margin-left: 13px;
+    
+}
+/*  */
+
 
 
 .mobile {

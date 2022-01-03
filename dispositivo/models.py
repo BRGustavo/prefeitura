@@ -67,7 +67,7 @@ class Roteador(models.Model):
         ('N', 'Não'),
         ('S', 'Sim')
     ], help_text='Multimodo: Frequência 2.4Ghz e 5Ghz.')
-    departamento = models.ForeignKey(Departamento, blank=True, null=True, on_delete=CASCADE)
+    departamento = models.ForeignKey(Departamento, related_name='roteador', blank=True, null=True, on_delete=CASCADE)
     descricao = models.TextField(blank=True, verbose_name='Descrição')
     mac_roteador = GenericRelation(EnderecoMac, object_id_field='parent_object_id', related_query_name='roteador')
     ip_roteador = GenericRelation(EnderecoIp, object_id_field='parent_object_id', related_query_name='roteador')

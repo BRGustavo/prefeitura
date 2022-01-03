@@ -1,3 +1,6 @@
+<!-- 
+  Template base.
+ -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -23,6 +26,7 @@
 </head>
 <body class='d-flex flex-column min-vh-100'>
     <div class="row p-0 m-0">
+        <!-- Menu Lateral -->
         <div class="col-auto side-nav p-0 sticky-top" id='nav-side'>
           <div class="col p-lg-3 pt-1">
             <span class='d-flex flex-column flex-lg-row p-lg-1 d-flex'>
@@ -34,6 +38,7 @@
     
             <div class="mt-3 p-0 m-0">
               <ul class="list-group p-0" id='nav-menu-items'>
+                <!-- Link página principal -->
                 <a class='text-decoration-none' href="{% url 'home'%}">
                   <li class="list-group-item d-flex flex-row text-center">
                     <span class='icone'>
@@ -44,6 +49,7 @@
                     </span>
                   </li>
                 </a>
+                <!-- Link página departamentos -->
                 <a class='text-decoration-none' href="{% url 'departamento' 1 %}">
                     <li class="list-group-item d-flex flex-row text-center mt-3 ">
                       <span class='icone'>
@@ -54,6 +60,7 @@
                       </span>
                     </li>
                 </a>
+                <!-- Link página Funcionários -->
                 <a class='text-decoration-none' href="{% url 'funcionario' 1%}">
                     <li class="list-group-item d-flex flex-row text-center mt-3 ">
                       <span class='icone'>
@@ -64,6 +71,7 @@
                       </span>
                     </li>
                 </a>
+                <!-- Link página Computadores -->
                 <a class='text-decoration-none' href="{% url 'computador' 1 %}">
                     <li class="list-group-item d-flex flex-row text-center mt-3 ">
                       <span class='icone'>
@@ -74,6 +82,7 @@
                       </span>
                     </li>
                 </a>
+                <!-- Link página Impressoras -->
                 <a class='text-decoration-none' href="{% url 'impressora_view' 1 %}">
                     <li class="list-group-item d-flex flex-row text-center mt-3 ">
                       <span class='icone'>
@@ -84,6 +93,7 @@
                       </span>
                     </li>
                 </a>
+                <!-- Link página roteadores -->
                 <a class='text-decoration-none' href="{% url 'roteador_view' 1 %}">
                     <li class="list-group-item d-flex flex-row text-center mt-3">
                       <span class='icone'>
@@ -94,6 +104,7 @@
                       </span>
                     </li>
                 </a>
+                <!-- Link página consulta de patrimônios -->
                 <a class='text-decoration-none' href="{% url 'patrimonio_view' %}">
                     <li class="list-group-item d-flex flex-row text-center mt-3">
                       <span class='icone'>
@@ -104,6 +115,7 @@
                       </span>
                     </li>
                 </a>
+                <!-- Link página de consulta IP. -->
                 <a class='text-decoration-none' href="{% url 'pesquisar_endereco_ip' %}">
                     <li class="list-group-item d-flex flex-row text-center mt-3">
                       <span class='icone'>
@@ -115,6 +127,7 @@
                     </li>
                 </a>
                 {% if user.is_staff %}
+                <!-- Painel administrativo (only admins.) -->
                 <a class='text-decoration-none' href="{% url 'admin_home' %}">
                     <li class="list-group-item d-flex flex-row text-center mt-3">
                       <span class='icone'>
@@ -126,6 +139,7 @@
                     </li>
                 </a>
                 {% endif %}
+                <!-- Opção logout Site -->
                 <a class='text-decoration-none' href="{% url 'logout' %}">
                     <li class="list-group-item d-flex flex-row text-center mt-3">
                         <span class='icone'>
@@ -187,32 +201,40 @@
     <script src="https://kit.fontawesome.com/6953b3b378.js" crossorigin="anonymous"></script>
 
     <script>
+        //Altera os icones para dispositivos com display menor.
         $(document).ready(function(){
         if(window.matchMedia('(max-device-width: 600px)').matches){
-        $('.icone i').removeClass('fa-2x')
-        }
-        })
+            $('.icone i').removeClass('fa-2x');
+          }
+        });
+        // Ação executada ao clicar no menu lateral.
         $('#nav-side').click(function(){
-            
             $('.texto-menu').toggleClass('hidden');
             if(window.matchMedia('(max-device-width: 600px)').matches){
                 $(this).toggleClass('col-10');
                 $('.icone i').toggleClass('fa-2x');
                 $('.corpo-body').toggleClass('hidden');
-                $
             }else {
                 $(this).toggleClass('col-3');
             }
             $(this).toggleClass('col-auto');
         });
+        // Efeito ao passar mouse por cima dos itens menu lateral.
         $('#nav-side .list-group-item').on('mouseover', function(){
-            $(this).addClass('shadow')
+            $(this).addClass('shadow');
             }).on('mouseout', function(){
-            $(this).removeClass('shadow')
+            $(this).removeClass('shadow');
         })
+        // Listagem itens
         $('.item-pai').click(function(){
             $(this).children('.item-filho').toggleClass('hidden');
             $(this).find('.item-esconder').toggleClass('hidden');
+        });
+        // Efeito ao passar mouse por cima dos items body.
+        $('.item-pai').on('mouseover', function(){
+          $(this).addClass('lista-u');
+        }).on('mouseout', function(){
+          $(this).removeClass('lista-u');
         });
     </script>
     <!-- Scripts JS -->

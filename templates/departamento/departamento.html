@@ -1,4 +1,4 @@
-{% extends 'base_listagem.html' %}
+{% extends 'teste.html' %}
 {% load static %}
 
 {% block scripts %}
@@ -11,63 +11,84 @@
 
 
 {% block button_adicionar %}
-<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalDepartamento'>
+<button class="btn btn-success fonte-arial" data-bs-toggle='modal' data-bs-target='#modalDepartamento'>
     Adicionar
 </button>
 {% endblock button_adicionar %}
 
 {% block tabela %}
-<div class="card-body table-responsive">
-    {% if departamentos %}
-    
-    {% for departamento in departamentos %}
-    <div class="row mobile p-0 mt-2">
-        <div class="col text-light p-0">
-            <div class="row p-0">
-                <div class="col-auto d-flex align-items-center">
-                    <i class="fas fa-building text-muted"></i>
-                </div>
-                <div class="col m-0 d-flex justify-content-between pt-1">
-                    <!-- Departamento -->
-                    <span style="font-family: Arial, Helvetica, sans-serif;" >
-                        <p class='m-0 text-muted'>{{departamento.departamento}}</p>
-                        <p>{{departamento.predio}}</p>
-                    </span>
-                    <span class='d-flex align-items-center'>
-                        <a href="{% url 'departamento_visualizar' departamento.id %}"><i class="fas fa-eye"></i></a>
-                    </span>
-                </div>
+
+{% if departamentos %}
+{% for departamento in departamentos %}
+<div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
+    <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
+
+        <img class='rounded-circle' style='width:7vh;' src="{% static 'img/patrimonio.png' %}" alt="">
+        
+    </div>
+    <div class="col-10 mt-0 item-filho hidden ms-4 ms-lg-4 p-lg-2">
+        <div class="row m-0 p-0">
+            <div class="col-12 col-lg-4 mb-lg-2">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-0 p-0">
+                        <b>Nome:</b> {{departamento.departamento}}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Prédio:</b>{% if departamento.predio %} {{departamento.predio}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Sigla:</b>{% if departamento.sigla_departamento %} {{departamento.sigla_departamento}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Funcionarios:</b> {{departamento.funcionario.count}}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-4">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Impressoras:</b> {{departamento.impressora.count}}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Roteadores:</b> {{departamento.roteador.count}}
+                    </li>
+                    
+                </ul>
+            </div>
+            <div class="col-12 col-lg-4">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Descricao:</b>
+                        {% if departamento.descricao %}
+                        {{departamento.descricao}}
+                        {% else %}
+                        Não possuo nenhuma informação ;c
+                        {% endif %}
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    {% endfor %}
-    <table class="table table-sm table bg-dark text-light text-muted text-center esconder">
-        <thead>
-            <th scope="col">ID</th>
-            <th scope="col">Departamento</th>
-            <th scope="col">Sigla</th>
-            <th scope="col">Prédio</th>
-            <th scope='col'>Visualizar</th>
-        </thead>
-        <tbody>
-            {% for departamento in departamentos %}
-            <tr class='border-0'>
-                <th scope="row">{{ departamento.id }}</th>
-                <td>{{ departamento.departamento }}</td>
-                <td>{{ departamento.sigla_departamento }}</td>
-                <td>{{ departamento.predio }}</td>
-                <td><a href="{% url 'departamento_visualizar' departamento.id %}"><i class="fas fa-eye"></i></a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class='text-center'>
-        <p>Nada Encontrado</p>
+    <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+        <div class='item-esconder'>
+            <p class='mb-0 mt-2 '><b>{{departamento.departamento}} </b></p>
+            <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                <p class='mb-1 mt-0'>Prédio: {{departamento.predio}}</p>
+            </span>
+        </div>
+        <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
+            <a href="{% url 'departamento_visualizar' departamento.id %}"><i class="fas fa-eye pe-lg-3 mb-2 mb-lg-0"></i></a>
+        </span>
     </div>
-    {% endif %}
 </div>
-
+{% endfor %}
+{% else %}
+<div class="row">
+    <div class="col-12 shadow p-3">
+        <h5 class='fonte-arial text-center'>Nada encontrado</h5>
+    </div>
+</div>
+{% endif %}
 {% endblock tabela %}
 
 {% block modals %}
@@ -99,12 +120,12 @@
 
 {% block nav_paginacao %}
     {% if departamentos.has_previous %}
-    <li class="page-item"><a class="page-link" href="{% url 'departamento' departamentos.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'departamento' departamentos.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
     {% if departamentos.has_other_pages %}
-    <li class="page-item active"><a class="page-link"  href="#">{{ departamentos.number }}</a></li>
+    <li class="page-item active text-dark fonte-arial text-decoration-none"><a class="page-link"  href="#">{{ departamentos.number }}</a></li>
     {% endif %}
     {% if departamentos.has_next %}
-    <li class="page-item"><a class="page-link" href="{% url 'departamento' departamentos.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'departamento' departamentos.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}
 {% endblock nav_paginacao %}

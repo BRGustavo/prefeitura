@@ -294,12 +294,12 @@
 {% endblock modals %}
 {% block nav_paginacao %}
     {% if roteadores.has_previous %}
-    <li class="page-item"><a class="page-link" href="{% url 'roteador_view' roteadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'roteador_view' roteadores.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
     {% if roteadores.has_other_pages %}
-    <li class="page-item active"><a class="page-link"  href="#">{{ roteadores.number }}</a></li>
+    <li class="page-item active text-dark fonte-arial text-decoration-none"><a class="page-link"  href="#">{{ roteadores.number }}</a></li>
     {% endif %}
     {% if roteadores.has_next %}
-    <li class="page-item"><a class="page-link" href="{% url 'roteador_view' roteadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'roteador_view' roteadores.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}
 {% endblock nav_paginacao %}
