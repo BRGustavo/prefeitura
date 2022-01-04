@@ -80,12 +80,13 @@ def dados_usuario_ajax(request):
         }
         retornar = dict()
 
-        lista_add = ['add_funcionario', 'add_computador', 'add_roteador', 'add_impressora', 'delete_funcionario', 'delete_computador', 'delete_roteador', 'delete_impressora', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'view_funcionario', 'view_computador', 'view_roteador', 'view_impressora']
+        lista_add = ['add_funcionario', 'add_computador', 'add_roteador', 'add_impressora', 'delete_funcionario', 'delete_computador', 'delete_roteador', 'delete_impressora', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'view_funcionario', 'view_computador', 'view_roteador', 'view_impressora', 'view_departamento', 'add_departamento', 'change_departamento', 'delete_departamento']
 
             
         for permissao in usuario.user_permissions.all():
             if permissao.codename in lista_add:
                 retornar[permissao.codename] = True
+
             
         data['campos'] = retornar
 
@@ -101,7 +102,7 @@ def editar_usuario_ajax(request):
         id_usuario = request.GET.get('id_usuario')
         usuario = get_object_or_404(User, pk=id_usuario)
         if usuario:
-            lista_add = ['add_funcionario', 'add_computador', 'add_roteador', 'add_impressora', 'delete_funcionario', 'delete_computador', 'delete_roteador', 'delete_impressora', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'view_funcionario', 'view_computador', 'view_roteador', 'view_impressora']
+            lista_add = ['add_funcionario', 'add_computador', 'add_roteador', 'add_impressora', 'delete_funcionario', 'delete_computador', 'delete_roteador', 'delete_impressora', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'view_funcionario', 'view_computador', 'view_roteador', 'view_impressora', 'view_departamento', 'add_departamento', 'change_departamento', 'delete_departamento']
 
             funcao_verificar_nulo = lambda x: True if x is not None and len(x) >=1 else False
 

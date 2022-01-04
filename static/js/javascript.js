@@ -877,7 +877,7 @@ $('.item-user').on('mouseover', function(){
 
 
 $('#chkVisulAll').change(function(){
-    lista = ['add_funcionario', 'add_computador', 'add_impressora', 'add_roteador', 'view_funcionario', 'view_computador', 'view_impressora', 'view_roteador', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'delete_funcionario', 'delete_computador', 'delete_impressora', 'delete_roteador']
+    lista = ['add_funcionario', 'add_computador', 'add_impressora', 'add_roteador', 'view_funcionario', 'view_computador', 'view_impressora', 'view_roteador', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'delete_funcionario', 'delete_computador', 'delete_impressora', 'delete_roteador', 'view_departamento', 'add_departamento', 'change_departamento', 'delete_departamento']
 
     if($('#chkVisulAll').is(':checked')){
         lista.forEach(function(item){
@@ -891,7 +891,6 @@ $('#chkVisulAll').change(function(){
 });
 function AdmEditarUsuario(){
     let form = $('#form-editarUsuario').serialize()
-    console.log(form)
     $.ajax({
         type: 'GET',
         url: form_urls.editar_usuario_ajax,
@@ -911,6 +910,74 @@ function AdmEditarUsuario(){
     });
 }
 
+function ShowModalDeletarDepartamento(url){
+    $('#modalDeletar #link-rm').attr('href', url);
+    $('#modalDeletar').modal('show')
+}
+function ShowModalEditDepartamento(url, id){
+    $.ajax({
+        url: forms_urls.departamento_view_ajax,
+        type: 'GET',
+        data: {
+            'id': id,
+        },
+        success: function(data){
+            $(`#modalEditDepartamento #id_predio option[value='${data.predio}']`).attr("selected", "selected");
+            $('#modalEditDepartamento #id_departamento').val(data.departamento);
+            $('#modalEditDepartamento #id_descricao').val(data.descricao);
+            $('#modalEditDepartamento #id_singla_departamento').val(data.sigla);
+            $('#modalEditDepartamento').modal('show');
+            $('#modalEditDepartamento #btnEditar').attr('onclick', `EditarModalDepartamento('${id}')`);
+            $('#modalEditDepartamento #id_id').val(id);
+        },
+        error: function(request, status, error){
+            alert('Não foi possivel estabelecer uma conexão, tente novamete.')
+        }
+    });
+}
+function EditarModalDepartamento(id){
+    let form = $('#modalEditDepartamento #form-departamento').serialize()
+    console.log(form)
+    $.ajax({
+        url: forms_urls.editar_departamento,
+        type: 'GET',
+        data: form,
+        success: function(data) {
+            location.reload();
+        },
+        error: function(request, status, error){
+            let info = $.parseJSON(request.responseText);
+            if(info['status'] == 'false'){
+                alert(info['messagem'][0])
+                for(let erro_id in info['field_erros']){
+                    $(`#modalEditDepartamento #${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
+            }
+        }
+    });
+}
+
+function ShowPcsVinculadosImpre(id){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.view_pc_na_impressora,
+        data: {
+            'id': id
+        },
+        success: function(data){
+            $('#modalShowComputerPrinter #viewPcImpressora').html('');
+            data.computadores.forEach(function(item){
+                $('#modalShowComputerPrinter #viewPcImpressora').append(item)
+            });
+            $("#modalShowComputerPrinter").modal('show');
+        },
+        error: function(request, status, error){
+            alert('Algo deu errado, tente novamente mais tarde');
+        }
+    });
+
+    
+}
 
 $('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
 $('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});

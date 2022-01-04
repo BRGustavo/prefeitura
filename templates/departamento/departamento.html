@@ -5,7 +5,11 @@
 <script>
     forms_urls = {
         'departamento': '{% url "departamento_ajax_add" %}',
+        'editar_departamento': '{% url "departamento_ajax_edit" %}',
+        'apagarDepartamento': '{% url "departamento_ajax_deletar" %}',
+        'departamento_view_ajax': '{% url "departamento_view_ajax" %}',
     }
+    </script>
 </script>
 {% endblock scripts %}
 
@@ -77,7 +81,8 @@
             </span>
         </div>
         <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
-            <a href="{% url 'departamento_visualizar' departamento.id %}"><i class="fas fa-eye pe-lg-3 mb-2 mb-lg-0"></i></a>
+            <i class="fas fa-trash-alt text-black pe-1  pe-lg-3 mb-2 mb-lg-0" onclick='ShowModalDeletarDepartamento(`{% url "departamento_remover" departamento.id %}`)'></i>
+            <i class="fas fa-edit text-black" onclick="ShowModalEditDepartamento(`{% url 'departamento_ajax_edit' %}`, '{{departamento.id}}')"></i>
         </span>
     </div>
 </div>
@@ -116,6 +121,74 @@
         </div>        
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" id='modalEditDepartamento'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-pen pe-2"></i>
+                    Editar Departamento
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form method='POST' id='form-departamento'>
+                    {% csrf_token %}
+                    <input type="hidden" id='id_id' name='id' value='0'>
+                    <div class="form-group">
+                        <label for="id_predio" class='text-black'>Prédio *:</label>
+                        {{form.predio}}
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="id_departamento">Departamento *:</label>
+                        {{form.departamento}}
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="id_singla_departamento">Sigla Departamento</label>
+                        {{form.singla_departamento}}
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="id_descricao">Complemento</label>
+                        {{form.descricao}}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button id='btnEditar' class="btn bg-success fonte-arial text-light" onclick='EditarItem("departamento")'>Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalDeletar'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-light" style="font-family: Arial, Helvetica, sans-serif;">
+                <h5>
+                    <i class="fas fa-trash-alt"></i>
+                    Deseja apagar esse departamento?
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    Caso você remova esse Departamento, não será possivel adicionar ou remover elementos. Além disso, toda e qualquer informação vinculada a esse departamento será perdida.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <a id='link-rm' href="{% url 'departamento_remover' 1%}" class="btn" style='font-family: Arial, Helvetica, sans-serif; background-color:rgb(238, 37, 37); color:white;'>Apagar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock modals %}
 
 {% block nav_paginacao %}

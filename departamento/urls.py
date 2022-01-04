@@ -18,10 +18,11 @@ urlpatterns = [
     path('funcionari/editarform_ajax/', ajax.funcionario_edit_form_ajax, name='funcionario_edit_form_ajax'),
 
     #Ajax URL
+    path('departamento/ajax/view', ajax.departamento_view_ajax, name='departamento_view_ajax'),
     path('funcionario/ajax/add/',ajax.funcionario_add_ajax, name='funcionario_ajax_add'),
     path('funcionario/ajax/edit/<int:id>',ajax.funcionario_edit_ajax, name='funcionario_ajax_edit'),
 
     path('departamento/ajax/add/',ajax.departamento_add_ajax, name='departamento_ajax_add'),
-    path('departamento/ajax/edit/<int:id>',ajax.departamento_edit_ajax, name='departamento_ajax_edit'),
+    path('departamento/ajax/edit/',ajax.departamento_edit_ajax, name='departamento_ajax_edit'),
     path('departamento/ajax/deletar',ajax.departamento_ajax_deletar, name='departamento_ajax_deletar'),
 ]

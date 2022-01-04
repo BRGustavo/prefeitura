@@ -3,6 +3,7 @@ from django.core.validators import ip_address_validator_map, validate_ipv4_addre
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
+from django.urls.base import reverse
 
 from inventario.forms import PlacaMaeForm, ProcessadorForm
 from .models import *
@@ -590,3 +591,52 @@ def remover_ip_reservado(request):
         else:
             return JsonResponse(status=400, data={'mensagem': 'Não foi permitido que você fizesse essa alteração.'}, safe=True)
     return JsonResponse(status=400, data={'mensagem': ':P'}, safe=True)
+
+@login_required
+@permission_required('dispositivo.view_impressora', raise_exception=True)
+def view_pc_na_impressora(request):
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        impressora = get_object_or_404(Impressora, id=id)
+        if impressora:
+            computadores = []
+            for computador in impressora.computador.all():
+                ip = 'Indisponível'
+                mac = 'Indisponível'
+                url =  reverse("computador_visualizar", args=[computador.id, 'principal'])
+                try:
+                    for endereco in computador.ip_computador.all():
+                        ip = endereco
+                except Exception:
+                    pass
+                
+                try:
+                    for endereco in computador.mac_computador.all():
+                        mac = endereco
+                except Exception:
+                    pass
+
+                computadores.append(f"""
+                <div class="row p-1 item-pai">
+                    <div class="col-12 p-1 m-0 shadow ">
+                        <div class="row p-1 m-0">
+                            <div class="col-auto d-flex align-items-center">
+                                <i class="fas fa-laptop-code fa-2x " aria-hidden="true"></i>
+                            </div>
+                            <div class="col d-flex justify-content-between">
+                                <span class='pt-1'>
+                                    <p class="p-0 m-0"><b>{computador.nome_rede}</b></p>
+                                    <p class="p-0 m-0">IP: {ip} - MAC: {mac}</p>
+                                </span>
+                                <span class='d-flex align-items-center'>
+                                    <a href='{url}' target='_blank' class='text-decoration-none text-dark'>
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                """)
+            return JsonResponse(status=200, data={'computadores': computadores}, safe=True)
+    return JsonResponse(status=404, data={'mensagem': 'Algo deu errado'}, safe=True)

@@ -40,6 +40,7 @@ urlpatterns = [
     path('impressora/impressora_atualizar_ajax/ajax/', ajax.impressora_atualizar_ajax, name='impressora_atualizar_ajax'),
     path('funcionario/pesquisar/ajax/', ajax.funcionario_pesquisa_ajax, name='funcionario_pesquisa_ajax'),
     path('funcionario/vincular/ajax/', ajax.vincular_funcionario_ajax, name='vincular_funcionario_ajax'),
+    path('impressora/impressora_computadores_ajax/ajax/', ajax.view_pc_na_impressora, name='view_pc_na_impressora'),
 
     path('',views.teste_view, name='teste'),
 
