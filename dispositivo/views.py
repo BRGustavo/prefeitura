@@ -323,12 +323,8 @@ def computador_visualizar(request, id, pagina='principal'):
             return JsonResponse(status=404, safe=True, data={'erro': 'erro'})
     if pagina == 'principal':
         return render(request, template_name='computador/visualizar.html', context=context)
-    elif pagina == 'rede':
-        return render(request, template_name='computador/visualizar_rede.html', context=context)
-    elif pagina == 'processador':
-        return render(request, template_name="computador/visualizar_processador.html", context=context)
-    elif pagina == 'placa_mae':
-        return render(request, template_name='computador/visualizar_placa_mae.html', context=context)
+    else:
+        return render(request, template_name='computador/visualizar.html', context=context)
 
 
 @login_required
@@ -546,53 +542,89 @@ def patrimonio_view(request):
             monitores = Monitor.objects.filter(Q(patrimonio__icontains=query))[0:20]
 
             for gabinete in gabinetes:
-                em_uso = 'Parado'
+                em_uso = 'Gabinete'
                 departamento = 'Não Vinculado'
                 try:                
                     link = reverse("computador_visualizar", args=[gabinete.computador.id, 'principal'])
-                    em_uso = f'<a class="text-decoration-none text-muted" href="{link}">Em uso</a>' if gabinete.computador else 'Parado'
+                    em_uso = f'<a class="text-decoration-none text-dark" href="{link}"><b>Gabinete</b></a>' if gabinete.computador else 'Gabinete'
                 except ObjectDoesNotExist:
-                    em_uso = 'Não vinculado'
+                    em_uso = 'Gabinete'
                 
                 try:
                     departamento = gabinete.computador.departamento if gabinete.computador.departamento else 'Não vinculado'
 
                     if departamento == 'Não vinculado':
                         try:
-                            departamento = gabinete.computador.funcionario.departamento if gabinete.computador.funcionario.departamento else 'Não vinculado'
+                            departamento = gabinete.computador.funcionario.departamento.departamento if gabinete.computador.funcionario.departamento else 'Não vinculado'
                         except ObjectDoesNotExist:
                             departamento = 'Não vinculado'
 
                 except ObjectDoesNotExist:
                     departamento = 'Não Vinculado'
 
-                items += f"""<tr><th class='text-muted' scope="row">{gabinete.patrimonio}</th><td class='text-muted'>Gabinete</td><td class='text-muted'>{departamento}</td><td class='text-muted'>{em_uso}</td></tr>"""
+                items += f"""
+                    <div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex" style="font-family: Arial, Helvetica, sans-serif;" id='modificar'>
+                    <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
+                        <i class="fas fa-hdd fa-2x"></i>
+                    </div>
+                    <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+                        <div class='item-esconder'>
+                            <p class='mb-0 mt-2 '>{em_uso}</p>
+                            <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                                <p class='mb-0 mt-0'>Patrimônio: {gabinete.patrimonio}</p>
+                                <p class='mb-0 mt-0 ps-lg-2'>- {departamento}</p>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                """
+
 
             for monitor in monitores:
-                em_uso = 'Parado'
+                em_uso = 'Monitor'
                 departamento = 'Não Vinculado'
                 try:                
-                    em_uso = 'Em uso' if monitor.computador is not None else 'Parado'
+                    link = reverse("computador_visualizar", args=[monitor.computador.first().id, 'principal'])
+
+                    em_uso = f'<a class="text-decoration-none text-dark" href="{link}"><b>Monitor</b></a>' if monitor.computador else 'Monitor'
                 except ObjectDoesNotExist:
-                    em_uso = 'Não vinculado'
-                
+                    em_uso = 'Monitor'
+
                 try:
                     pc_monitor = Computador.objects.filter(monitor=monitor).first()
-                    departamento = pc_monitor.departamento if pc_monitor.departamento else 'Não vinculado'
+                    departamento = pc_monitor.departamento.departamento if pc_monitor.departamento else 'Não vinculado'
 
                     if departamento == 'Não vinculado':
                         try:
-                            departamento = pc_monitor.funcionario.departamento if pc_monitor.funcionario else 'Não vinculado'
+                            departamento = pc_monitor.funcionario.departamento.departamento if pc_monitor.funcionario else 'Não vinculado'
                         except ObjectDoesNotExist:
                             departamento = 'Não vinculado'
                             
                 except ObjectDoesNotExist:
                     departamento = 'Não Vinculado'
 
-                items += f"""<tr><th class='text-muted' scope="row">{monitor.patrimonio}</th><td class='text-muted'>Monitor</td><td class='text-muted'>{departamento}</td><td class='text-muted'>{em_uso}</td></tr>"""
-
+                items += f"""
+                    <div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex" style="font-family: Arial, Helvetica, sans-serif;" id='modificar'>
+                    <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
+                        <i class="fas fa-hdd fa-2x"></i>
+                    </div>
+                    <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+                        <div class='item-esconder'>
+                            <p class='mb-0 mt-2 '><b>{em_uso}</b></p>
+                            <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                                <p class='mb-0 mt-0'>Patrimônio: {monitor.patrimonio}</p>
+                                <p class='mb-0 mt-0 ps-lg-2'>- {departamento}</p>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                """
             return JsonResponse(status=200, data={'items': items}, safe=True)
+    
     return render(request, template_name='patrimonios/patrimonio.html', context={'items':items})
+
+
+
 
 
 def pesquisar_endereco_ip(request):
@@ -620,7 +652,7 @@ def pesquisar_endereco_ip(request):
             if mac is None:
                 mac = '-'
             else:
-                mac = mac.mac_address
+                mac = mac.endereco_mac
             
             if str(modelo) == 'computador':
                 nome_dispositivo = 'Computador'

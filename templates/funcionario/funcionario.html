@@ -79,16 +79,23 @@
                     <li class="list-group-item mt-1  p-0">
                         <b>Admin Rede:</b>{% if funcionario.admin_rede %} {{funcionario.admin_rede}}{% else %} Indisponível {% endif %}
                     </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Computador:</b>
+                            {% for computador in funcionario.computador.all %}
+                            <span class="me-1"><a class='text-decoration-none fonte-arial text-dark'href="{% url 'computador_visualizar'  computador.id 'principal' %}">{{computador.nome_rede}}</a></span>
+                            {% endfor %}
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <div class="col-12 col-lg-4">
                 <ul class='list-group'>
                     <li class="list-group-item mt-1  p-0">
-                        <b>Descricao:</b>
+                        <b>Descrição:</b>
                         {% if funcionario.descricao %}
                         {{funcionario.descricao}}
                         {% else %}
-                        Não possuo nenhuma informação ;c
+                        Nada informado.
                         {% endif %}
                     </li>
                 </ul>
@@ -99,8 +106,8 @@
         <div class='item-esconder'>
             <p class='mb-0 mt-2 '><b>{{funcionario.nome}} {% if funcionario.sobrenome %}{{funcionario.sobrenome}}{% endif%}</b></p>
             <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
-                <p class='mb-0 mt-0'>User: {{funcionario.usuario_pc}}</p>
-                <p class='mb-0 mt-0 ps-lg-2'>- {{funcionario.departamento.departamento}}</p>
+                <p class='mb-0 mt-0'>Usuário: {{funcionario.usuario_pc.lower}}</p>
+                <p class='mb-0 mt-0 ps-lg-1'>- {{funcionario.departamento.departamento}}</p>
             </span>
         </div>
         <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>

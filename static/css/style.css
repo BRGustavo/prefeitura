@@ -83,12 +83,12 @@ p label {
 }
 
 #tabelaFuncionario tr:hover{
-    transform: scale(1.02);
+    transform: scale(1.01);
     transition: 1.2s
 }
 
 #tabelaImpressora tr:hover{
-    transform: scale(1.02);
+    transform: scale(1.01);
     transition: 1.2s
 }
 .enderecos-nav {

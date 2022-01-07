@@ -43,6 +43,10 @@ class EnderecoMac(models.Model):
 
     def __str__(self) -> str:
         return str(self.mac_address)
+
+    @property
+    def endereco_mac(self):
+        return str(self.mac_address).replace(':', '-')
     
 
 class EnderecoIp(models.Model):

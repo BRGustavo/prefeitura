@@ -13,8 +13,10 @@
       <div class="col-12 p-0 m-0 pe-1 texto-menu">
         <form>
             <div class="input-group">
+                {% block input_pesquisa %}
                 <input type="search" name='query' class="form-control text-black rounded border-secondary fonte-arial" placeholder="Pesquisar" aria-label="Search"
                 aria-describedby="search-addon" autocomplete="off"/>
+                {% endblock input_pesquisa %}
                 {% block botao_pesquisa %}
                 <button type="submit" class="btn btn-primary texto-menu">Procurar</button>
                 {% endblock botao_pesquisa%}

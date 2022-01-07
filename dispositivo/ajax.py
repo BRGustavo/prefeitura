@@ -85,13 +85,30 @@ def impressora_pesquisa_ajax(request):
         id_computador = request.GET.get('id_computador')
         computador = get_object_or_404(Computador, pk=id_computador)
         if pesquisa:
-            impressoras = Impressora.objects.filter(Q(nome__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(ip_impressora__ip_address__icontains=pesquisa)).exclude(computador=computador)
+            impressoras = Impressora.objects.filter(Q(nome__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(ip_impressora__ip_address__icontains=pesquisa)).exclude(computador=computador)
         else:
             impressoras = Impressora.objects.exclude(computador=computador)
 
         for impressora in impressoras:
-            predio = impressora.departamento.predio if impressora.departamento else 'Não selecionado'
-            html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{predio}</td><td id='ip_impressora'>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i id='vincular' onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
+            predio = impressora.departamento.departamento if impressora.departamento else 'Não selecionado'
+            html_item = f"""
+            <div class="row p-0 pt-2 m-0 shadow mt-2" id="impressoraId{impressora.id}">
+                <div class="col-auto d-flex justify-content-center d-flex align-items-center">
+                    <i class="far fa-copy fa-2x"></i>
+                </div>
+                <div class="col d-flex justify-content-between">
+                    <span>
+                        <p class="m-0 p-0"><b>{impressora.nome}</b></p>
+                        <span class='d-flex flex-column d-flex flex-lg-row '>
+                            <p class='m-0 p-0 me-lg-2 mb-lg-2'>IP: {impressora.ip_impressora.first().ip_address}</p>
+                            <p class='m-0 p-0'>{predio}</p>
+                        </span>
+                    </span>
+                    <span class='d-flex justify-content-center d-flex align-items-center'>
+                        <i onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link text-success"></i>
+                    </span>
+                </div>
+            </div>
             """
             img_modelo = 'm4070'
         
@@ -612,10 +629,11 @@ def view_pc_na_impressora(request):
                 
                 try:
                     for endereco in computador.mac_computador.all():
-                        mac = endereco
+                        mac = endereco.endereco_mac
                 except Exception:
                     pass
 
+                nome_rede = f"{computador.nome_rede} - {computador.funcionario.nome}" if computador.funcionario else f"{computador.nome_rede}" 
                 computadores.append(f"""
                 <div class="row p-1 item-pai">
                     <div class="col-12 p-1 m-0 shadow ">
@@ -625,7 +643,7 @@ def view_pc_na_impressora(request):
                             </div>
                             <div class="col d-flex justify-content-between">
                                 <span class='pt-1'>
-                                    <p class="p-0 m-0"><b>{computador.nome_rede}</b></p>
+                                    <p class="p-0 m-0"><b>{nome_rede}</b></p>
                                     <p class="p-0 m-0">IP: {ip} - MAC: {mac}</p>
                                 </span>
                                 <span class='d-flex align-items-center'>

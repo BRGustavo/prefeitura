@@ -251,6 +251,13 @@ $('#pesquisa').submit(function(e){
     return false;
 })
 
+
+$('#pesquisaimpre').submit(function(e){
+    let conteudo = $('input[name="queryimpe"]').val();
+    PesquisarImpressoras(conteudo);
+    return false;
+})
+
 function PesquisarImpressoras(query){
     let pesquisa = query;
     $.ajax({
@@ -262,13 +269,14 @@ function PesquisarImpressoras(query){
         },
         success: function(data){
             $('#tabelaImpressora').html('');
-           
+            
             if(data['impressoras'].length <= 0){
-                let item_novo = $('<tr><td class="text-center">Nada encontrado.</td></tr>');
+                let item_novo = $('<div class="text-muted"><h6 class="text-center">Nada encontrado.</h6></div>');
                 $('#tabelaImpressora').append(item_novo)
             }
             for(let item in data['impressoras']){
                 let html_item = data['impressoras'][item].html_item;
+                console.log(html_item)
                 let nome = data['impressoras'][item].nome;
                 let marca = data['impressoras'][item].marca;
                 let ip = data['impressoras'][item].ip;

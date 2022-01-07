@@ -81,7 +81,7 @@
             <div class="col-12 col-lg-4">
                 <ul class='list-group'>
                     <li class="list-group-item mt-1  p-0">
-                        <b>Descricao:</b>
+                        <b>Descrição:</b>
                         {% if impressora.descricao %}
                         {{impressora.descricao}}
                         {% else %}
@@ -290,9 +290,11 @@
                             <i class="fas fa-times text-light"></i>
                         </span>
                     </div>
-                    <div class="col-12 col-lg-4 bg-secondary p-0 m-0 d-flex justify-content-center">
+                    <div class="col-12 col-lg-4 pt-4 pb-5 d-flex justify-content-center d-flex align-items-center bg-secondary">
                         <div class="container-fluid fonte-arial">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium est quibusdam laborum! Nostrum, totam. Doloremque, ut quibusdam blanditiis molestiae exercitationem maiores dolor expedita fugit quam tempora quos soluta officia deserunt.
+                            <div class="col-12 d-flex justify-content-between d-flex align-items-center">
+                                <img style='width:20vw;' src="{% static 'img/impressoras.png' %}" alt="">
+                            </div>
                         </div>
                     </div>
                     
@@ -305,7 +307,7 @@
                                     </div>
                                     <div class="col d-flex justify-content-between">
                                         <span class='pt-1'>
-                                            <p class="p-0 m-0"><b>PRE-10</b></p>
+                                            <p class="p-0 m-0"><b>PRE-10 - {}</b></p>
                                             <p class="p-0 m-0">as</p>
                                         </span>
                                         <span class='d-flex align-items-center'>

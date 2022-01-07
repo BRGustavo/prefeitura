@@ -110,9 +110,11 @@
                         {% endif %}
                     </li>
                     <li class="list-group-item mt-1 p-0">
-                        <b>Gabinete Patrimônio</b>
-                        {% if computador.gabinete.patrimonio %}
-                        {{ computador.gabinete.patrimonio }}
+                        <b>Monitor Patrimônio:</b>
+                        {% if computador.monitor.count%}
+                        {% for monitor in computador.monitor.all %}
+                        {{ monitor.patrimonio }}
+                        {% endfor %}
                         {% else %}
                         Indisponível
                         {% endif %}
@@ -126,7 +128,7 @@
             <p class='mb-0 mt-2 '><b>{{computador.nome_rede}}</b></p>
             <span class='d-flex d-flex flex-column flex-lg-row mt-1' id='corpo-pesquisa'>
                 <p class='mb-0 mt-0'>IP: {% for ip in computador.ip_computador.all %}{{ip}}{% endfor %}</p>
-                <p class='mb-0 mt-0 ps-lg-2'>MAC: {% for mac in computador.mac_computador.all %}{{mac}}{%endfor %}</p>
+                <p class='mb-0 mt-0 ps-lg-2'>MAC: {% for mac in computador.mac_computador.all %}{{mac.endereco_mac}}{%endfor %}</p>
             </span>
         </div>
         <span class='d-flex align-items-center d-flex me-4 text-dark'>
