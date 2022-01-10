@@ -1,4 +1,4 @@
-{% extends 'teste.html' %}
+{% extends 'base_listagem.html' %}
 {% load static %}
 
 {% block title %}
@@ -262,6 +262,17 @@ Usuários Administração
                                                     </div>
                                                     <div class="card-body overflow-auto" style='max-height: 30vh;'>
                                                         <ul class="list-group">
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Manipular painel Administrativo
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_config_departamento' name='config_departamento'>
+                                                                        <label for="id_config_departamento" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
                                                             <li class="list-group-item">
                                                                 <div class="col d-flex justify-content-between li-texto">
                                                                     <span>

@@ -28,8 +28,8 @@ SECRET_KEY = 'django-insecure-h*01qbg+!m^)+dw*l-!qy((0pxyw)mdcc%9n_90750f%%+t)5p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-# 192.168.0.10', 'projeto-inventario.ddns.net', '127.0.0.1', '189.76.196.246
+ALLOWED_HOSTS = ['192.168.0.10', 'projeto-inventario.ddns.net', '127.0.0.1', '189.76.196.246']
+
 
 
 # Application definition
@@ -141,6 +141,8 @@ STATICFILES_DIRS = (
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -148,5 +150,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

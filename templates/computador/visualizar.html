@@ -1,4 +1,4 @@
-{% extends 'basel.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}
@@ -42,7 +42,10 @@
         margin-top: 10px;
         border: none;
     }
-
+    .modal ul li {
+        margin-top:10px;
+        border:none;
+    }
 </style>
 
  <div class="col-12 fonte-arial p-0 m-0 ms-0">
@@ -58,7 +61,7 @@
                      <div class="col-12 text-center">
                          <h4 class='mb-1'>
                              <b>
-                                 {{computador.nome_rede}} {% if computador.funcionario %} - <span data-bs-toggle='modal' data-bs-target='#modalDepUser'>{{computador.funcionario.nome}}</span> {% endif %}
+                                 {{computador.nome_rede}} {% if computador.funcionario %} - <span>{{computador.funcionario.nome}}</span> {% endif %}
                              </b>
                          </h4>
                          {% if computador.funcionario %}
@@ -185,8 +188,10 @@
          <div class="card m-0 p-3 ">
              <div class="card-content m-0">
                  <div class="card-body p-3 rounded">
-                    <div  data-bs-toggle='modal' data-bs-target='#modalDepUser'  class="row border border-secondary p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
-
+                    <div  data-bs-toggle='modal' data-bs-target='#modalDepUser'  class="row border border-0 p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-dark" style="font-family: Arial, Helvetica, sans-serif;">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center text-dark">
+                            <i class="fas fa-stream fa-2x"></i>
+                        </div>
                         <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
                             <div class='item-esconder'>
                                 <p class='mb-0 mt-2'><b>Alterar Funcionário</b></p>
@@ -194,13 +199,12 @@
                                     <p class='mb-0 mt-0'>Remover ou vincular um funcionário.</p>
                                 </span>
                             </div>
-                            <!-- <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
-                                <i class="fas fa-link text-success"></i>
-                            </span> -->
                         </div>
                     </div>
-                    <div  data-bs-toggle='modal' data-bs-target='#modalAdicionarImpressora'  class="row border border-secondary p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
-
+                    <div data-bs-toggle='modal' data-bs-target='#modalAdicionarImpressora'  class="row border border-0 p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center text-dark">
+                            <i class="fas fa-stream fa-2x"></i>
+                        </div>
                         <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
                             <div class='item-esconder'>
                                 <p class='mb-0 mt-2'><b>Adicionar Impressora</b></p>
@@ -208,12 +212,13 @@
                                     <p class='mb-0 mt-0'>Vincular uma nova impressora ao computador</p>
                                 </span>
                             </div>
-                            <!-- <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
-                                <i class="fas fa-link text-success"></i>
-                            </span> -->
                         </div>
                     </div>
-                    <div class="row border border-secondary p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success item-pai" style="font-family: Arial, Helvetica, sans-serif;">
+
+                    <div data-bs-toggle='modal' data-bs-target='#modalViewImpressoras'  class="row border border-0 p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center text-dark">
+                            <i class="fas fa-stream fa-2x"></i>
+                        </div>
                         <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
                             <div class='item-esconder'>
                                 <p class='mb-0 mt-2'><b>Visualizar Impressoras</b></p>
@@ -221,79 +226,13 @@
                                     <p class='mb-0 mt-0'>Listar as impressoras vinculadas a este computador.</p>
                                 </span>
                             </div>
-                            <!-- <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
-                                <span class='item-esconder'>
-                                    <i class="far fa-eye text-black"></i>
-                                </span>
-                            </span> -->
-                        </div>
-                        <div class="col-12 fonte-arial text-dark p-0 m-0 item-filho hidden m-0 p-0">
-                            {% for impressora in computador.impressora.all %}
-                            <div class="row p-0 m-0 mt-0 d-flex justify-content-between rounded" style="font-family: Arial, Helvetica, sans-serif;">
-                                <div class="col-10 mt-0 ms-0 ms-lg-0 p-lg-0">
-                                    <div class="row m-0 p-0">
-                                        <div class="col-12 col-lg-4 mb-lg-1">
-                                            <ul class='list-group'>
-                                                <li class="list-group-item mt-0 p-0">
-                                                    <b>Nome:</b> {{impressora.nome}}
-                                                </li>
-                                                <li class="list-group-item mt-1 p-0">
-                                                    <b>Matricula:</b>{% if impressora.matricula %} {{impressora.matricula}}{% else %} Indisponível {% endif %}
-                                                </li>
-                                                <li class="list-group-item mt-1 p-0">
-                                                    <b>Departamento:</b>{% if impressora.departamento %} {{impressora.departamento.departamento}}{% else %} Indisponível {% endif %}
-                                                </li>
-                                                <li class="list-group-item mt-1 p-0">
-                                                    <b>Prédio:</b>{% if impressora.departamento %} {{impressora.departamento.predio}}{% else %} Indisponível {% endif %}
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-12 col-lg-4">
-                                            <ul class='list-group'>
-                                                <li class="list-group-item mt-1 p-0">
-                                                    <b>Modelo:</b>{% if impressora.modelo %} {{impressora.modelo}}{% else %} Indisponível {% endif %}
-                                                </li>
-                                                <li class="list-group-item mt-1  p-0">
-                                                    <b>Endereço IP:</b> 
-                                                    {% if impressora.ip_impressora.count %}
-                                                    {{impressora.ip_impressora.first.ip_address }}
-                                                    {% else %}
-                                                    Indisponível
-                                                    {% endif %}
-                                                </li>
-                                                <li class="list-group-item mt-1  p-0">
-                                                    <b>Endereço MAC:</b>
-                                                    {% if impressora.mac_impressora.count %}
-                                                    {{impressora.mac_impressora.first.mac_address}}
-                                                    {% else %}
-                                                    Indisponível
-                                                    {% endif %}
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-12 col-lg-4">
-                                            <ul class='list-group'>
-                                                <li class="list-group-item mt-1  p-0">
-                                                    <b>Descrição:</b>
-                                                    {% if impressora.descricao %}
-                                                    {{impressora.descricao}}
-                                                    {% else %}
-                                                    Não possuo nenhuma informação ;c
-                                                    {% endif %}
-                                                </li>
-                                                <li class='list-group-item mt-1 p-0 text-danger'>
-                                                    <b onclick='VincularNovaImpressora("{{impressora.id}}", true)'><i class="fas fa-link me-2"></i>Desvincular impressora</b>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            {% endfor %}
                         </div>
                     </div>
-                    <div  data-bs-toggle='modal' data-bs-target='#modalRemoverPc'  class="row border border-secondary p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
+                    
+                    <div  data-bs-toggle='modal' data-bs-target='#modalRemoverPc'  class="row border border-0 p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center text-dark">
+                            <i class="fas fa-stream fa-2x"></i>
+                        </div>
                         <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
                             <div class='item-esconder'>
                                 <p class='mb-0 mt-2'><b>Apagar Computador</b></p>
@@ -301,9 +240,6 @@
                                     <p class='mb-0 mt-0'>Excluir este computador do banco de dados.</p>
                                 </span>
                             </div>
-                            <!-- <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
-                                <i class="fas fa-trash-alt text-danger"></i>
-                            </span> -->
                         </div>
                     </div>
                  </div>
@@ -316,123 +252,32 @@
 {% block modals %}
 
 <div class="modal fade" tabindex="-1" id='modalRemoverPc'>
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div style='background-color: rgb(204, 84, 84);' class="modal-header border-0 d-flex justify-content-between">
-                <span class='text-light d-flex flex-row' style='font-family: Arial, Helvetica, sans-serif;'>
-                    <i class="far fa-trash-alt pe-2"></i>
-                    Remover computador?
-                </span>
+            <div class="modal-header text-light" style="background-color:rgb(204, 84, 84);">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;'>
+                    <i class="fas fa-trash-alt me-1"></i>
+                    Apagar computador {{computador.nome_rede}}?
+                </h5>
                 <span data-bs-dismiss='modal'>
-                    <i class="fas fa-times text-light"></i>
+                    <i class="fas fa-times"></i>
                 </span>
             </div>
-            <div class="modal-body p-0">
-                <div class="container p-0">
-                    <div class="row">
-                        <div style='background-color: rgb(204, 84, 84);' class="col-12 col-lg-4 d-flex justify-content-center d-flex align-items-center">
-                            <span class=''>
-                                <img style='width: 170px;' src="{% static 'img/removerpc.png' %}" alt="">
-                            </span>
-                        </div>
-                        <div class="col-12 col-lg-8 p-2">
-                            
-                            <h5 class='mt-2 ms-2'>
-                                <i class="fas fa-cubes pe-2"></i> 
-                                <b>Mover para o inventário</b>
-                            </h5>
-                            <div class="col-12 m-2 mt-3 p-4 ps-2">
-                                <ul class="shadow list-group" id='form-remover'>
-                                    <li class="list-group-item shadow   d-flex justify-content-between">
-                                        <span style="font-family: Arial, Helvetica, sans-serif;">
-                                            <i class="fas fa-hdd pe-1" aria-hidden="true"></i>
-                                            Gabinete 
-                                        </span>
-                                        <span>
-                                            <div class="form-check form-switch">
-                                                <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                
-                                                <input class="form-check-input" type="checkbox" id="manterGabinete" checked>
-                                              </div>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item shadow   d-flex justify-content-between">
-                                        <span style="font-family: Arial, Helvetica, sans-serif;">
-                                            <i class="fas fa-desktop pe-1" aria-hidden="true"></i>
-                                            Monitor 
-                                        </span>
-                                        <span>
-                                            <div class="form-check form-switch">
-                                                <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                
-                                                <input class="form-check-input" type="checkbox" id="manterMonitor" checked>
-                                              </div>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item shadow   d-flex justify-content-between">
-                                        <span style="font-family: Arial, Helvetica, sans-serif;">
-                                            <i class="fas fa-compact-disc pe-1" aria-hidden="true"></i>
-                                            HD 
-                                        </span>
-                                        <span>
-                                            <div class="form-check form-switch">
-                                                <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                
-                                                <input class="form-check-input" type="checkbox" id="manterHd" checked>
-                                              </div>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item shadow   d-flex justify-content-between">
-                                        <span style="font-family: Arial, Helvetica, sans-serif;">
-                                            <i class="fas fa-stream pe-1" aria-hidden="true"></i>
-                                            Placa Mãe 
-                                        </span>
-                                        <span>
-                                            <div class="form-check form-switch">
-                                                <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                
-                                                <input class="form-check-input" type="checkbox" id="manterPlacaMae" checked>
-                                              </div>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item shadow   d-flex justify-content-between">
-                                        <span style="font-family: Arial, Helvetica, sans-serif;">
-                                            <i class="fas fa-microchip pe-1" aria-hidden="true"></i>
-                                            Processador 
-                                        </span>
-                                        <span>
-                                            <div class="form-check form-switch">
-                                                <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                
-                                                <input class="form-check-input" type="checkbox" id="manterProcessador" checked>
-                                              </div>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item shadow   d-flex justify-content-between">
-                                        <span style="font-family: Arial, Helvetica, sans-serif;">
-                                            <i class="fas fa-memory pe-1" aria-hidden="true"></i>
-                                            Memória RAM 
-                                        </span>
-                                        <span>
-                                            <div class="form-check form-switch">
-                                                <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                
-                                                <input class="form-check-input" type="checkbox" id="manterMemoriaRam" checked>
-                                              </div>
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-12 d-flex justify-content-end">
-                                <button data-bs-dismiss='modal' class="btn btn primary me-2" style="font-family: Arial, Helvetica, sans-serif;">Cancelar</button>
-                                <button id='removerPc' class="btn text-light" style="background-color: rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;">Remover</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="modal-body fonte-arial d-flex flex-column">
+                <span style='font-size: 1.2rem;'>
+                    Você realmente deseja remover o computador {{computador.nome_rede}}?
+                </span>
+                <span class='mt-2' style='font-size: 1rem;'>
+                    Caso você remova este computador do banco de dados, todas as configurações seram permanentemente perdidas. Além disso, o endereço de IP vinculado a este computador ({% for ip in computador.ip_computador.all %}{{ip}}{% endfor %}) ficará disponível para outro dispositivo.
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button data-bs-dismiss='modal' class="btn btn primary me-2" style="font-family: Arial, Helvetica, sans-serif;">Cancelar</button>
+                <button id='removerPc' class="btn text-light" style="background-color: rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;">Remover</button>
             </div>
         </div>
     </div>
+
 </div>
 
 <div class="modal fade" tabindex="-1" id='modalAtualizarDescricao'>
@@ -586,7 +431,7 @@
 <div class="modal fade" tabindex="-1" id='modalAtualizarProcessador'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
+            <div class="modal-header bg-secondary">
                 <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
                     <i class="fas fa-pen pe-2"></i>
                     Alterar Processador
@@ -627,7 +472,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("processador", forms_urls.atualizar_processador_ajax)' class="btn btn-primary">Atualizar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("processador", forms_urls.atualizar_processador_ajax)' class="btn btn-secondary">Atualizar</button>
             </div>
         </div>
     </div>
@@ -636,7 +481,7 @@
 <div class="modal fade" tabindex="-1" id='modalAtualizarPlacamae'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
+            <div class="modal-header bg-secondary">
                 <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
                     <i class="fas fa-pen pe-2"></i>
                     Alterar Placa Mãe
@@ -685,7 +530,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("placamae", forms_urls.atualizar_placamae_ajax)' class="btn btn-primary">Atualizar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("placamae", forms_urls.atualizar_placamae_ajax)' class="btn btn-secondary">Atualizar</button>
             </div>
         </div>
     </div>
@@ -737,7 +582,7 @@
 <div class="modal fade" tabindex="-1" id='modalAtualizarIpMac'>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
+            <div class="modal-header bg-secondary">
                 <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
                     <i class="fas fa-pen pe-2"></i>
                     Alterar IP/MAC
@@ -767,7 +612,108 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("ipMac", forms_urls.verificar_enderecoip_ajax)' class="btn btn-primary">Atualizar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("ipMac", forms_urls.verificar_enderecoip_ajax)' class="btn btn-secondary">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model visualizar impressoras vinculadas -->
+<div class="modal fade" tabindex="-1" id='modalViewImpressoras'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
+                    <i class="fas fa-bookmark me-2"></i>
+                    Impressoras vinculadas
+                </h5>
+                <span data-bs-dismiss="modal">
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div style='max-height:75vh;' class="modal-body overflow-auto">
+
+                {% for impressora in computador.impressora.all %}
+                <div class="row p-0 pt-2 m-0 mt-0 d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
+                    <div class="row m-0 p-3 item-esconder shadow hidden">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center">
+                            <i class="fas fa-print fa-2x"></i>
+                        </div>
+                        <div class="col d-flex justify-content-between">
+                            <span>
+                                <p class='mb-0 pb-0'><b>{{impressora.nome}}</b></p>
+                                <p class='mb-0 p-0'>
+                                    {% if impressora.ip_impressora.count %}
+                                    {{impressora.ip_impressora.first.ip_address }}
+                                    {% endif %}
+                                </p>
+
+                            </span>
+                            <span class='text-center'>
+                                <i class="fas fa-bookmark"></i> 
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-0 ms-0 ms-lg-0 p-lg-0 item-filho shadow">
+                        <div class="row m-0 p-0 bg-light">
+                            <div class="col-12 col-lg-4 mb-lg-1">
+                                <ul class='list-group'>
+                                    <li class="list-group-item mt-0 p-0">
+                                        <b>Nome:</b> {{impressora.nome}}
+                                    </li>
+                                    <li class="list-group-item mt-1 p-0">
+                                        <b>Matricula:</b>{% if impressora.matricula %} {{impressora.matricula}}{% else %} Indisponível {% endif %}
+                                    </li>
+                                    <li class="list-group-item mt-1 p-0">
+                                        <b>Departamento:</b>{% if impressora.departamento %} {{impressora.departamento.departamento}}{% else %} Indisponível {% endif %}
+                                    </li>
+                                    <li class="list-group-item mt-1 p-0">
+                                        <b>Prédio:</b>{% if impressora.departamento %} {{impressora.departamento.predio}}{% else %} Indisponível {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <ul class='list-group'>
+                                    <li class="list-group-item mt-1 p-0">
+                                        <b>Modelo:</b>{% if impressora.modelo %} {{impressora.modelo}}{% else %} Indisponível {% endif %}
+                                    </li>
+                                    <li class="list-group-item mt-1  p-0">
+                                        <b>Endereço IP:</b> 
+                                        {% if impressora.ip_impressora.count %}
+                                        {{impressora.ip_impressora.first.ip_address }}
+                                        {% else %}
+                                        Indisponível
+                                        {% endif %}
+                                    </li>
+                                    <li class="list-group-item mt-1  p-0">
+                                        <b>Endereço MAC:</b>
+                                        {% if impressora.mac_impressora.count %}
+                                        {{impressora.mac_impressora.first.mac_address}}
+                                        {% else %}
+                                        Indisponível
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <ul class='list-group'>
+                                    <li class="list-group-item mt-1  p-0">
+                                        <b>Descrição:</b>
+                                        {% if impressora.descricao %}
+                                        {{impressora.descricao}}
+                                        {% else %}
+                                        Não possuo nenhuma informação ;c
+                                        {% endif %}
+                                    </li>
+                                    <li class='list-group-item mt-1 p-0 text-danger'>
+                                        <b onclick='VincularNovaImpressora("{{impressora.id}}", true)'><i class="fas fa-link me-2"></i>Desvincular impressora</b>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

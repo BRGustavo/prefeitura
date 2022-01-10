@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block scripts %}
+'{% if form.errors %}'
+<script>
+    $(document).ready(function(){
+        $('#modalErro').modal('show');
+    })
+</script>
+'{% endif %}'
+
+{% endblock scripts %}
+
+{% block corpo %}
+    <style>
+        body {
+            background-color:#FFF;
+            background-image: url('{%  static "img/teste.jpg" %}');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position-x: 0;
+            background-position-y: 0;
+            background-position: 0% 5%;
+            
+        }
+        .form-control:focus {
+            background-color: wheat;
+        }
+        input {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+    {% block navbarTop %}
+    {% endblock navbarTop %}
+    <main class=''>
+        <div class="container mt-5 mb-5">
+            <div class='row'>
+                <div class="col-lg-5 m-auto mt-5">
+                    <div style="background-color: transparent;" class="card mt-5 border-0 shadow">
+                        <div class="card-title text-center mt-4">
+                            <i class="fas fa-user-circle fa-5x"></i>
+                        </div>
+                        <div class="card-body mt-3">
+
+                        
+                            <form method="post">
+                                {% csrf_token %}
+
+                                <div class="input-group mb-3">
+                                    {{ form.username }}
+                                </div>
+                                <div class="input-group mb-4">
+                                    {{ form.password }}
+                                </div>
+                                <button class="btn btn-primary mb-3 btn-lg col-12" type="submit">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" id='modalErro'>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body" style='background-color: #e4dadb; font-family: Arial, Helvetica, sans-serif;'>
+                        {% if form.errors %}
+                        <div class="alert border-0" role='alert'>
+                            {% for key, value in form.errors.items %}
+                                {{ value }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer" style='background-color: #e4dadb;'>
+                        <button class="btn btn-primary" data-bs-dismiss='modal'>Voltar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block footer %}
+        {% endblock footer %}
+
+    </main>
+{% endblock corpo %}

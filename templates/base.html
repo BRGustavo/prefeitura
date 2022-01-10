@@ -1,5 +1,7 @@
+<!-- 
+  Template base.
+ -->
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -20,59 +22,151 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
     
 </head>
 <body class='d-flex flex-column min-vh-100'>
-    <header>
-        {% block navbarTop %}
-        <div class="container-fluid" id='nav-container'> 
-            <!-- Sem container-fluid. inicialmente -->
-            <nav class='navbar navbar-expand-lg navbar-default fixed-top navbar-dark'>
-                <a href="/" class='navbar-brand'>
-                    <img src="{% static 'img/logo.png' %}" id="logo" alt="Logo"><span id='titulo-nav' style='color:rgba(255,255,255,.55);'>Prefeitura Municípal de Arapoti</span>
+    <div class="row p-0 m-0">
+        <!-- Menu Lateral -->
+        <div class="col-auto side-nav p-0 sticky-top" id='nav-side'>
+          <div class="col p-lg-3 pt-1">
+            <span class='d-flex flex-column flex-lg-row p-lg-1 d-flex'>
+              <span class='col-12 col-lg-auto d-flex justify-content-center mt-2 mt-lg-0'> 
+                  <img class='icone-menu' style='max-width: 10vw; max-height: 10vh;' src="{% static 'img/logo.png'%}" alt="">
+                </span>
+              <h4 class='texto-menu hidden ps-2 text-center pt-1 p-2' style='color:rgba(255,255,255,.55); font-family: "Lobster, cursive;"'>Prefeitura Municipal de Arapoti</h4>
+            </span>
+    
+            <div class="mt-3 p-0 m-0">
+              <ul class="list-group p-0" id='nav-menu-items'>
+                <!-- Link página principal -->
+                <a class='text-decoration-none' href="{% url 'home'%}">
+                  <li class="list-group-item d-flex flex-row text-center">
+                    <span class='icone'>
+                      <i class="fas fa-home fa-2x" aria-hidden="true"></i>
+                    </span>
+                    <span class='ps-2 d-flex align-items-center'>
+                      <h5 class='texto-menu hidden'>Home</h5>
+                    </span>
+                  </li>
                 </a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbar-links" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse  justify-content-end" id='navbarSupportedContent'>
-                    <div class="navbar-nav">
-                        
-                        {% if user.is_authenticated %}
-                        
-                            <a class="nav-item nav-link" href='{% url "home" %}' id='home-menu'>
-                                <i class="fas fa-home"></i> Home
-                            </a>
-  
-                            <a class="nav-item nav-link" href='#' id='user-menu'>
-                                <i class="fa fa-user" aria-hidden="true"></i> {{ user.username.capitalize }}
-                            </a>
-                            {% if user.is_staff %}
-
-                            <a class="nav-item nav-link" href='{% url "admin_home"  %}'>
-                                <i class="fas fa-user-cog" aria-hidden="true"></i> Administração
-                            </a>
-                            {% endif %}
-                        {% endif %}
-
-                        {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href='{% url "logout" %}' id='home-menu'>
-                            <i class="fa fa-sign-out" aria-hidden="true"></i> Sair
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
+                <!-- Link página departamentos -->
+                <a class='text-decoration-none' href="{% url 'departamento' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3 ">
+                      <span class='icone'>
+                        <i class="fas fa-building fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Departamentos</h5>
+                      </span>
+                    </li>
+                </a>
+                <!-- Link página Funcionários -->
+                <a class='text-decoration-none' href="{% url 'funcionario' 1%}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3 ">
+                      <span class='icone'>
+                        <i class="fas fa-user-friends fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Funcionários</h5>
+                      </span>
+                    </li>
+                </a>
+                <!-- Link página Computadores -->
+                <a class='text-decoration-none' href="{% url 'computador' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3 ">
+                      <span class='icone'>
+                        <i class="fas fa-laptop-code fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Computador</h5>
+                      </span>
+                    </li>
+                </a>
+                <!-- Link página Impressoras -->
+                <a class='text-decoration-none' href="{% url 'impressora_view' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3 ">
+                      <span class='icone'>
+                        <i class="fas fa-print fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Impressora</h5>
+                      </span>
+                    </li>
+                </a>
+                <!-- Link página roteadores -->
+                <a class='text-decoration-none' href="{% url 'roteador_view' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                      <span class='icone'>
+                        <i class="fas fa-wifi fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Roteador</h5>
+                      </span>
+                    </li>
+                </a>
+                <!-- Link página consulta de patrimônios -->
+                <a class='text-decoration-none' href="{% url 'patrimonio_view' %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                      <span class='icone'>
+                        <i class="far fa-folder-open fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Patrimônios</h5>
+                      </span>
+                    </li>
+                </a>
+                <!-- Link página de consulta IP. -->
+                <a class='text-decoration-none' href="{% url 'pesquisar_endereco_ip' 1 %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                      <span class='icone'>
+                        <i class="fas fa-sitemap fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Consulta IP</h5>
+                      </span>
+                    </li>
+                </a>
+                {% if user.is_staff %}
+                <!-- Painel administrativo (only admins.) -->
+                <a class='text-decoration-none' href="{% url 'admin_home' %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                      <span class='icone'>
+                        <i class="fas fa-user-cog fa-2x" aria-hidden="true"></i>
+                      </span>
+                      <span class='ps-2 d-flex align-items-center'>
+                        <h5 class='texto-menu hidden'>Administração</h5>
+                      </span>
+                    </li>
+                </a>
+                {% endif %}
+                <!-- Opção logout Site -->
+                <a class='text-decoration-none' href="{% url 'logout' %}">
+                    <li class="list-group-item d-flex flex-row text-center mt-3">
+                        <span class='icone'>
+                            <i class="fa fa-sign-out fa-2x" aria-hidden="true"></i>
+                        </span>
+                        <span class='ps-2 d-flex align-items-center'>
+                          <h5 class='texto-menu hidden'>Sair</h5>
+                        </span>
+                    </li>
+                </a>
+              </ul>
+            </div>
+          </div>
         </div>
-        {% endblock navbarTop %}
-    </header>
+        <div class="col p-0 m-0 corpo-body" id=''>
+            {% block corpo %}
 
-    {% block corpo %}
-
-    {% endblock corpo %}
+            {% endblock corpo %}
+        </div>
+      </div>
+      {% block modals %}
+      {% endblock modals %}
 
     {% block footer %}
-    <footer class='mt-auto bg-black'>
+    <footer class='mt-auto bg-black footer'>
         <div class="container">
             
             <div class="row pb-3">
@@ -108,6 +202,43 @@
     <!-- Font Awensome -->
     <script src="https://kit.fontawesome.com/6953b3b378.js" crossorigin="anonymous"></script>
 
+    <script>
+        //Altera os icones para dispositivos com display menor.
+        $(document).ready(function(){
+        if(window.matchMedia('(max-device-width: 600px)').matches){
+            $('.icone i').removeClass('fa-2x');
+          }
+        });
+        // Ação executada ao clicar no menu lateral.
+        $('#nav-side').click(function(){
+            $('.texto-menu').toggleClass('hidden');
+            if(window.matchMedia('(max-device-width: 600px)').matches){
+                $(this).toggleClass('col-10');
+                $('.icone i').toggleClass('fa-2x');
+                $('.corpo-body').toggleClass('hidden');
+            }else {
+                $(this).toggleClass('col-3');
+            }
+            $(this).toggleClass('col-auto');
+        });
+        // Efeito ao passar mouse por cima dos itens menu lateral.
+        $('#nav-side .list-group-item').on('mouseover', function(){
+            $(this).addClass('shadow');
+            }).on('mouseout', function(){
+            $(this).removeClass('shadow');
+        })
+        // Listagem itens
+        $('.item-pai').dblclick(function(){
+            $(this).children('.item-filho').toggleClass('hidden');
+            $(this).find('.item-esconder').toggleClass('hidden');
+        });
+        // Efeito ao passar mouse por cima dos items body.
+        $('.item-pai').on('mouseover', function(){
+          $(this).addClass('lista-u');
+        }).on('mouseout', function(){
+          $(this).removeClass('lista-u');
+        });
+    </script>
     <!-- Scripts JS -->
     {% block scripts %}
 

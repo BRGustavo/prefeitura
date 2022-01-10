@@ -529,6 +529,7 @@ def impressora_nova_ajax(request):
         impressora = get_object_or_404(Impressora, pk=impressora_id)
         endereco_mac = ''
         endereco_ip = ''
+        
         if impressora.mac_impressora.count() >=1:
             endereco_mac = str(impressora.mac_impressora.first().mac_address)
 
@@ -541,7 +542,7 @@ def impressora_nova_ajax(request):
             'modelo': impressora.modelo,
             'departamento': impressora.departamento.id if impressora.departamento else '',
             'matricula': impressora.matricula,
-            'endereco_ip': endereco_ip,
+            'ip_endereco': endereco_ip,
             'endereco_mac': endereco_mac,
             'descricao': impressora.descricao
             

@@ -9,8 +9,6 @@ from sistema.settings import BASE_DIR
 urlpatterns = [
     # URLs Model Computador
     path('computador/<int:pagina>/', views.computador_view, name='computador'),
-    path('computador/add/', views.computador_create, name='computador_add'),
-    path('computador/edit/<int:id>/', views.computador_edit, name='computador_edit'),
     path('computador/visualizar/<int:id>/<str:pagina>/', views.computador_visualizar, name='computador_visualizar'),
     path('computador/remover/', views.computador_remover, name='computador_remover'),
 
@@ -46,7 +44,7 @@ urlpatterns = [
 
     # URL Patrimônio
     path('patrimonio/pesquisa/', views.patrimonio_view, name='patrimonio_view'),
-    path('agulha/', views.pesquisar_endereco_ip, name='pesquisar_endereco_ip'),
+    path('agulha/<int:pagina>/', views.pesquisar_endereco_ip, name='pesquisar_endereco_ip'),
     path('agula/ajax_salvar_reservado/', ajax.salvar_ip_reservado, name='salvar_ip_reservado'),
     path('agula/ajax_removerip_reservado/', ajax.remover_ip_reservado, name='remover_ip_reservado'),
 ]

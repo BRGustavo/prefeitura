@@ -1,4 +1,4 @@
-{% extends 'teste.html' %}
+{% extends 'base_listagem.html' %}
 {% load static %}
 
 {% block button_adicionar %}
@@ -50,7 +50,7 @@
 {% if funcionarios %}
 {% for funcionario in funcionarios %}
 <div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
-    <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
+    <div class="col-auto p-1 p-lg-0 d-flex align-items-center d-flex justify-content-center ">
         <img class='rounded-circle' style='width:7vh;' src="{% static 'img/funcionario.jpg' %}" alt="">
     </div>
     <div class="col-10 mt-0 item-filho hidden ms-4 ms-lg-4 p-lg-2">
@@ -80,17 +80,18 @@
                         <b>Admin Rede:</b>{% if funcionario.admin_rede %} {{funcionario.admin_rede}}{% else %} Indisponível {% endif %}
                     </li>
                     <li class="list-group-item mt-1  p-0">
+                        {% if funcionario.computador.count %}
                         <b>Computador:</b>
                             {% for computador in funcionario.computador.all %}
                             <span class="me-1"><a class='text-decoration-none fonte-arial text-dark'href="{% url 'computador_visualizar'  computador.id 'principal' %}">{{computador.nome_rede}}</a></span>
                             {% endfor %}
-                        </ul>
+                        {% endif %}
                     </li>
                 </ul>
             </div>
             <div class="col-12 col-lg-4">
                 <ul class='list-group'>
-                    <li class="list-group-item mt-1  p-0">
+                    <li class="list-group-item mt-1 p-0">
                         <b>Descrição:</b>
                         {% if funcionario.descricao %}
                         {{funcionario.descricao}}
@@ -110,7 +111,7 @@
                 <p class='mb-0 mt-0 ps-lg-1'>- {{funcionario.departamento.departamento}}</p>
             </span>
         </div>
-        <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
+        <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-2 p-lg-2 d-flex d-flex justify-content-center'>
             <i class="fas fa-user-edit pe-lg-3 mb-2 mb-lg-0" onclick='ModalAtualizarFuncionario("{{funcionario.id}}", `{% url "funcionario_edit_form_ajax" %}`)'></i>
             <i class="fas fa-trash-alt" onclick='ModalRemoverFuncionario(`{% url "funcionario_remover" funcionario.id %}`)'></i>
         </span>
@@ -204,7 +205,7 @@
                                 </div>
                                 <div class="col-12 mt-2 d-flex justify-content-end">
                                     <button class="btn btn-outline-secondary me-2" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                                    <button style='font-family: Arial, Helvetica, sans-serif; color:white; background-color:rgb(204, 84, 84);' class="btn" onclick='AdicionarNovoItem("funcionario", false)'>Adicionar</button>
+                                    <button style='font-family: Arial, Helvetica, sans-serif; color:white; background-color:#1e0302' class="btn" onclick='AdicionarNovoItem("funcionario", false)'>Adicionar</button>
                                 </div>
                             </div>
                         </div>
@@ -328,7 +329,7 @@
                                 </form>
                                 <div class="col-12 mt-2 d-flex justify-content-end">
                                     <button class="btn btn-outline-secondary me-2" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                                    <button style='font-family: Arial, Helvetica, sans-serif; background-color:rgb(184, 106, 106); color:white;' class="btn ps-3 pe-3" id='EditarFuncionario'>Editar</button>
+                                    <button style='font-family: Arial, Helvetica, sans-serif; background-color:#1e0302; color:white;' class="btn ps-3 pe-3" id='EditarFuncionario'>Editar</button>
                                 </div>
                             </div>
                         </div>

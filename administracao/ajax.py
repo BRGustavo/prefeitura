@@ -74,7 +74,10 @@ def dados_usuario_ajax(request):
                 'id_usernamem': usuario.username,
                 'id_emailm': usuario.email,
                 'id_birthdaym': str(perfil_usuario.aniversario).replace('-', '/'),
-                'nome_usuario': f'{usuario.first_name} {usuario.last_name}'
+                'nome_usuario': f'{usuario.first_name} {usuario.last_name}',
+            },
+            'staff': {
+                'id_config_departamento': True if usuario.is_staff else False,
             }
             
         }
@@ -82,7 +85,7 @@ def dados_usuario_ajax(request):
 
         lista_add = ['add_funcionario', 'add_computador', 'add_roteador', 'add_impressora', 'delete_funcionario', 'delete_computador', 'delete_roteador', 'delete_impressora', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'view_funcionario', 'view_computador', 'view_roteador', 'view_impressora', 'view_departamento', 'add_departamento', 'change_departamento', 'delete_departamento']
 
-            
+
         for permissao in usuario.user_permissions.all():
             if permissao.codename in lista_add:
                 retornar[permissao.codename] = True
@@ -109,8 +112,23 @@ def editar_usuario_ajax(request):
             first_name = request.GET.get('first_name')
             last_name = request.GET.get('last_name')
             email = request.GET.get('email')
+            config_adm = request.GET.get('config_departamento')
 
-            
+            if config_adm is not None and len(str(config_adm)) >=1:
+                usuario.is_staff = True
+                permissao_adm = ['add_user', 'change_user', 'delete_user', 'view_user']
+                for p in permissao_adm:
+                    permissao = Permission.objects.get(codename=p)
+                    usuario.user_permissions.add(permissao)
+
+            else:
+                permissao_adm = ['add_user', 'change_user', 'delete_user', 'view_user']
+                for p in permissao_adm:
+                    permissao = Permission.objects.get(codename=p)
+                    if permissao:
+                        usuario.user_permissions.remove(permissao)
+                        usuario.is_staff = False
+
             if funcao_verificar_nulo(first_name) and funcao_verificar_nulo(last_name) and funcao_verificar_nulo(email):
                 usuario.first_name = first_name
                 usuario.last_name = last_name
@@ -120,6 +138,7 @@ def editar_usuario_ajax(request):
                 for valor in lista_add:
                     permissao = Permission.objects.get(codename=valor)
                     usuario.user_permissions.remove(permissao)
+
                 for item in request.GET:
                     if item[0] == 'c':
                         valor = item[1:]

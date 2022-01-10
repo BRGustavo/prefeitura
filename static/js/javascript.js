@@ -37,30 +37,6 @@ function VerificarEnderecoIp(){
     }
 }
 
-function Requisicao(seletor, input, marca=false) {
-    let selectorSelecionado = $(`${seletor}`);
-    $.ajax({
-        url: computador_form_url_ajax,
-        data: {
-            'tipoValue': `${input}`
-        },
-        dataType: 'json',
-        success: function(data){
-            $(`${seletor}`).empty();
-            if(marca == true){
-                selectorSelecionado.append($(`<option value selected'>---------</option>`));
-                }
-            if(data.length >= 1){
-
-            }
-            for(let item in data){
-                var elemento = $(`<option value='${data[item][0]}'>${data[item][1]}</option>`)
-                selectorSelecionado.append(elemento);
-            }
-        }
-    });
-}
-
 function FormularioFuncionario(){
     AdicionarNovoItem('funcionario');
 }
@@ -130,11 +106,7 @@ function AdicionarNovoItem(tipo, requisicao=true){
         success: function(data){
             form_.modal('hide');
             $(`#form-${lower}`).trigger('reset');
-            if(requisicao == true){
-                Requisicao(`#id_${lower}`, `select${capitalize}`, marca=true);
-            }else {
-                location.reload();
-            }
+            location.reload();
         },
         error: function (request, status, error) {
             let info = $.parseJSON(request.responseText);
@@ -276,7 +248,6 @@ function PesquisarImpressoras(query){
             }
             for(let item in data['impressoras']){
                 let html_item = data['impressoras'][item].html_item;
-                console.log(html_item)
                 let nome = data['impressoras'][item].nome;
                 let marca = data['impressoras'][item].marca;
                 let ip = data['impressoras'][item].ip;
@@ -456,6 +427,8 @@ $('#modalImpressora').on('show.bs.modal', function(){
         e.value = ""
     });
 });
+
+
 $('#form-impressoraatualizar').submit(function(e){
     e.preventDefault()
     const csrftoken = document.querySelector(`#form-impressoraatualizar [name=csrfmiddlewaretoken]`).value;
@@ -504,9 +477,10 @@ function mostrarImpressoraAtualizar(impressora_id){
         },
         success: function(data){
             for(let item in data.campos){
-                $(`input[name='${item}']`).val(data.campos[item]);
-                $(`textarea[name='descricao']`).val(data.campos['descricao']);
+                $(`#modalImpressoraAtualizar input[name='${item}']`).val(data.campos[item]);
+                $(`#modalImpressoraAtualizar textarea[name='descricao']`).val(data.campos['descricao']);
             }
+            $(`#modalImpressoraAtualizar #id_departamento option[value='${data.campos.departamento}']`).attr("selected", "selected");
         }
     });
 
@@ -701,12 +675,7 @@ $('#removerPc').click(function(e){
     }
     lista_ids = ['manterGabinete', 'manterMonitor', 'manterHd', 'manterPlacaMae', 'manterProcessador', 'manterMemoriaRam']
     for(let item in lista_ids){
-        
-        if($(`#${lista_ids[item]}`).is(':checked')){
-            data[lista_ids[item]] = 'Sim'
-        }else {
             data[lista_ids[item]] = 'Não'
-        }
     }
     $.ajax({
         type: 'GET',
@@ -840,6 +809,9 @@ function ModalEditarUsuario(id){
             for(let item in data['campos']){
                 $(`#id_c${item}`).attr('checked', 'checked');
             }
+            if(data['staff']['id_config_departamento'] == true){
+                $(`#id_config_departamento`).attr('checked', 'checked');
+            }
         }
     });
 
@@ -891,10 +863,12 @@ $('#chkVisulAll').change(function(){
         lista.forEach(function(item){
             $(`#modalEditarUser #id_c${item}`).attr('checked', 'checked');
         });
+        $('#modalEditarUser #id_config_departamento').attr('checked', 'checked');
     }else{
         lista.forEach(function(item){
             $(`#modalEditarUser #id_c${item}`).removeAttr('checked', 'checked');
         });
+        $('#modalEditarUser #id_config_departamento').removeAttr('checked', 'checked');
     }
 });
 function AdmEditarUsuario(){
@@ -986,12 +960,3 @@ function ShowPcsVinculadosImpre(id){
 
     
 }
-
-$('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
-$('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
-$('#refresh-teclado').click(()=>{ Requisicao('#id_teclado', 'selectTeclado', marca=true)});
-$('#refresh-monitor').click(()=>{ Requisicao('#id_monitor', 'selectMonitor')});
-$('#refresh-gabinete').click(()=>{ Requisicao('#id_gabinete', 'selectGabinete', marca=true)});
-$('#refresh-processador').click(()=>{ Requisicao('#id_processador', 'selectProcessador', marca=true)});
-$('#refresh-placamae').click(()=>{ Requisicao('#id_placa_mae', 'selectPlacamae', marca=true)});
-$('#refresh-hd').click(()=>{ Requisicao('#id_hd', 'selectHd', marca=true)});

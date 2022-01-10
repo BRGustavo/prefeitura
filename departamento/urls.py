@@ -9,13 +9,12 @@ from . import views, ajax
 urlpatterns = [
     #URLs Model Departamento
     path('departamento/<int:pagina>/', views.departamento_view, name='departamento'),
-    path('departamento/visualizar/<int:id>/', views.departamento_visualizar, name='departamento_visualizar'),
     path('departamento/remover/<int:id>/', views.departamento_remover, name='departamento_remover'),
 
     #URLs Model Funcionario
     path('funcionario/<int:pagina>/', views.funcionario_view, name='funcionario'),
     path('funcionario/remover/<int:id>/', views.funcionario_remover, name='funcionario_remover'),
-    path('funcionari/editarform_ajax/', ajax.funcionario_edit_form_ajax, name='funcionario_edit_form_ajax'),
+    path('funcionario/editarform_ajax/', ajax.funcionario_edit_form_ajax, name='funcionario_edit_form_ajax'),
 
     #Ajax URL
     path('departamento/ajax/view', ajax.departamento_view_ajax, name='departamento_view_ajax'),
