@@ -30,539 +30,692 @@
 {% endblock scripts %}
 
 {% block corpo %}
-
 <style>
-    body {
-        background-color:rgb(235, 232, 232);
-        border-style:none;
-        background-image:  linear-gradient(#bdc3c7, #2c3e50);
-        
+
+    .texto-diferente {
+        font-family:fantasy;
     }
-    img {
-        width: 100px;
+    .card ul {
+        border:none;
     }
-    li a {
-        text-decoration: none;
-        color:#6c757d!important;
+    .card ul li {
+        margin-top: 10px;
+        border: none;
     }
-    p a {
-        text-decoration: none;
-        color:black;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-    p {
-        font-family: Arial, Helvetica, sans-serif;
-        color: black;
-    }
-    
-    .img-centro {
-        background-image: url('{% static "img/teste2.jpg" %}');
+    .modal ul li {
+        margin-top:10px;
+        border:none;
     }
 </style>
-<main>
-    <div class="container pt-1 pb-3" id="primeiro">
-        <div class="img-centro row p-4 bg-dark rounded">
-            <div class="col-12 col-lg-3 text-center p-3">
-                <img class='rounded-circle' src="{% static 'img/patrimonio.png' %}" alt="">
-            </div>
-            <div class="col-12 col-lg-8">
-                <span class='d-flex justify-content-between'>
-                    <h2 class='text-dark'>{{computador.nome_rede}}</h2>
-                </span>
-                <p class='text-dark mb-1'> 
-                    <i class="fas fa-user"></i>
-                    {% if computador.funcionario %}
-                    <a href="{% url 'funcionario' 1 %}">{{computador.funcionario}}</a>
-                    {% else %}
-                    Não Vinculado
-                    {% endif %}
-                </p>
-                <p class='text-dark mb-1'>
-                    <i class="fas fa-building"></i>
-                    {% if computador.departamento %}
-                    <a href="{% url 'departamento_visualizar' computador.departamento.id %}">{{computador.departamento}}</a>
-                    {% else %}
-                    Não Vinculado
-                    {% endif %}
-                </p>
-                <p class='text-dark'>
-                    <i class="fas fa-hat-wizard"></i>
-                    <a href="anydesk:{{computador.anydesk}}">Anydesk</a>
-                </p>
-            </div>
-        </div>
-        <div class="col-12 p-1 bg-dark text-light d-flex justify-content-center">
-            <nav class="navbar navbar-expand">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'principal' %}">Home <span class="sr-only">(Página atual)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'rede' %}">Rede</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'processador' %}">Processador</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'computador_visualizar' computador.id 'placa_mae' %}">Placa Mãe</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-        <div class="col-12 bg-dark text-light p-2">
-            <div class="row">
-                <div class="col-12 col-lg-4">
-                    <div class="card bg-dark border-0">
-                        <div class="card-content">
-                            <div class="card-header border-0">
-                                <h5 class="card-title text-center text-muted">Funcionário & Departamento</h5>
-                                
-                            </div>
-                            <div class="card-body bg-dark">
-                                <ul class="list-group">
-                                    <li class="list-group-item bg-dark text-light">
-                                        <div class="col d-flex">
-                                            <img style='width:50px; height:50px;' class='rounded-circle me-4' src="{% static 'img/funcionario.jpg' %}" alt="">
-                                            <div class="col d-flex justify-content-between">
-                                                {% if computador.funcionario %}
-                                                <span>
-                                                    <div class="d-flex flex-column">
-                                                        <a href="{% url 'funcionario' 1 %}">
-                                                            <p class='mb-0 text-muted'>{{computador.funcionario.nome}}
-                                                            {% if computador.funcionario.sobrenome %}
-                                                            {{computador.funcionario.sobrenome}}
-                                                            {% endif %}
-                                                            </p>
-                                                        </a>
-                                                        {% if computador.funcionario.departamento %}
-                                                        <p class='text-muted'>
-                                                            {{computador.funcionario.departamento.departamento}}
-                                                        </p>
-                                                        {% endif %}
-                                                    </div>
-                                                </span>
-                                                {% else %}
-                                                <p class='mb-0 text-muted'>Não Vinculado</p>
-                                                {% endif %}
-                                                <span>
-                                                    <i data-bs-toggle='modal' data-bs-target='#modalDepUser' class="far fa-edit text-success"></i>
-                                                </span>
+
+ <div class="col-12 fonte-arial p-0 m-0 ms-0">
+     <div class="row">
+         <div class="col-12 d-flex justify-content-center d-flex align-items-center pt-3 pb-3 bg-success">
+            <img style='width: 10vw;' class='rounded-circle shadow' src="{% static 'img/patrimonio.png' %}" alt="">
+         </div>
+     </div>
+     <div class="row m-3 mt-0">
+         <div class="card">
+             <div class="card-content">
+                 <div class="card-body p-3 rounded">
+                     <div class="col-12 text-center">
+                         <h4 class='mb-1'>
+                             <b>
+                                 {{computador.nome_rede}} {% if computador.funcionario %} - <span>{{computador.funcionario.nome}}</span> {% endif %}
+                             </b>
+                         </h4>
+                         {% if computador.funcionario %}
+                         <p class='m-1 mb-3 p-0'>{{computador.funcionario.departamento}}</p>
+                         {% endif %}
+                     </div>
+                     <div class="col-12">
+                         <div class="row" >
+                             <div class="col-12 col-lg-4">
+                                 <ul class="shadow list-group">
+                                     <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao'>
+                                        <span><b><i class="fas fa-stream me-2"></i>Nome Rede</b> {{computador.nome_rede}}</span>
                                         
-                                            </div>
-                                        </div>
+                                     </li>
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Memória RAM:</b>{% if computador.memoria_ram %} {{computador.memoria_ram}}{% else %} Indisponível {% endif %}
+                                        </span>
                                     </li>
-                                    <li class="list-group-item bg-dark text-light">
-                                        <div class="col d-flex">
-                                            <img style='width:50px; height:50px;' class='rounded-circle me-4' src="{% static 'img/patrimonio.png' %}" alt="">
-                                            <span>
-                                                {% if computador.departamento %}
-                                                <p class='mb-0 text-muted'>{{computador.departamento.departamento}}</p>
-                                                <p class='text-muted'>{{computador.departamento.predio}}</p>
-                                                {% else %}
-                                                <p class="mb-0 text-muted">
-                                                    Não Vinculado
-                                                </p>
-                                                <p class="text-muted">Pasárgada</p>
-                                                {% endif %}
-                                            </span>
-                                        </div>
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Sistema Operacional:</b>{% if computador.sistema_op %} {{computador.sistema_op}}{% else %} Indisponível {% endif %}
+                                        </span>
+                                    </li>
+                                    <li class="list-group-item shadow"  data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>HD:</b>{% if computador.hd %} {{computador.hd.tamanho}}{% else %} Indisponível {% endif %}
+                                        </span>
+                                    </li>
+                                 </ul>
+                             </div>
+                             <div class="col-12 col-lg-4">
+                                <ul class="shadow list-group">
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>AnyDesk:</b>{% if computador.anydesk %} {{computador.anydesk}}{% else %} Indisponível {% endif %}
+                                        </span>
+                                    </li>
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Gabinete Patrimônio</b>
+                                            {% if computador.gabinete.patrimonio %}
+                                            {{ computador.gabinete.patrimonio }}
+                                            {% else %}
+                                            Indisponível
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Monitor Patrimônio</b>
+                                            {% if computador.monitor.patrimonio %}
+                                            {{ computador.monitor.patrimonio }}
+                                            {% else %}
+                                            Indisponível
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarDescricao'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Descrição</b>
+                                            {% if computador.descricao %}
+                                            {{ computador.descricao }}
+                                            {% else %}
+                                            Indisponível
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <ul class="shadow list-group">
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarIpMac'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Endereço IP:</b>
+                                            {% if computador.ip_computador.count %}
+                                            {{computador.ip_computador.first.ip_address }}
+                                            {% else %}
+                                            Indisponível
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarIpMac'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Endereço MAC:</b>
+                                            {% if computador.mac_computador.count %}
+                                            {{computador.mac_computador.first.mac_address}}
+                                            {% else %}
+                                            Indisponível
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarProcessador'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Processador:</b>
+                                            {% if computador.processador %}
+                                            {{computador.processador.modelo}}
+                                            {% if computador.processador.frequencia %}
+                                                {{computador.processador.frequencia }} Ghz
+                                            {% endif %}
+                                            {% else %}
+                                            Indisponivel
+                                            {% endif %}
+                                        </span>
+                                        
+                                    </li>
+                                    <li class="list-group-item shadow" data-bs-toggle='modal' data-bs-target='#modalAtualizarPlacamae'>
+                                        <span>
+                                            <b><i class="fas fa-stream me-2"></i>Placa Mãe:</b>
+                                            {% if computador.placa_mae %}
+                                            {{computador.placa_mae.marca}} - {{computador.placa_mae.modelo }}
+                                            {% else %}
+                                            Indisponivel
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="card m-0 p-3 ">
+             <div class="card-content m-0">
+                 <div class="card-body p-3 rounded">
+                    <div  data-bs-toggle='modal' data-bs-target='#modalDepUser'  class="row border border-0 p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-dark" style="font-family: Arial, Helvetica, sans-serif;">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center text-dark">
+                            <i class="fas fa-stream fa-2x"></i>
+                        </div>
+                        <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+                            <div class='item-esconder'>
+                                <p class='mb-0 mt-2'><b>Alterar Funcionário</b></p>
+                                <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                                    <p class='mb-0 mt-0'>Remover ou vincular um funcionário.</p>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-bs-toggle='modal' data-bs-target='#modalAdicionarImpressora'  class="row border border-0 p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center text-dark">
+                            <i class="fas fa-stream fa-2x"></i>
+                        </div>
+                        <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+                            <div class='item-esconder'>
+                                <p class='mb-0 mt-2'><b>Adicionar Impressora</b></p>
+                                <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                                    <p class='mb-0 mt-0'>Vincular uma nova impressora ao computador</p>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-bs-toggle='modal' data-bs-target='#modalViewImpressoras'  class="row border border-0 p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center text-dark">
+                            <i class="fas fa-stream fa-2x"></i>
+                        </div>
+                        <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+                            <div class='item-esconder'>
+                                <p class='mb-0 mt-2'><b>Visualizar Impressoras</b></p>
+                                <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                                    <p class='mb-0 mt-0'>Listar as impressoras vinculadas a este computador.</p>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div  data-bs-toggle='modal' data-bs-target='#modalRemoverPc'  class="row border border-0 p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded text-success" style="font-family: Arial, Helvetica, sans-serif;">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center text-dark">
+                            <i class="fas fa-stream fa-2x"></i>
+                        </div>
+                        <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+                            <div class='item-esconder'>
+                                <p class='mb-0 mt-2'><b>Apagar Computador</b></p>
+                                <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                                    <p class='mb-0 mt-0'>Excluir este computador do banco de dados.</p>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+{% endblock %}
+
+{% block modals %}
+
+<div class="modal fade" tabindex="-1" id='modalRemoverPc'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-light" style="background-color:rgb(204, 84, 84);">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;'>
+                    <i class="fas fa-trash-alt me-1"></i>
+                    Apagar computador {{computador.nome_rede}}?
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times"></i>
+                </span>
+            </div>
+            <div class="modal-body fonte-arial d-flex flex-column">
+                <span style='font-size: 1.2rem;'>
+                    Você realmente deseja remover o computador {{computador.nome_rede}}?
+                </span>
+                <span class='mt-2' style='font-size: 1rem;'>
+                    Caso você remova este computador do banco de dados, todas as configurações seram permanentemente perdidas. Além disso, o endereço de IP vinculado a este computador ({% for ip in computador.ip_computador.all %}{{ip}}{% endfor %}) ficará disponível para outro dispositivo.
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button data-bs-dismiss='modal' class="btn btn primary me-2" style="font-family: Arial, Helvetica, sans-serif;">Cancelar</button>
+                <button id='removerPc' class="btn text-light" style="background-color: rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;">Remover</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalAtualizarDescricao'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-pen pe-2"></i>
+                    Atualizar Descrição
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form id='form-descricao'>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <p>
+                            <label for="id_descricao" class='mt-1'>Descrição</label>
+                            <textarea class='form-control' name="descricao" placeholder='Informações complementares...' id="id_descricao" cols="25" rows="10">{{computador.descricao}}</textarea>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("descricao")' class="btn btn-secondary">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalAtualizarInformacao'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-pen pe-2"></i>
+                    Atualizar Informações
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form computador_id='{{computador.id}}' id='form-informacao'>
+                    {% csrf_token %}
+                    <input type='hidden' value='{{computador.id}}' name='computador_id'>
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="id_nome_rede">Nome Rede</label>
+                                <input type="text" name='nome_rede' id='id_nome_rede' value='{{computador.nome_rede}}' class='form-control' autocomplete='off' placeholder="Ex: PRE-001">
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="id_memoria_ram">Memória RAM</label>
+                                <input type="text" class='form-control' id='id_memoria_ram' name='memoria_ram' value='{{computador.memoria_ram}}' autocomplete="off" placeholder="Ex: 4 GB">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="id_sistema_op">Sistema Operacional</label>
+                                {{ formInfo.sistema_op }}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="id_anydesk">AnyDesk</label>
+                                <input type="text" class='form-control' id='id_anydesk' name='anydesk' value='{{computador.anydesk}}' autocomplete="off" placeholder="Ex: 317 515 100">
+                            </div>
+                            
+                        </div>
+                        <div class="col-12 mt-2">
+                            
+                            <div class="form-group mt-2">
+                                <label for="id_hd">HD</label>
+                                <div class="input-group">
+                                    <input type="text" class='form-control' id='id_hd' name='hd' value='{{computador.hd.tamanho|default_if_none:"0"}}'>
+                                </div>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="id_gabinete">Gabinete</label>
+                                <input type="text" class='form-control' id='id_gabinete' name='gabinete' value='{{computador.gabinete.patrimonio|default_if_none:""}}' autocomplete="off" placeholder="Número Patrimônio">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mt-2">
+                                <label for="id_monitor">Monitor I</label>
+                                {{formInfo.monitor1}}
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mt-2">
+                                <label for="id_monitor">Monitor II</label>
+                                {{formInfo.monitor2}}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("informacao", forms_urls.atualizar_computador_info_ajax )' class="btn btn-secondary">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalDepUser'>
+    <div class="modal-dialog modal-xl">
+        <div style='font-family: Arial, Helvetica, sans-serif;' class="modal-content">
+            <div class="modal-header border-0 " style='background-color:#0229d8;'>
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-link pe-2"></i>
+                    Vincular Funcionário
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div style='max-height:75vh;' class="modal-body overflow-auto">
+                <form id='pesquisaFuncionario'>
+                    <div class="input-group">
+                        <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
+                        aria-describedby="search-addon" autocomplete="off"/>
+                        <button class="btn btn-primary">Procurar</button>
+                      </div>
+                </form>
+                <div class="mt-4 p-2 bg-light">
+                    <table class="table table-sm table table-responsive">
+                        <tbody id='tabelaFuncionario'>
+                            <tr class='mt-3'>
+                                <td class='d-flex justify-content-between'>
+                                    <img class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" style='width:50px;' alt="">
+                                    <div class="col ps-3 d-flex flex-column">
+                                        <span><b>Gustavo de Oliveira</b></span> 
+                                        <span class='text-muted'>Departamento de Informática</span>
+                                    </div>
+                                </td>
+                                <td class='text-center'>
+                                    <i onclick='VincularFuncionario({funcionario.id})' class="fas fa-link"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalAtualizarProcessador'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
+                    <i class="fas fa-pen pe-2"></i>
+                    Alterar Processador
+                </h5>
+                <span data-bs-dismiss="modal">
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form id='form-processador'>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <input type="hidden" id='id_id_computador' name='id_computador' value='{{computador.id}}'>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="">Modelo Prcessador</label>
+                                {{formProcessador.modelo}}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="">Fabricante</label>
+                                {{formProcessador.marca}}
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mt-2">
+                                <label for="">Frquência Processador</label>
+                                {{formProcessador.frequencia}}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="">Memória Cache</label>
+                                {{formProcessador.memoria_cache}}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("processador", forms_urls.atualizar_processador_ajax)' class="btn btn-secondary">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalAtualizarPlacamae'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
+                    <i class="fas fa-pen pe-2"></i>
+                    Alterar Placa Mãe
+                </h5>
+                <span data-bs-dismiss="modal">
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form id='form-placamae'>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group">
+                                <input type="hidden" id='id_id_computador' name='id_computador' value='{{computador.id}}'>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="id_marca">Fabricante</label>
+                                {{formPlacaMae.marca}}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="id_socket">Socket</label>
+                                {{formPlacaMae.socket}}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="id_ram_suporte">Memória</label>
+                                {{formPlacaMae.ram_suporte}}
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mt-2">
+                                <label for="id_modelo">Modelo</label>
+                                {{formPlacaMae.modelo}}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="id_processador">Processador</label>
+                                {{formPlacaMae.processador_suporte}}
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="id_hdmi">HDMI Suporte</label>
+                                {{formPlacaMae.hdmi}}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("placamae", forms_urls.atualizar_placamae_ajax)' class="btn btn-secondary">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id='modalAdicionarImpressora'>
+    <div class="modal-dialog modal-xl">
+        <div style='font-family: Arial, Helvetica, sans-serif;' class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-link"></i>
+                    Vincular Impressora
+                </h5>
+                <span data-bs-dismiss='modal'>
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div style='max-height:75vh;' class="modal-body overflow-auto">
+                <form id='pesquisaimpre'>
+                    <div class="input-group">
+                        <input type="search" name='queryimpe' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
+                        aria-describedby="search-addon" autocomplete="off"/>
+                        <button class="btn btn-primary">Procurar</button>
+                      </div>
+                </form>
+                <div class="mt-2 p-1 rounded" id='tabelaImpressora'>
+                    <div class="row p-0 pt-2 m-0 shadow mt-2">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center">
+                            <i class="fas fa-print fa-2x"></i>
+                        </div>
+                        <div class="col d-flex justify-content-between">
+                            <span>
+                                <p class="m-0 p-0"><b>Samsung M4070</b></p>
+                                <span class='d-flex flex-column d-flex flex-lg-row '>
+                                    <p class='m-0 p-0 me-lg-2 mb-lg-2'>IP: 192.168.4.32</p>
+                                    <p class='m-0 p-0'>Prefeitura Municipal de Arapoti</p>
+                                </span>
+                            </span>
+                            <span class='d-flex justify-content-center d-flex align-items-center'>
+                                <i class="fas fa-link text-success"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id='modalAtualizarIpMac'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
+                    <i class="fas fa-pen pe-2"></i>
+                    Alterar IP/MAC
+                </h5>
+                <span data-bs-dismiss="modal">
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <form id='form-ipMac'>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_ip_address" class='mb-1'>Endereço IP</label>
+                        {{ formIpMac.ip_address }}
+                        <small hidden id='enderecoiphelp' style='font-family: Arial, Helvetica, sans-serif;' class='form-text text-danger'>** Digite um endereço IP válido!</small>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="id_endereco_mac" class='mb-1'>Endereço MAC</label>
+                        {{ formIpMac.endereco_mac }}
+                        <small hidden id='enderecomachelp' style='font-family: Arial, Helvetica, sans-serif;' class='form-text text-danger'>** Digite um endereço MAC válido!</small>
+                    </div>
+                    <div hidden>
+                        {{formIpMac.object_id}}
+                        {{formIpMac.parent_object_id}}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("ipMac", forms_urls.verificar_enderecoip_ajax)' class="btn btn-secondary">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model visualizar impressoras vinculadas -->
+<div class="modal fade" tabindex="-1" id='modalViewImpressoras'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 style='font-family: Arial, Helvetica, sans-serif;' class="card-title text-light">
+                    <i class="fas fa-bookmark me-2"></i>
+                    Impressoras vinculadas
+                </h5>
+                <span data-bs-dismiss="modal">
+                    <i class="fas fa-times text-light"></i>
+                </span>
+            </div>
+            <div style='max-height:75vh;' class="modal-body overflow-auto">
+
+                {% for impressora in computador.impressora.all %}
+                <div class="row p-0 pt-2 m-0 mt-0 d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
+                    <div class="row m-0 p-3 item-esconder shadow hidden">
+                        <div class="col-auto d-flex justify-content-center d-flex align-items-center">
+                            <i class="fas fa-print fa-2x"></i>
+                        </div>
+                        <div class="col d-flex justify-content-between">
+                            <span>
+                                <p class='mb-0 pb-0'><b>{{impressora.nome}}</b></p>
+                                <p class='mb-0 p-0'>
+                                    {% if impressora.ip_impressora.count %}
+                                    {{impressora.ip_impressora.first.ip_address }}
+                                    {% endif %}
+                                </p>
+
+                            </span>
+                            <span class='text-center'>
+                                <i class="fas fa-bookmark"></i> 
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-0 ms-0 ms-lg-0 p-lg-0 item-filho shadow">
+                        <div class="row m-0 p-0 bg-light">
+                            <div class="col-12 col-lg-4 mb-lg-1">
+                                <ul class='list-group'>
+                                    <li class="list-group-item mt-0 p-0">
+                                        <b>Nome:</b> {{impressora.nome}}
+                                    </li>
+                                    <li class="list-group-item mt-1 p-0">
+                                        <b>Matricula:</b>{% if impressora.matricula %} {{impressora.matricula}}{% else %} Indisponível {% endif %}
+                                    </li>
+                                    <li class="list-group-item mt-1 p-0">
+                                        <b>Departamento:</b>{% if impressora.departamento %} {{impressora.departamento.departamento}}{% else %} Indisponível {% endif %}
+                                    </li>
+                                    <li class="list-group-item mt-1 p-0">
+                                        <b>Prédio:</b>{% if impressora.departamento %} {{impressora.departamento.predio}}{% else %} Indisponível {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <ul class='list-group'>
+                                    <li class="list-group-item mt-1 p-0">
+                                        <b>Modelo:</b>{% if impressora.modelo %} {{impressora.modelo}}{% else %} Indisponível {% endif %}
+                                    </li>
+                                    <li class="list-group-item mt-1  p-0">
+                                        <b>Endereço IP:</b> 
+                                        {% if impressora.ip_impressora.count %}
+                                        {{impressora.ip_impressora.first.ip_address }}
+                                        {% else %}
+                                        Indisponível
+                                        {% endif %}
+                                    </li>
+                                    <li class="list-group-item mt-1  p-0">
+                                        <b>Endereço MAC:</b>
+                                        {% if impressora.mac_impressora.count %}
+                                        {{impressora.mac_impressora.first.mac_address}}
+                                        {% else %}
+                                        Indisponível
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <ul class='list-group'>
+                                    <li class="list-group-item mt-1  p-0">
+                                        <b>Descrição:</b>
+                                        {% if impressora.descricao %}
+                                        {{impressora.descricao}}
+                                        {% else %}
+                                        Não possuo nenhuma informação ;c
+                                        {% endif %}
+                                    </li>
+                                    <li class='list-group-item mt-1 p-0 text-danger'>
+                                        <b onclick='VincularNovaImpressora("{{impressora.id}}", true)'><i class="fas fa-link me-2"></i>Desvincular impressora</b>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
-                <div class="col-12 col-lg-8" style="min-height: 52vh;">
-                    {% block informacoes %}
-                    <div class="card bg-dark border-0">
-                        <div class="card-content">
-                            <div class="card-header bg-dark border-0 d-flex justify-content-between">
-                                <h5 class='text-muted'>Informações</h5>
-                                <span>
-                                    <i data-bs-toggle='modal' data-bs-target='#modalAtualizarInformacao' class="fas fa-edit text-success me-2"></i>
-                                    <i data-bs-toggle='modal' data-bs-target='#modalRemoverPc' class="far fa-trash-alt text-danger"></i>
-                                </span>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12 col-lg-6">
-                                        <ul class="list-group">
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>Nome na Rede:</b> {{computador.nome_rede}}
-                                            </li>
-                                            
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>Sistema Operacional:</b> {{computador.sistema_op}}
-                                            </li>
-                                            
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>Memória RAM:</b>
-                                                {% if computador.memoria_ram %}
-                                                {{computador.memoria_ram}}
-                                                {% else %}
-                                                Indisponivel
-                                                {% endif %}
-                                            </li>
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>HD:</b>
-                                                {% if computador.hd and computador.hd.tamanho_gb > 0%}
-                                                {{computador.hd.tamanho}}
-                                                {% else %}
-                                                Indisponivel
-                                                {% endif %}
-                                            </li>
-                                            
-                                            {% for monitor in computador.monitor.all %}
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>Monitor Patrimônio</b>
-                                                {{ monitor.patrimonio }}
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <ul class="list-group">
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>AnyDesk:</b>
-                                                {% if computador.anydesk %}
-                                                {{computador.anydesk}}
-                                                {% else %}
-                                                Indisponivel
-                                                {% endif %}
-                                            </li>
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>Processador</b>
-                                                {% if computador.processador %}
-                                                {{computador.processador.modelo}}
-                                                {% if computador.processador.frequencia %}
-                                                    {{computador.processador.frequencia }} Ghz
-                                                {% endif %}
-                                                {% else %}
-                                                Indisponivel
-                                                {% endif %}
-                                            </li>
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>Placa Mãe:</b>
-                                                {% if computador.placa_mae %}
-                                                {{computador.placa_mae.marca}} - {{computador.placa_mae.modelo }}
-                                                {% else %}
-                                                Indisponivel
-                                                {% endif %}
-                                            </li>
-                                            <li class="list-group-item border-0 bg-dark mb-0 text-light text-muted">
-                                                <b>Gabinete Patrimônio</b>
-                                                {% if computador.gabinete.patrimonio %}
-                                                {{ computador.gabinete.patrimonio }}
-                                                {% else %}
-                                                Indisponível
-                                                {% endif %}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                 
-                            </div>
-                        </div>
-                    </div>
-                    {% endblock informacoes %}
-                    {% block impressora %}
-                    <div class="card bg-dark border-0 mb-3">
-                        <div class="card-content">
-                            <div class="card-header bg-dark d-flex justify-content-between">
-                                <h5> </h5>
-                                <span>
-                                    <i data-bs-toggle='modal' data-bs-target='#modalAtualizarDescricao' class="fas fa-edit text-success me-2"></i>
-                                </span>
-                            </div>
-                            <div class="card-body text-muted">
-                                {% if computador.descricao %}
-                                {{computador.descricao}}
-                                {% else %}
-                                Caso deseje descrever com mais detalhes esse computador, você poderá usar este campo.
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endblock impressora %}
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-    {% block modals %}
-
-    <div class="modal fade" tabindex="-1" id='modalRemoverPc'>
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div style='background-color: rgb(204, 84, 84);' class="modal-header border-0 d-flex justify-content-between">
-                    <span class='text-light d-flex flex-row' style='font-family: Arial, Helvetica, sans-serif;'>
-                        <i class="far fa-trash-alt pe-2"></i>
-                        Remover computador?
-                    </span>
-                    <span data-bs-dismiss='modal'>
-                        <i class="fas fa-times text-light"></i>
-                    </span>
-                </div>
-                <div class="modal-body p-0">
-                    <div class="container p-0">
-                        <div class="row">
-                            <div style='background-color: rgb(204, 84, 84);' class="col-12 col-lg-4 d-flex justify-content-center d-flex align-items-center">
-                                <span class=''>
-                                    <img style='width: 170px;' src="{% static 'img/removerpc.png' %}" alt="">
-                                </span>
-                            </div>
-                            <div class="col-12 col-lg-8 p-2">
-                                
-                                <h5 class='mt-2 ms-2'>
-                                    <i class="fas fa-cubes pe-2"></i> 
-                                    <b>Mover para o inventário</b>
-                                </h5>
-                                <div class="col-12 m-2 mt-3 p-4 ps-2">
-                                    <ul class="list-group" id='form-remover'>
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <span style="font-family: Arial, Helvetica, sans-serif;">
-                                                <i class="fas fa-hdd pe-1" aria-hidden="true"></i>
-                                                Gabinete 
-                                            </span>
-                                            <span>
-                                                <div class="form-check form-switch">
-                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                    
-                                                    <input class="form-check-input" type="checkbox" id="manterGabinete" checked>
-                                                  </div>
-                                            </span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <span style="font-family: Arial, Helvetica, sans-serif;">
-                                                <i class="fas fa-desktop pe-1" aria-hidden="true"></i>
-                                                Monitor 
-                                            </span>
-                                            <span>
-                                                <div class="form-check form-switch">
-                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                    
-                                                    <input class="form-check-input" type="checkbox" id="manterMonitor" checked>
-                                                  </div>
-                                            </span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <span style="font-family: Arial, Helvetica, sans-serif;">
-                                                <i class="fas fa-compact-disc pe-1" aria-hidden="true"></i>
-                                                HD 
-                                            </span>
-                                            <span>
-                                                <div class="form-check form-switch">
-                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                    
-                                                    <input class="form-check-input" type="checkbox" id="manterHd" checked>
-                                                  </div>
-                                            </span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <span style="font-family: Arial, Helvetica, sans-serif;">
-                                                <i class="fas fa-stream pe-1" aria-hidden="true"></i>
-                                                Placa Mãe 
-                                            </span>
-                                            <span>
-                                                <div class="form-check form-switch">
-                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                    
-                                                    <input class="form-check-input" type="checkbox" id="manterPlacaMae" checked>
-                                                  </div>
-                                            </span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <span style="font-family: Arial, Helvetica, sans-serif;">
-                                                <i class="fas fa-microchip pe-1" aria-hidden="true"></i>
-                                                Processador 
-                                            </span>
-                                            <span>
-                                                <div class="form-check form-switch">
-                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                    
-                                                    <input class="form-check-input" type="checkbox" id="manterProcessador" checked>
-                                                  </div>
-                                            </span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <span style="font-family: Arial, Helvetica, sans-serif;">
-                                                <i class="fas fa-memory pe-1" aria-hidden="true"></i>
-                                                Memória RAM 
-                                            </span>
-                                            <span>
-                                                <div class="form-check form-switch">
-                                                    <label class="form-check-label" for="manterGabinete">Inventário</label>
-                                                    
-                                                    <input class="form-check-input" type="checkbox" id="manterMemoriaRam" checked>
-                                                  </div>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-12 d-flex justify-content-end">
-                                    <button data-bs-dismiss='modal' class="btn btn primary me-2" style="font-family: Arial, Helvetica, sans-serif;">Cancelar</button>
-                                    <button id='removerPc' class="btn text-light" style="background-color: rgb(204, 84, 84); font-family: Arial, Helvetica, sans-serif;">Remover</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" tabindex="-1" id='modalAtualizarDescricao'>
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h5 class="modal-title text-light">
-                        <i class="fas fa-pen pe-2"></i>
-                        Atualizar Descrição
-                    </h5>
-                    <span data-bs-dismiss='modal'>
-                        <i class="fas fa-times"></i>
-                    </span>
-                </div>
-                <div class="modal-body">
-                    <form id='form-descricao'>
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <p>
-                                <label for="id_descricao" class='mt-1'>Descrição</label>
-                                <textarea class='form-control' name="descricao" placeholder='Informações complementares...' id="id_descricao" cols="25" rows="10">{{computador.descricao}}</textarea>
-                            </p>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                    <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("descricao")' class="btn btn-primary">Atualizar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" tabindex="-1" id='modalAtualizarInformacao'>
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h5 class="modal-title text-light">
-                        <i class="fas fa-pen pe-2"></i>
-                        Atualizar Informações
-                    </h5>
-                    <span data-bs-dismiss='modal'>
-                        <i class="fas fa-times text-light"></i>
-                    </span>
-                </div>
-                <div class="modal-body">
-                    <form computador_id='{{computador.id}}' id='form-informacao'>
-                        {% csrf_token %}
-                        <input type='hidden' value='{{computador.id}}' name='computador_id'>
-                        <div class="row">
-                            <div class="col-12 col-lg-6">
-                                <div class="form-group">
-                                    <label for="id_nome_rede">Nome Rede</label>
-                                    <input type="text" name='nome_rede' id='id_nome_rede' value='{{computador.nome_rede}}' class='form-control' autocomplete='off' placeholder="Ex: PRE-001">
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label for="id_memoria_ram">Memória RAM</label>
-                                    <input type="text" class='form-control' id='id_memoria_ram' name='memoria_ram' value='{{computador.memoria_ram}}' autocomplete="off" placeholder="Ex: 4 GB">
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <div class="form-group">
-                                    <label for="id_sistema_op">Sistema Operacional</label>
-                                    {{ formInfo.sistema_op }}
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label for="id_anydesk">AnyDesk</label>
-                                    <input type="text" class='form-control' id='id_anydesk' name='anydesk' value='{{computador.anydesk}}' autocomplete="off" placeholder="Ex: 317 515 100">
-                                </div>
-                                
-                            </div>
-                            <div class="col-12 mt-2">
-                                
-                                <div class="form-group mt-2">
-                                    <label for="id_hd">HD</label>
-                                    <div class="input-group">
-                                        <input type="text" class='form-control' id='id_hd' name='hd' value='{{computador.hd.tamanho|default_if_none:"0"}}'>
-                                    </div>
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label for="id_gabinete">Gabinete</label>
-                                    <input type="text" class='form-control' id='id_gabinete' name='gabinete' value='{{computador.gabinete.patrimonio|default_if_none:""}}' autocomplete="off" placeholder="Número Patrimônio">
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <div class="form-group mt-2">
-                                    <label for="id_monitor">Monitor I</label>
-                                    {{formInfo.monitor1}}
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <div class="form-group mt-2">
-                                    <label for="id_monitor">Monitor II</label>
-                                    {{formInfo.monitor2}}
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                    <button style='font-family: Arial, Helvetica, sans-serif; color:white;' onclick='mandarconteudo("informacao", forms_urls.atualizar_computador_info_ajax )' class="btn btn-primary">Atualizar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endblock modals%}
-    <div class="modal fade" tabindex="-1" id='modalDepUser'>
-        <div class="modal-dialog modal-xl">
-            <div style='font-family: Arial, Helvetica, sans-serif;' class="modal-content">
-                <div class="modal-header border-0" style='background-color:#0229d8;'>
-                    <h5 class="modal-title text-light">
-                        <i class="fas fa-link pe-2"></i>
-                        Vincular Funcionário
-                    </h5>
-                    <span data-bs-dismiss='modal'>
-                        <i class="fas fa-times text-light"></i>
-                    </span>
-                </div>
-                <div style='max-height:60vh;' class="modal-body overflow-auto">
-                    <form id='pesquisaFuncionario'>
-                        <div class="input-group">
-                            <input type="search" name='query' class="form-control rounded" placeholder="Pesquisar" aria-label="Search"
-                            aria-describedby="search-addon" autocomplete="off"/>
-                            <button class="btn btn-outline-primary">Procurar</button>
-                          </div>
-                    </form>
-                    <div class="mt-4 p-2 bg-light">
-                        <table class="table table-sm table table-responsive">
-                            <tbody id='tabelaFuncionario'>
-                                <tr class='mt-3'>
-                                    <td class='d-flex justify-content-between'>
-                                        <img class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" style='width:50px;' alt="">
-                                        <div class="col ps-3 d-flex flex-column">
-                                            <span><b>Gustavo de Oliveira</b></span> 
-                                            <span class='text-muted'>Departamento de Informática</span>
-                                        </div>
-                                    </td>
-                                    <td class='text-center'>
-                                        <i onclick='VincularFuncionario({funcionario.id})' class="fas fa-link"></i>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-{% endblock %}
+</div>
+{% endblock modals%}

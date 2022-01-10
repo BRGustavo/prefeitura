@@ -3,6 +3,7 @@ from django.core.validators import ip_address_validator_map, validate_ipv4_addre
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
+from django.urls.base import reverse
 
 from inventario.forms import PlacaMaeForm, ProcessadorForm
 from .models import *
@@ -84,13 +85,30 @@ def impressora_pesquisa_ajax(request):
         id_computador = request.GET.get('id_computador')
         computador = get_object_or_404(Computador, pk=id_computador)
         if pesquisa:
-            impressoras = Impressora.objects.filter(Q(nome__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(ip_impressora__ip_address__icontains=pesquisa)).exclude(computador=computador)
+            impressoras = Impressora.objects.filter(Q(nome__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(ip_impressora__ip_address__icontains=pesquisa)).exclude(computador=computador)
         else:
             impressoras = Impressora.objects.exclude(computador=computador)
 
         for impressora in impressoras:
-            predio = impressora.departamento.predio if impressora.departamento else 'Não selecionado'
-            html_item = f"""<tr class='mt-3' id="impressoraId{impressora.id}"><td><img style='width:60px;' class='rounded-circle me-2' src='' alt=""></td><td class='text-center'>{impressora.nome}</br>{impressora.modelo}</td><td>{predio}</td><td id='ip_impressora'>{impressora.ip_impressora.first().ip_address}</td><td>GEST-103020</td><td><i id='vincular' onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link"></i></td></tr>
+            predio = impressora.departamento.departamento if impressora.departamento else 'Não selecionado'
+            html_item = f"""
+            <div class="row p-0 pt-2 m-0 shadow mt-2" id="impressoraId{impressora.id}">
+                <div class="col-auto d-flex justify-content-center d-flex align-items-center">
+                    <i class="far fa-copy fa-2x"></i>
+                </div>
+                <div class="col d-flex justify-content-between">
+                    <span>
+                        <p class="m-0 p-0"><b>{impressora.nome}</b></p>
+                        <span class='d-flex flex-column d-flex flex-lg-row '>
+                            <p class='m-0 p-0 me-lg-2 mb-lg-2'>IP: {impressora.ip_impressora.first().ip_address}</p>
+                            <p class='m-0 p-0'>{predio}</p>
+                        </span>
+                    </span>
+                    <span class='d-flex justify-content-center d-flex align-items-center'>
+                        <i onclick='VincularNovaImpressora({impressora.id})' class="fas fa-link text-success"></i>
+                    </span>
+                </div>
+            </div>
             """
             img_modelo = 'm4070'
         
@@ -511,6 +529,7 @@ def impressora_nova_ajax(request):
         impressora = get_object_or_404(Impressora, pk=impressora_id)
         endereco_mac = ''
         endereco_ip = ''
+        
         if impressora.mac_impressora.count() >=1:
             endereco_mac = str(impressora.mac_impressora.first().mac_address)
 
@@ -523,7 +542,7 @@ def impressora_nova_ajax(request):
             'modelo': impressora.modelo,
             'departamento': impressora.departamento.id if impressora.departamento else '',
             'matricula': impressora.matricula,
-            'endereco_ip': endereco_ip,
+            'ip_endereco': endereco_ip,
             'endereco_mac': endereco_mac,
             'descricao': impressora.descricao
             
@@ -590,3 +609,53 @@ def remover_ip_reservado(request):
         else:
             return JsonResponse(status=400, data={'mensagem': 'Não foi permitido que você fizesse essa alteração.'}, safe=True)
     return JsonResponse(status=400, data={'mensagem': ':P'}, safe=True)
+
+@login_required
+@permission_required('dispositivo.view_impressora', raise_exception=True)
+def view_pc_na_impressora(request):
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        impressora = get_object_or_404(Impressora, id=id)
+        if impressora:
+            computadores = []
+            for computador in impressora.computador.all():
+                ip = 'Indisponível'
+                mac = 'Indisponível'
+                url =  reverse("computador_visualizar", args=[computador.id, 'principal'])
+                try:
+                    for endereco in computador.ip_computador.all():
+                        ip = endereco
+                except Exception:
+                    pass
+                
+                try:
+                    for endereco in computador.mac_computador.all():
+                        mac = endereco.endereco_mac
+                except Exception:
+                    pass
+
+                nome_rede = f"{computador.nome_rede} - {computador.funcionario.nome}" if computador.funcionario else f"{computador.nome_rede}" 
+                computadores.append(f"""
+                <div class="row p-1 item-pai">
+                    <div class="col-12 p-1 m-0 shadow ">
+                        <div class="row p-1 m-0">
+                            <div class="col-auto d-flex align-items-center">
+                                <i class="fas fa-laptop-code fa-2x " aria-hidden="true"></i>
+                            </div>
+                            <div class="col d-flex justify-content-between">
+                                <span class='pt-1'>
+                                    <p class="p-0 m-0"><b>{nome_rede}</b></p>
+                                    <p class="p-0 m-0">IP: {ip} - MAC: {mac}</p>
+                                </span>
+                                <span class='d-flex align-items-center'>
+                                    <a href='{url}' target='_blank' class='text-decoration-none text-dark'>
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                """)
+            return JsonResponse(status=200, data={'computadores': computadores}, safe=True)
+    return JsonResponse(status=404, data={'mensagem': 'Algo deu errado'}, safe=True)

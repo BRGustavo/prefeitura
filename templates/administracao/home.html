@@ -7,11 +7,11 @@
         font-family: Arial, Helvetica, sans-serif;
     }
     .img-icone {
-        width: 5vw;
+        width: 10vh;
     }
-    body {
+    /* body {
         background-color:rgb(235, 232, 232);
-    }
+    } */
     .card:hover {
         transform: scale(1.02);
         transition: 1.2s;
@@ -23,24 +23,25 @@
         color:black;
     }
 </style>
-<main id='primeiro'>
+<main class='fonte-arial'>
     <div class="container">
         <div class="col-12 pt-3 ps-3 mt-2 mb-4">
             <h1>Bem-Vindo, {{user.username.capitalize}}</h1>
-            <p>let's start! </p>
+            <!-- Container Principal. -->
+            <p>Vamos lá! </p>
         </div>
-        <div class="col-12 mt-4">
+        <div class="col-12 mt-4 mb-5">
             <div class="row">
                 <div class="col-12 col-lg-6 mb-2">
                     <a href="{% url 'admin_usuarios' %}">
-                        <div class="card border-rounded">
+                        <div class="card shadow border-rounded">
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-auto p-3">
+                                        <div class="col-auto p-lg-3">
                                             <img class="img-icone" src="{% static 'img/funcionarios.png' %}" alt="">
                                         </div>
-                                        <div class="col-12 col-lg-8 pt-3 pb-3">
+                                        <div class="col-12 col-lg-9 pt-lg-3 pb-lg-3">
                                             <h5>Usuários</h5>
                                             <p>Lista todos os usúarios com acesso a plataforma.</p>
                                         </div>
@@ -51,14 +52,14 @@
                     </a>
                 </div>
                 <div class="col-12 col-lg-6 mb-2">
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-content">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-auto p-3">
+                                    <div class="col-auto p-lg-3">
                                         <img class="img-icone" src="{% static 'img/database.png' %}" alt="">
                                     </div>
-                                    <div class="col-12 col-lg-8 pt-3 pb-3">
+                                    <div class="col-12 col-lg-8 pt-lg-3 pb-lg-3">
                                         <h5>Banco de Dados</h5>
                                         <p>Fazer ou restaurar um backup.</p>
                                     </div>
@@ -67,6 +68,25 @@
                         </div>
                     </div>
                 </div>
+                <!-- <div class="col-12 col-lg-6 mb-2 mt-1">
+                    <a href="{% url 'admin_permissoes' %}">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-auto p-3">
+                                            <img class="img-icone" src="{% static 'img/funcionarios.png' %}" alt="">
+                                        </div>
+                                        <div class="col-12 col-lg-8 pt-3 pb-3">
+                                            <h5>Permissões de usuários</h5>
+                                            <p>Criar ou remover permissões.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>   -->
             </div>
         </div>
     </div>

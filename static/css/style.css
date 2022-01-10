@@ -41,6 +41,9 @@ header .navbar {
 .navbar-expand-lg .navbar-nav .nav-link {
     padding: 1rem .8rem;
 }
+#nav-container {
+    font-family: Arial, Helvetica, sans-serif;
+}
 
 .conteudo-login{
     margin-top: 100px;
@@ -49,7 +52,7 @@ header .navbar {
     width: 100px;
 }
 
-#primeiro {
+#primeiro, #segundo {
     margin-top: 100px;
     font-family: 'Times New Roman', Times, serif;
 }
@@ -80,15 +83,59 @@ p label {
 }
 
 #tabelaFuncionario tr:hover{
-    transform: scale(1.02);
+    transform: scale(1.01);
     transition: 1.2s
 }
 
 #tabelaImpressora tr:hover{
-    transform: scale(1.02);
+    transform: scale(1.01);
     transition: 1.2s
 }
+.enderecos-nav {
+    min-height: 100vh; 
+    background-color: #353D41;
+}
+/* Sidebar   */
+.side-nav {
+    min-height: 100vh;
+    background-color: #353D41;
+    transition: 0.2s;
+}
+.hidden {
+    transition: 0.2s;
+    display: none;
+    
+}
+#nav-side {
+    transition: 0.3s;
+    min-width: min-content;
+}
+.texto-menu {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.fonte-arial {
+    font-family: Arial, Helvetica, sans-serif;
+}
+#nav-side .list-group-item {
+    background-color:#353D41;
+    border:none;
+    color: rgba(255,255,255,.55);
+}
+.item-filho li {
+    border: none;
+}
+.lista-u {
+    transform: scale(1.01);
+    transition: 1s;
+    margin-left: 13px;
+    
+}
+/*  */
 
+
+.mobile {
+    display: none;
+}
 /* Funcionarios  */
 #modalDeletar {
     font-family: Arial, Helvetica, sans-serif;
@@ -96,10 +143,47 @@ p label {
 
 /* Responsive */
 @media (min-width: 1200px) {
+    
     #primeiro {
         margin-top: 100px;
     }
 }
+@media (max-width: 600px) { 
+    #nav-side {
+        min-width: min-content;
+    }
+    #titulo-nav {
+        /* display: none; */
+        font-size: 0.9rem;
+    }
+    .enderecos-nav {
+        max-height: max-content;
+        min-height: min-content;
+        background-color: white;
+    }
+    .enderecos-nav h5 {
+        color: black;
+    }
+    .enderecos-nav li {
+        background-color: white;
+        color: black;   
+    }
+    #segundo {
+        margin-top: 0px;
+    }
+    .esconder {
+        display:none;
+    }
+    .mobile {
+        display: inline;
+    }
+    @media (min-width: 992px) { 
+        #titulo-nav {
+            display:inline;
+        }
+    
+    }
+ }
 
 /* Footer */
 .rodapeText{

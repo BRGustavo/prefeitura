@@ -3,5 +3,4 @@ account/migrations/
 departamento/migrations/
 dispositivo/migrations/
 inventario/migrations/
-
-
+uwsgi_params

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_listagem.html' %}
 {% load static %}
 
 {% block title %}
@@ -10,78 +10,77 @@ Usuários Administração
     form_urls = {
         'remover_usuario_ajax': '{% url "remover_usuario_ajax" %}',
         'adicionar_usuario_ajax': '{% url "adicionar_usuario_ajax" %}',
+        'dados_usuario_ajax': '{% url "dados_usuario_ajax" %}',
+        'editar_usuario_ajax': '{% url "editar_usuario_ajax" %}'
     }
 </script>
 {% endblock scripts %}
 
-{% block corpo %}
-<style>
-    body {
-        background-color:rgb(235, 232, 232);
-    }
-    .texto {
-        font-family: Arial, Helvetica, sans-serif;
-        color:white;
-    }
+{% block style %}
 
-</style>
-<main id='primeiro'>
-    <div class="container mt-1 mb-4">
-        <div class="row  p-3 rounded">        
-            <div class="col-12 col-lg-12">
-                <div class="input-group">
-                    
-                    <input type="search" class='form-control p-2 border-primary' placeholder="Pesquisar">
-                    <button class='btn btn-primary'>Pesquisar</button>
+.texto {
+    font-family: Arial, Helvetica, sans-serif;
+    color:white;
+}
+.li-texto {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.input-modal input {
+    border: solid rgba(185, 179, 179, 0.562) 1px;
+}
+.lista-u {
+    transform: scale(1.01);
+    transition: 1s;
+    margin-left: 13px;
+    
+}
+{% endblock style %}
 
-                </div>
+{% block tabela %}
 
-                <div class="col-12 mt-2">
-                    {% for usuario in usuarios %}
-                    <div class="col-12 shadow p-1 mb-1 bg-white rounded">
-                        <div class="row p-2">
-                            <div class="col-auto">
-                                <img style='width: 3vw;' class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="">
-                            </div>
-                            <div class="col d-flex justify-content-between">
-                                <span class='text-dark'>
-                                    <b>
-                                        {% if usuario.first_name %}
-                                        {{usuario.first_name.capitalize}}
-                                        {% elif usuario.username %}
-                                        {{usuario.username.capitalize}}
-                                        {% endif %}
-                                        {% if usuario.last_name %}
-                                        {{usuario.last_name.capitalize}}
-                                        {% endif %}
-                                    </b>
-                                    <p class='mb-0'>
-                                        {% if usuario.is_superuser %}
-                                        Superuser
-                                        {% elif usuario.is_staff %}
-                                        Administrador
-                                        {% else %}
-                                        Normal 
-                                        {% endif %}
-                                    </p>
-                                </span>
-                                <span class='d-flex align-items-center text-dark'>
-                                    <i class="fas fa-user-edit pe-2"></i>
-                                    <i class="fas fa-trash-alt" onclick='ModalRemoverUsuario("{{usuario.id}}")'></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    <div class="d-flex justify-content-end mt-2">
-                        <button data-bs-toggle='modal' data-bs-target='#modalCriarUsuario' class="btn btn-success ms-1 d-flex">Adicionar</button>
-                    </div>
-                </div>
-            </div>
+{% for usuario in usuarios %}
+<div class="col-12 shadow p-1 mb-1 bg-white rounded fonte-arial">
+    <div class="row p-2 item-user">
+        <div class="col-auto p-0 d-flex justify-content-center d-flex align-items-center">
+            <img style='width: 6vh;' class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="">
+        </div>
+        <div class="col d-flex justify-content-between">
+            <span class='text-dark'>
+                <b>
+                    {% if usuario.first_name %}
+                    {{usuario.first_name.capitalize}}
+                    {% elif usuario.username %}
+                    {{usuario.username.capitalize}}
+                    {% endif %}
+                    {% if usuario.last_name %}
+                    {{usuario.last_name.capitalize}}
+                    {% endif %}
+                </b>
+                <p class='mb-0'>
+                    {{usuario.UsuarioPerfil.nivel}}
+                </p>
+            </span>
+            <span class='d-flex align-items-center text-dark'>
+                <i class="fas fa-user-edit pe-2" data-bs-toggle='modal' onclick='ModalEditarUsuario("{{usuario.id}}")'></i>
+                <i class="fas fa-trash-alt" onclick='ModalRemoverUsuario("{{usuario.id}}")'></i>
+            </span>
         </div>
     </div>
-</main>
+</div>
+{% endfor %}
+{% endblock tabela %}
 
+{% block button_adicionar%}
+<div class="d-flex justify-content-end mt-0 fonte-arial">
+    <button data-bs-toggle='modal' data-bs-target='#modalCriarUsuario' class="btn btn-success ms-1 d-flex">Adicionar</button>
+</div>
+{% endblock button_adicionar %}
+
+{% block botao_pesquisa %}
+<button type="submit" class="btn btn-primary fonte-arial" id='pesquisa_btn'>Pesquisa</button>
+{% endblock botao_pesquisa %}
+
+{% block modals %}
 <div class="modal fade" tabindex="-1" id="modalCriarUsuario">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -94,7 +93,7 @@ Usuários Administração
                     <i class="fas fa-times text-light texto"></i>
                 </span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="font-family: Arial, Helvetica, sans-serif;">
                 <form id='form-adicionarFun'>
                     {% csrf_token %}
                     <div class="form-group">
@@ -152,8 +151,373 @@ Usuários Administração
             </div>
         </div>
     </div>
-
 </div>
 
-
-{% endblock corpo %}
+<div class="modal" tabindex="-1" id='modalEditarUser'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-lg-3">
+                        <!-- Parte da imagem -->
+                        <div class="col-12 mt-2 d-flex justify-content-center">
+                            <img class='rounded-circle' src="{% static 'img/funcionario.jpg' %}" alt="img-funcionario" style='width: 25vh;'>
+                        </div>
+                        <!-- Corpo em baixo da img -->
+                        <div class="col-12 mt-4">
+                            <h3 class='text-center' id='nome_usuario'>Gustavo de Oliveira</h3>
+                            <h5 class='text-center'><b>Administrador</b></h5>
+                        </div>
+                        <div class="col-12 mt-3 mb-3">
+                            <ul class='list-group'>
+                                <li class="list-group-item">
+                                    <i class="fas fa-user-tag pe-2"></i>
+                                    <span class='li-texto' id='id_usernamem'>
+                                        gustavo
+                                    </span>
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fas fa-envelope pe-2"></i>
+                                    <span class='li-texto' id='id_emailm'>
+                                        gugusoliveira72@gmail.com
+                                    </span>
+                                </li>
+                                <li class='list-group-item'>
+                                    <i class="fas fa-birthday-cake pe-2"></i>
+                                    <span class='li-texto' id='id_birthdaym'>
+                                        14/08/2003
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-9">
+                        <!-- Parte de cima, titulo e botão sair. -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <span style='font-family: Arial, Helvetica, sans-serif;' class='mt-2'>
+                                <h5>
+                                    Alterar Informações do usuário.
+                                </h5>
+                            </span>
+                            <i class="fas fa-sign-out-alt" data-bs-dismiss="modal"></i>
+                        </div>
+                        <!-- Corpo com informações  -->
+                        <div class="col-12 mt-2">
+                            <form id='form-editarUsuario'>
+                                <div class="row">
+                                    <!-- ID Usuario -->
+                                    <input type="hidden" id='id_usuario' name='id_usuario'>
+                                    <div class="col-12 col-lg-6 input-modal">
+                                        <div class="form-group">
+                                            <label for="id_first_name" class='li-texto'>Nome</label>
+                                            <input id='id_first_name' name='first_name' type="text" class="form-control li-texto" placeholder='Nome' value='Gustavo'>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <div class="form-group">
+                                            <label for="id_last_name" class='li-texto'>Sobrenome</label>
+                                            <input id='id_last_name' name='last_name' type="text" class="form-control li-texto" placeholder='Sobrenome' value='Oliveira'>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 input-modal mt-2">
+                                        <div class="form-group">
+                                            <label for="id_email" class='li-texto'>Email</label>
+                                            <input id='id_email' name='email' type="text" class="form-control li-texto" placeholder='email@exemplo.com' value='gugusoliveira72@gmail.com'>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-lg-6 input-modal mt-2">
+                                        <div class="form-group">
+                                            <label for="id_birthday" class='li-texto'>Aniversário</label>
+                                            <input id='id_birthday' name='birthday' type="text" class="form-control li-texto" placeholder='14/08/2003' value='14/08/2003'>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 input-modal mt-2">
+                                        <div class="form-group">
+                                            <label for="id_nivel" class='li-texto'>Nivel</label>
+                                            <input id='id_nivel' name='nivel' type="text" class="form-control li-texto" placeholder='Administrador' value='Administrador'>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 mt-2">
+                                        <div class="form-group">
+                                            <label class='li-texto' for="#">Permissões usuário</label>
+                                            <div class="card shadow">
+                                                <div class="card-content">
+                                                    <div class="card-header d-flex justify-content-between">
+                                                        <span class='li-texto'>
+                                                            Permissões de acesso.
+                                                        </span>
+                                                        <span class='d-flex flex-column flex-lg-row'>
+                                                            <div class="col form-check pe-3">
+                                                                <input type="checkbox" class='form-check-input' id='chkVisulAll'>
+                                                                <label for="chkVisulAll" class='form-check-label li-texto'>Permitir</label>
+                                                            </div>
+                                
+                                                        </span>
+                                                    </div>
+                                                    <div class="card-body overflow-auto" style='max-height: 30vh;'>
+                                                        <ul class="list-group">
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Manipular painel Administrativo
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_config_departamento' name='config_departamento'>
+                                                                        <label for="id_config_departamento" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Visualizar Departamentos
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cview_departamento' name='cview_departamento'>
+                                                                        <label for="id_cview_departamento" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Adicionar Departamentos
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cadd_departamento' name='cadd_departamento'>
+                                                                        <label for="id_cadd_departamento" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Editar Departamentos
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cchange_departamento' name='cchange_departamento'>
+                                                                        <label for="id_cchange_departamento" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Remover Departamentos
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cdelete_departamento' name='cdelete_departamento'>
+                                                                        <label for="id_cdelete_departamento" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <!-- Funcionários -->
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Visualizar Funcionarios
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cview_funcionario' name='cview_funcionario'>
+                                                                        <label for="id_cview_funcionario" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Adicionar Funcionarios
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cadd_funcionario' name='cadd_funcionario'>
+                                                                        <label for="id_cadd_funcionario" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Editar Funcionarios
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cchange_funcionario' name='cchange_funcionario'>
+                                                                        <label for="id_cchange_funcionario" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Remover Funcionarios
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cdelete_funcionario' name='cdelete_funcionario'>
+                                                                        <label for="id_cdelete_funcionario" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <!-- Computadores -->
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Visualizar Computadores
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cview_computador' name='cview_computador'>
+                                                                        <label for="id_cview_computador" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Adicionar Computadores
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cadd_computador' name='cadd_computador'>
+                                                                        <label for="id_cadd_computador" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Editar Computadores
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cchange_computador' name='cchange_computador'>
+                                                                        <label for="id_cchange_computador" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Remover Computadores
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cdelete_computador' name='cdelete_computador'>
+                                                                        <label for="id_cdelete_computador" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <!-- Roteadores -->
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Visualizar Roteadores
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cview_roteador' name='cview_roteador'>
+                                                                        <label for="id_cview_roteador" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Adicionar Roteadores
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cadd_roteador' name='cadd_roteador'>
+                                                                        <label for="id_cadd_roteador" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Editar Roteadores
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cchange_roteador' name='cchange_roteador'>
+                                                                        <label for="id_cchange_roteador" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Remover Roteadores
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cdelete_roteador' name='cdelete_roteador'>
+                                                                        <label for="id_cdelete_roteador" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <!-- Impressoras -->
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Visualizar Impressoras
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cview_impressora' name='cview_impressora'>
+                                                                        <label for="id_cview_impressora" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Adicionar Impressoras
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cadd_impressora' name='cadd_impressora'>
+                                                                        <label for="id_cadd_impressora" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Editar Impressoras
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cchange_impressora' name='cchange_impressora'>
+                                                                        <label for="id_cchange_impressora" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="col d-flex justify-content-between li-texto">
+                                                                    <span>
+                                                                        Remover Impressoras
+                                                                    </span>
+                                                                    <div class='form-check'>
+                                                                        <input type="checkbox" class="form-check-input" id='id_cdelete_impressora' name='cdelete_impressora'>
+                                                                        <label for="id_cdelete_impressora" class="form-check-label">Permitir</label>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button onclick='AdmEditarUsuario()' class="btn btn-secondary li-texto">Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modals %}

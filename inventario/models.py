@@ -145,4 +145,3 @@ class Gabinete(models.Model):
     def __str__(self) -> str:
         return f'Patrimônio: {self.patrimonio} ({self.modelo})'
 
-

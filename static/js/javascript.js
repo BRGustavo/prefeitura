@@ -37,30 +37,6 @@ function VerificarEnderecoIp(){
     }
 }
 
-function Requisicao(seletor, input, marca=false) {
-    let selectorSelecionado = $(`${seletor}`);
-    $.ajax({
-        url: computador_form_url_ajax,
-        data: {
-            'tipoValue': `${input}`
-        },
-        dataType: 'json',
-        success: function(data){
-            $(`${seletor}`).empty();
-            if(marca == true){
-                selectorSelecionado.append($(`<option value selected'>---------</option>`));
-                }
-            if(data.length >= 1){
-
-            }
-            for(let item in data){
-                var elemento = $(`<option value='${data[item][0]}'>${data[item][1]}</option>`)
-                selectorSelecionado.append(elemento);
-            }
-        }
-    });
-}
-
 function FormularioFuncionario(){
     AdicionarNovoItem('funcionario');
 }
@@ -130,11 +106,7 @@ function AdicionarNovoItem(tipo, requisicao=true){
         success: function(data){
             form_.modal('hide');
             $(`#form-${lower}`).trigger('reset');
-            if(requisicao == true){
-                Requisicao(`#id_${lower}`, `select${capitalize}`, marca=true);
-            }else {
-                location.reload();
-            }
+            location.reload();
         },
         error: function (request, status, error) {
             let info = $.parseJSON(request.responseText);
@@ -251,6 +223,13 @@ $('#pesquisa').submit(function(e){
     return false;
 })
 
+
+$('#pesquisaimpre').submit(function(e){
+    let conteudo = $('input[name="queryimpe"]').val();
+    PesquisarImpressoras(conteudo);
+    return false;
+})
+
 function PesquisarImpressoras(query){
     let pesquisa = query;
     $.ajax({
@@ -262,9 +241,9 @@ function PesquisarImpressoras(query){
         },
         success: function(data){
             $('#tabelaImpressora').html('');
-           
+            
             if(data['impressoras'].length <= 0){
-                let item_novo = $('<tr><td class="text-center">Nada encontrado.</td></tr>');
+                let item_novo = $('<div class="text-muted"><h6 class="text-center">Nada encontrado.</h6></div>');
                 $('#tabelaImpressora').append(item_novo)
             }
             for(let item in data['impressoras']){
@@ -448,6 +427,8 @@ $('#modalImpressora').on('show.bs.modal', function(){
         e.value = ""
     });
 });
+
+
 $('#form-impressoraatualizar').submit(function(e){
     e.preventDefault()
     const csrftoken = document.querySelector(`#form-impressoraatualizar [name=csrfmiddlewaretoken]`).value;
@@ -496,9 +477,10 @@ function mostrarImpressoraAtualizar(impressora_id){
         },
         success: function(data){
             for(let item in data.campos){
-                $(`input[name='${item}']`).val(data.campos[item]);
-                $(`textarea[name='descricao']`).val(data.campos['descricao']);
+                $(`#modalImpressoraAtualizar input[name='${item}']`).val(data.campos[item]);
+                $(`#modalImpressoraAtualizar textarea[name='descricao']`).val(data.campos['descricao']);
             }
+            $(`#modalImpressoraAtualizar #id_departamento option[value='${data.campos.departamento}']`).attr("selected", "selected");
         }
     });
 
@@ -693,12 +675,7 @@ $('#removerPc').click(function(e){
     }
     lista_ids = ['manterGabinete', 'manterMonitor', 'manterHd', 'manterPlacaMae', 'manterProcessador', 'manterMemoriaRam']
     for(let item in lista_ids){
-        
-        if($(`#${lista_ids[item]}`).is(':checked')){
-            data[lista_ids[item]] = 'Sim'
-        }else {
             data[lista_ids[item]] = 'Não'
-        }
     }
     $.ajax({
         type: 'GET',
@@ -730,7 +707,7 @@ function ModalRemoverFuncionario(url=false){
 }
 // Ativando Modal Atualizar Informações do Funcionário.
 function ModalAtualizarFuncionario(id_funcionario, url){
-    $('#modalEditFuncionario').modal('show');
+    
     $.ajax({
         type: 'GET',
         url: url,
@@ -738,6 +715,8 @@ function ModalAtualizarFuncionario(id_funcionario, url){
             'id': id_funcionario
         },
         success: function(data){
+            $('#modalEditFuncionario').modal('show');
+            
             $('#modalEditFuncionario #id_nome').val(data.id_nome);
             $('#modalEditFuncionario #id_sobrenome').val(data.id_sobrenome);
             $('#modalEditFuncionario #id_senha_pc').val(data.id_senha_pc);
@@ -809,6 +788,35 @@ function RemoverUsuario(id){
     });
 }
 
+function ModalEditarUsuario(id){
+    $.ajax({
+        type: 'GET',
+        url: form_urls.dados_usuario_ajax,
+        data: {
+            'id': id,
+        },
+        beforeSend: function(){
+            $("#modalEditarUser").modal('show');
+        },
+        success: function(data){
+
+            for(let item in data['corpo']){
+                $(`#modalEditarUser #${item}`).val(data['corpo'][item]);
+            }
+            for(let item in data['fora']){
+                window.document.querySelector(`#${item}`).innerHTML = data['fora'][item] 
+            }
+            for(let item in data['campos']){
+                $(`#id_c${item}`).attr('checked', 'checked');
+            }
+            if(data['staff']['id_config_departamento'] == true){
+                $(`#id_config_departamento`).attr('checked', 'checked');
+            }
+        }
+    });
+
+}
+
 $('#btnAddUsuario').click(function(){
     let data = $('#form-adicionarFun').serialize()
     const csrftoken = document.querySelector(`#form-adicionarFun [name=csrfmiddlewaretoken]`).value;
@@ -839,11 +847,116 @@ $('#btnAddUsuario').click(function(){
     return false;
 })
 
-$('#refresh-funcionario').click(()=>{ Requisicao('#id_funcionario', 'selectFuncionario', marca=true);});
-$('#refresh-mouse').click(()=>{ Requisicao('#id_mouse', 'selectMouse', marca=true)});
-$('#refresh-teclado').click(()=>{ Requisicao('#id_teclado', 'selectTeclado', marca=true)});
-$('#refresh-monitor').click(()=>{ Requisicao('#id_monitor', 'selectMonitor')});
-$('#refresh-gabinete').click(()=>{ Requisicao('#id_gabinete', 'selectGabinete', marca=true)});
-$('#refresh-processador').click(()=>{ Requisicao('#id_processador', 'selectProcessador', marca=true)});
-$('#refresh-placamae').click(()=>{ Requisicao('#id_placa_mae', 'selectPlacamae', marca=true)});
-$('#refresh-hd').click(()=>{ Requisicao('#id_hd', 'selectHd', marca=true)});
+
+$('.item-user').on('mouseover', function(){
+    $(this).parent().addClass('lista-u');
+  }).on('mouseout', function(){
+    $(this).parent().removeClass('lista-u');
+  })
+
+
+
+$('#chkVisulAll').change(function(){
+    lista = ['add_funcionario', 'add_computador', 'add_impressora', 'add_roteador', 'view_funcionario', 'view_computador', 'view_impressora', 'view_roteador', 'change_funcionario', 'change_computador', 'change_impressora', 'change_roteador', 'delete_funcionario', 'delete_computador', 'delete_impressora', 'delete_roteador', 'view_departamento', 'add_departamento', 'change_departamento', 'delete_departamento']
+
+    if($('#chkVisulAll').is(':checked')){
+        lista.forEach(function(item){
+            $(`#modalEditarUser #id_c${item}`).attr('checked', 'checked');
+        });
+        $('#modalEditarUser #id_config_departamento').attr('checked', 'checked');
+    }else{
+        lista.forEach(function(item){
+            $(`#modalEditarUser #id_c${item}`).removeAttr('checked', 'checked');
+        });
+        $('#modalEditarUser #id_config_departamento').removeAttr('checked', 'checked');
+    }
+});
+function AdmEditarUsuario(){
+    let form = $('#form-editarUsuario').serialize()
+    $.ajax({
+        type: 'GET',
+        url: form_urls.editar_usuario_ajax,
+        data: form,
+        success: function(data) {
+            location.reload();
+        },
+        error: function(request, status, error){
+            let info = $.parseJSON(request.responseText);
+            if(info['status'] == 'false'){
+                alert(info['mensagem'][0])
+                for(let erro_id in info['field_erros']){
+                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
+            }
+        }
+    });
+}
+
+function ShowModalDeletarDepartamento(url){
+    $('#modalDeletar #link-rm').attr('href', url);
+    $('#modalDeletar').modal('show')
+}
+function ShowModalEditDepartamento(url, id){
+    $.ajax({
+        url: forms_urls.departamento_view_ajax,
+        type: 'GET',
+        data: {
+            'id': id,
+        },
+        success: function(data){
+            $(`#modalEditDepartamento #id_predio option[value='${data.predio}']`).attr("selected", "selected");
+            $('#modalEditDepartamento #id_departamento').val(data.departamento);
+            $('#modalEditDepartamento #id_descricao').val(data.descricao);
+            $('#modalEditDepartamento #id_singla_departamento').val(data.sigla);
+            $('#modalEditDepartamento').modal('show');
+            $('#modalEditDepartamento #btnEditar').attr('onclick', `EditarModalDepartamento('${id}')`);
+            $('#modalEditDepartamento #id_id').val(id);
+        },
+        error: function(request, status, error){
+            alert('Não foi possivel estabelecer uma conexão, tente novamete.')
+        }
+    });
+}
+function EditarModalDepartamento(id){
+    let form = $('#modalEditDepartamento #form-departamento').serialize()
+    console.log(form)
+    $.ajax({
+        url: forms_urls.editar_departamento,
+        type: 'GET',
+        data: form,
+        success: function(data) {
+            location.reload();
+        },
+        error: function(request, status, error){
+            let info = $.parseJSON(request.responseText);
+            if(info['status'] == 'false'){
+                alert(info['messagem'][0])
+                for(let erro_id in info['field_erros']){
+                    $(`#modalEditDepartamento #${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                }
+            }
+        }
+    });
+}
+
+function ShowPcsVinculadosImpre(id){
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.view_pc_na_impressora,
+        data: {
+            'id': id
+        },
+        success: function(data){
+            $('#modalShowComputerPrinter #viewPcImpressora').html('');
+            data.computadores.forEach(function(item){
+                $('#modalShowComputerPrinter #viewPcImpressora').append(item)
+            });
+            $("#modalShowComputerPrinter").modal('show');
+        },
+        error: function(request, status, error){
+            alert('Algo deu errado, tente novamente mais tarde');
+        }
+    });
+
+    
+}

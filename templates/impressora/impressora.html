@@ -1,8 +1,8 @@
 {% extends 'base_listagem.html' %}
 {% load static %}
-{% block button_adicionar %}
 
-<button class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalImpressora'>Adicionar</button>
+{% block button_adicionar %}
+<button class="btn btn-success fonte-arial" data-bs-toggle='modal' data-bs-target='#modalImpressora'>Adicionar</button>
 {% endblock %}
 
 <!-- Titulo Página -->
@@ -21,70 +21,103 @@
             'impressora_atualizar_ajax': '{% url "impressora_atualizar_ajax" %}',
             'impressora_delete': '{% url "impressora_delete" %}',
             'token': '{{csrf_token}}',
+            'view_pc_na_impressora': '{% url "view_pc_na_impressora" %}',
         }
     </script>
 {% endblock scripts %}
 
 {% block tabela %}
-<div class="card-body table-responsive bg-dark">
-    {% if impressoras %}
-    <table class="table table-sm table bg-dark text-light text-muted text-center">
-        <thead>
-            <th scope="col">ID</th>
-            <th scope='col'>Nome</th>
-            <th scope='col'>Identificador</th>
-            <th scope="col">Departamento</th>
-            <th scope='col'>IP</th>
-            <th scope='col'>MAC</th>
-            <th scope='col'>Editar</th>
-        </thead>
-        <tbody>
-            {% for impressora in impressoras %}
-            <tr class='border-0'>
-                <th scope="row">{{ impressora.id }}</th>
-                <td>{{ impressora.nome }}</td>
-                <th>
-                    {% if impressora.matricula %}
-                        {{ impressora.matricula }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </th>
-                <td>
-                    {% if impressora.departamento %}
-                    {{ impressora.departamento }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-                <td>
-                    {% for ip in impressora.ip_impressora.all %}
-                        {{ ip }}
-                    {% endfor %}
-                </td>
-                <td>
-                    {% if impressora.mac_impressora.all %}
-                    {% for mac in impressora.mac_impressora.all %}
-                        {{ mac }}
-                    {% endfor %}
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-                <td>
-                    <i class="fas fa-trash-alt pe-2" onclick="apagarImpressora('{{impressora.id}}')"></i>
-                    <i class="fas fa-edit pe-1" onclick="mostrarImpressoraAtualizar('{{impressora.id}}')"></i>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class='text-center'>
-        <p>Nada Encontrado</p>
+
+{% if impressoras %}
+{% for impressora in impressoras %}
+<div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
+    <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
+
+        <!-- <img class='rounded-circle' style='width:7vh;' src="{% static impressora.url_img %}" alt=""> -->
+        <i class="fas fa-print fa-2x"></i>
+        
     </div>
-    {% endif %}
+    <div class="col-10 mt-0 item-filho hidden ms-4 ms-lg-4 p-lg-2">
+        <div class="row m-0 p-0">
+            <div class="col-12 col-lg-4 mb-lg-2">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-0 p-0">
+                        <b>Nome:</b> {{impressora.nome}}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Matricula:</b>{% if impressora.matricula %} {{impressora.matricula}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Departamento:</b>{% if impressora.departamento %} {{impressora.departamento.departamento}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Prédio:</b>{% if impressora.departamento %} {{impressora.departamento.predio}}{% else %} Indisponível {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-4">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Modelo:</b>{% if impressora.modelo %} {{impressora.modelo}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Endereço IP:</b> 
+                        {% if impressora.ip_impressora.count %}
+                        {{impressora.ip_impressora.first.ip_address }}
+                        {% else %}
+                        Indisponível
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Endereço MAC:</b>
+                        {% if impressora.mac_impressora.count %}
+                        {{impressora.mac_impressora.first.mac_address}}
+                        {% else %}
+                        Indisponível
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-4">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Descrição:</b>
+                        {% if impressora.descricao %}
+                        {{impressora.descricao}}
+                        {% else %}
+                        Não possuo nenhuma informação ;c
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Computadores vinculados <span onclick='ShowPcsVinculadosImpre("{{impressora.id}}")'><i class="fas fa-eye fa-1x pe-2"></i></span></b>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+        <div class='item-esconder'>
+            <p class='mb-0 mt-2 '><b>{{impressora.nome}} </b></p>
+            <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                <p class='mb-0 mt-0'>IP: {% for ip in impressora.ip_impressora.all %}{{ip}}{% endfor %}</p>
+                <p class='mb-0 mt-0 ps-lg-2'>{% if impressora.mac_impressora.count %}- MAC: {% for mac in impressora.mac_impressora.all %}{{mac}}{%endfor %}{% endif%}</p>
+            </span>
+        </div>
+        <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
+            <i class="fas fa-edit pe-1  pe-lg-3 mb-2 mb-lg-0" onclick="mostrarImpressoraAtualizar('{{impressora.id}}')"></i>
+            <i class="fas fa-trash-alt pe-2" onclick="apagarImpressora('{{impressora.id}}')"></i>
+        </span>
+    </div>
 </div>
+{% endfor %}
+{% else %}
+<div class="row">
+    <div class="col-12 shadow p-3">
+        <h5 class='fonte-arial text-center'>Nada encontrado</h5>
+    </div>
+</div>
+{% endif %}
+
 {% endblock tabela %}
 
 {% block modals %}
@@ -246,16 +279,60 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" id='modalShowComputerPrinter'>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content p-0 m-0">
+            <div class="modal-body p-0 m-0">
+                <div class="row p-0 m-0">
+                    <div class="col-12 d-flex justify-content-end bg-secondary p-2 pe-3">
+                        <span data-bs-dismiss='modal'>
+                            <i class="fas fa-times text-light"></i>
+                        </span>
+                    </div>
+                    <div class="col-12 col-lg-4 pt-4 pb-5 d-flex justify-content-center d-flex align-items-center bg-secondary">
+                        <div class="container-fluid fonte-arial">
+                            <div class="col-12 d-flex justify-content-between d-flex align-items-center">
+                                <!-- <img style='width:20vw;' src="{% static 'img/impressoras.png' %}" alt=""> -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-lg-8 fonte-arial overflow-auto p-2" style='min-height:40vh; max-height: 80vh;' id='viewPcImpressora'>
+                        <div class="row p-0 item-pai">
+                            <div class="col-12 p-2 m-0 shadow ">
+                                <div class="row p-0 m-0">
+                                    <div class="col-auto d-flex align-items-center">
+                                        <i class="fas fa-laptop-code fa-2x " aria-hidden="true"></i>
+                                    </div>
+                                    <div class="col d-flex justify-content-between">
+                                        <span class='pt-1'>
+                                            <p class="p-0 m-0"><b>PRE-10 - {}</b></p>
+                                            <p class="p-0 m-0">as</p>
+                                        </span>
+                                        <span class='d-flex align-items-center'>
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock modals %}
 
 {% block nav_paginacao %}
     {% if impressoras.has_previous %}
-    <li class="page-item"><a class="page-link" href="{% url 'impressora_view' impressoras.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'impressora_view' impressoras.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
     {% if impressoras.has_other_pages %}
-    <li class="page-item active"><a class="page-link"  href="#">{{ impressoras.number }}</a></li>
+    <li class="page-item active text-dark fonte-arial text-decoration-none"><a class="page-link"  href="#">{{ impressoras.number }}</a></li>
     {% endif %}
     {% if impressoras.has_next %}
-    <li class="page-item"><a class="page-link" href="{% url 'impressora_view' impressoras.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'impressora_view' impressoras.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}
 {% endblock nav_paginacao %}

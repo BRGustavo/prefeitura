@@ -101,25 +101,49 @@ def departamento_add_ajax(request):
 
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
 
+
 @login_required
 @permission_required('departamento.change_departamento', raise_exception=True)
-def departamento_edit_ajax(request, id):
+def departamento_view_ajax(request):
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        departamento = get_object_or_404(Departamento, id=id)
+        if departamento:
+            data = {
+                'predio': departamento.predio,
+                'departamento': departamento.departamento,
+                'sigla': departamento.sigla_departamento,
+                'descricao': departamento.descricao
+            }
+            return JsonResponse(status=200, data=data, safe=True)
+        else:
+            return JsonResponse(status=404, data={'status':False}, safe=True)
+
+@login_required
+@permission_required('departamento.change_departamento', raise_exception=True)
+def departamento_edit_ajax(request):
     mensagens = []
     campo_erros = []
-    departamento = get_object_or_404(Departamento, pk=id)
-    if request.method == 'POST':
-        form = DepartamentoForm(request.POST, instance=departamento)
-        if form.is_valid():
-            editado = form.save()
-            return JsonResponse(data={'id': editado.id}, safe=True)
-        else:
-            for valores in form.errors.values():
-                mensagens.append(valores)
-            for campo in form:
-                if campo.errors:
-                    campo_erros.append(campo.id_for_label)
-    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
 
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        departamento = get_object_or_404(Departamento, id=id)
+        if departamento:
+            form = DepartamentoForm(request.GET, instance=departamento)
+            if form.is_valid():
+                form.save()
+                return JsonResponse(status=200, data={'status':True}, safe=True)
+            else:
+                for valores in form.errors.values():
+                    mensagens.append(valores)
+                for campo in form:
+                    if campo.errors:
+                        campo_erros.append(campo.id_for_label)
+        else:
+            mensagens.append('Não foi possivel localizar esse departamento.')
+            campo_erros.append(f for f in ['id_predio', 'id_departamento', 'id_descricao'])
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
+    
 
 @login_required
 @permission_required('departamento.view_departamento', raise_exception=True)

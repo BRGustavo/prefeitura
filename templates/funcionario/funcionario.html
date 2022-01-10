@@ -1,9 +1,8 @@
-{% extends 'departamento/departamento.html' %}
+{% extends 'base_listagem.html' %}
+{% load static %}
 
 {% block button_adicionar %}
-<a class="btn btn-outline-success" data-bs-toggle='modal' data-bs-target='#modalFuncionario'>Adicionar</a>
-
-
+<a class="btn btn-success fonte-arial" data-bs-toggle='modal' data-bs-target='#modalFuncionario'>Adicionar</a>
 {% endblock %}
 
 <!-- Titulo Página -->
@@ -18,7 +17,7 @@
 
 <!-- Search Bar  -->
 {% block botao_pesquisa %}
-<button type="submit" class="btn btn-outline-primary" id='pesquisa_btn'>Pesquisa</button>
+<button type="submit" class="btn btn-primary fonte-arial" id='pesquisa_btn'>Pesquisa</button>
 {% endblock botao_pesquisa %}
 
 {% block scripts %}
@@ -35,138 +34,189 @@
 </script>
 {% endblock scripts %}
 
+{% block style %}
+    .img-div {
+        background-image: url('{% static "img/arte.png" %}');
+        background-position: center;
+        background-repeat: none;
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+      }
+{% endblock style %}
+<!-- Computador -->
 {% block tabela %}
-<div class="card-body table-responsive bg-dark">
-    {% if funcionarios %}
-    <table class="table table-sm table bg-dark text-light text-muted text-center">
-        <thead>
-            <th scope="col">ID</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Sobrenome</th>
-            <th scope="col">Departamento</th>
-            <th scope='col'>Usuário PC</th>
-            <th scope='col'>Acesso</th>
-            <th scope='col'>Adm Local</th>
-            <th scope='col'>Opções</th>
-        </thead>
-        <tbody>
-            {% for funcionario in funcionarios %}
-            <tr class='border-0'>
-                <th scope="row">{{ funcionario.id }}</th>
-                <td>{{ funcionario.nome }}</td>
-                <td>
-                    {% if funcionario.sobrenome %}
-                    {{ funcionario.sobrenome }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-                <td>
-                    {% if funcionario.departamento %}
-                    <a href="{% url 'departamento_visualizar' funcionario.departamento.id%}">{{ funcionario.departamento }}</a>
-                    {% else %}
-                    -
-                    {% endif%}
-                </td>
-                <td>{{ funcionario.usuario_pc }}</td>
-                <td>{{ funcionario.controle_acesso }}</td>
-                <td>{{ funcionario.admin_rede }}</td>
-                <td class='p-2'>
-                    <div class="d-flex flex-row">
-                        <i class="fas fa-user-edit pe-3" onclick='ModalAtualizarFuncionario("{{funcionario.id}}", `{% url "funcionario_edit_form_ajax" %}`)'></i>
-                        <i class="fas fa-trash-alt" onclick='ModalRemoverFuncionario(`{% url "funcionario_remover" funcionario.id %}`)'></i>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class='text-center'>
-        <p>Nada Encontrado</p>
+
+{% if funcionarios %}
+{% for funcionario in funcionarios %}
+<div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
+    <div class="col-auto p-1 p-lg-0 d-flex align-items-center d-flex justify-content-center ">
+        <img class='rounded-circle' style='width:7vh;' src="{% static 'img/funcionario.jpg' %}" alt="">
     </div>
-    {% endif %}
+    <div class="col-10 mt-0 item-filho hidden ms-4 ms-lg-4 p-lg-2">
+        <div class="row m-0 p-0">
+            <div class="col-12 col-lg-4 mb-lg-2">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-0 p-0">
+                        <b>Nome:</b> {{funcionario.nome}}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Sobrenome:</b>{% if funcionario.sobrenome %} {{funcionario.sobrenome}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Departamento:</b>{% if funcionario.departamento %} {{funcionario.departamento.departamento}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Prédio:</b>{% if funcionario.departamento %} {{funcionario.departamento.predio}}{% else %} Indisponível {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-4">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Proxy Acesso:</b>{% if funcionario.controle_acesso %} {{funcionario.controle_acesso}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        <b>Admin Rede:</b>{% if funcionario.admin_rede %} {{funcionario.admin_rede}}{% else %} Indisponível {% endif %}
+                    </li>
+                    <li class="list-group-item mt-1  p-0">
+                        {% if funcionario.computador.count %}
+                        <b>Computador:</b>
+                            {% for computador in funcionario.computador.all %}
+                            <span class="me-1"><a class='text-decoration-none fonte-arial text-dark'href="{% url 'computador_visualizar'  computador.id 'principal' %}">{{computador.nome_rede}}</a></span>
+                            {% endfor %}
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-4">
+                <ul class='list-group'>
+                    <li class="list-group-item mt-1 p-0">
+                        <b>Descrição:</b>
+                        {% if funcionario.descricao %}
+                        {{funcionario.descricao}}
+                        {% else %}
+                        Nada informado.
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+        <div class='item-esconder'>
+            <p class='mb-0 mt-2 '><b>{{funcionario.nome}} {% if funcionario.sobrenome %}{{funcionario.sobrenome}}{% endif%}</b></p>
+            <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                <p class='mb-0 mt-0'>Usuário: {{funcionario.usuario_pc.lower}}</p>
+                <p class='mb-0 mt-0 ps-lg-1'>- {{funcionario.departamento.departamento}}</p>
+            </span>
+        </div>
+        <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-2 p-lg-2 d-flex d-flex justify-content-center'>
+            <i class="fas fa-user-edit pe-lg-3 mb-2 mb-lg-0" onclick='ModalAtualizarFuncionario("{{funcionario.id}}", `{% url "funcionario_edit_form_ajax" %}`)'></i>
+            <i class="fas fa-trash-alt" onclick='ModalRemoverFuncionario(`{% url "funcionario_remover" funcionario.id %}`)'></i>
+        </span>
+    </div>
 </div>
+{% endfor %}
+{% else %}
+<div class="row">
+    <div class="col-12 shadow p-3">
+        <h5 class='fonte-arial text-center'>Nada encontrado</h5>
+    </div>
+</div>
+{% endif %}
 {% endblock tabela %}
+
 
 {% block modals %}
 <!-- Adicionar Funcionario Modal -->
 <div class="modal fade" tabindex="-1" id='modalFuncionario'>
-    <div class="modal-dialog modal-xl ">
-        <div class="modal-content">
-            <div class="modal-header bg-success">
-                <h5 class="modal-title text-light">
-                    <i class="fas fa-user pe-2"></i>
-                    Adicionar Funcionário
-                </h5>
-                <span data-bs-dismiss='modal'>
-                    <i class="fas fa-times text-light"></i>
-                </span>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <form id='form-funcionario' method="POST">
-                        {% csrf_token %}
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content m-0 p-0">
+            <div class="modal-body m-0 p-0">
+                <div class="row">
+                    <div class="col-12 col-lg-4 p-0 m-0 fixed">
+                        <div class="img-div d-flex align-items-center p-5">
+                            lorem
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-8 p-3">
                         <div class="row">
-                            <div class="col-12 col-lg-6 mt-2">
-                                <div class="form-group">
-                                    <label for="id_nome">Nome <span class='text-danger'>*</span></label>
-                                    {{formFuncionario.nome}}
+                            <span class="d-flex justify-content-between" data-bs-dismiss="modal">
+                                <h5 style="font-family: Arial, Helvetica, sans-serif;"><i class="fas fa-user-edit pe-2"></i>Adicionar Novo Funcionário</h5>
+
+                                <i class="fas fa-times text-black"></i>
+                            </span>
+                            <div class="row">
+                                <div class="container-fluid">
+                                    <form id='form-funcionario' method="POST">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6 mt-2">
+                                                <div class="form-group">
+                                                    <label for="id_nome">Nome <span class='text-danger'>*</span></label>
+                                                    {{formFuncionario.nome}}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6 mt-2">
+                                                <div class="form-group">
+                                                    <label for="id_nome">Sobrenome</label>
+                                                    {{formFuncionario.sobrenome}}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mt-3">
+                                                <div class="form-group">
+                                                    <label for="id_nome">Departamento <span class='text-danger'>*</span></label>
+                                                    {{formFuncionario.departamento}}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6 mt-3">
+                                                <div class="form-group">
+                                                    <label for="id_nome">Usuário PC</label>
+                                                    {{formFuncionario.usuario_pc}}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6 mt-3">
+                                                <div class="form-group">
+                                                    <label for="id_nome">Senha PC</label>
+                                                    {{formFuncionario.senha_pc}}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6 mt-3">
+                                                <div class="form-group">
+                                                    <label for="id_nome">Acesso Proxy</label>
+                                                    {{formFuncionario.controle_acesso}}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6 mt-3">
+                                                <div class="form-group">
+                                                    <label for="id_nome">Admin Local</label>
+                                                    {{formFuncionario.admin_rede}}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mt-3">
+                                                <div class="form-group">
+                                                    <label for="id_nome">Descrição</label>
+                                                    {{formFuncionario.descricao}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
-                            </div>
-                            <div class="col-12 col-lg-6 mt-2">
-                                <div class="form-group">
-                                    <label for="id_nome">Sobrenome</label>
-                                    {{formFuncionario.sobrenome}}
-                                </div>
-                            </div>
-                            <div class="col-12 mt-3">
-                                <div class="form-group">
-                                    <label for="id_nome">Departamento <span class='text-danger'>*</span></label>
-                                    {{formFuncionario.departamento}}
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 mt-3">
-                                <div class="form-group">
-                                    <label for="id_nome">Usuário PC</label>
-                                    {{formFuncionario.usuario_pc}}
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 mt-3">
-                                <div class="form-group">
-                                    <label for="id_nome">Senha PC</label>
-                                    {{formFuncionario.senha_pc}}
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 mt-3">
-                                <div class="form-group">
-                                    <label for="id_nome">Acesso Proxy</label>
-                                    {{formFuncionario.controle_acesso}}
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 mt-3">
-                                <div class="form-group">
-                                    <label for="id_nome">Admin Local</label>
-                                    {{formFuncionario.admin_rede}}
-                                </div>
-                            </div>
-                            <div class="col-12 mt-3">
-                                <div class="form-group">
-                                    <label for="id_nome">Descrição</label>
-                                    {{formFuncionario.descricao}}
+                                <div class="col-12 mt-2 d-flex justify-content-end">
+                                    <button class="btn btn-outline-secondary me-2" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                                    <button style='font-family: Arial, Helvetica, sans-serif; color:white; background-color:#1e0302' class="btn" onclick='AdicionarNovoItem("funcionario", false)'>Adicionar</button>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                <button style='font-family: Arial, Helvetica, sans-serif; color:white;' class="btn btn-success" onclick='AdicionarNovoItem("funcionario", false)'>Adicionar</button>
             </div>
         </div>
     </div>
 </div>
+
+
 <!-- Modal Remover Funcionario -->
 <div class="modal fade" tabindex="-1" id='modalDeletar'>
     <div class="modal-dialog modal-lg">
@@ -192,104 +242,115 @@
         </div>
     </div>
 </div>
+
+
 <!-- Modal Atualizar Funcionario -->
 <div class="modal fade" tabindex="-1" id='modalEditFuncionario'>
-    <div class="modal-dialog modal-xl ">
-        <div class="modal-content">
-            <div class="modal-header" style='background-color:rgb(184, 106, 106);'>
-                <h5 class="modal-title text-light">
-                    <i class="fas fa-user pe-2"></i>
-                    Editar Funcionário
-                </h5>
-                <span data-bs-dismiss='modal'>
-                    <i class="fas fa-times text-light"></i>
-                </span>
-            </div>
-            <div class="modal-body">
-                <form method='POST' id='form-funcionario'>
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-12 col-lg-6 mt-2">
-                            <div class="form-group">
-                                <label for="id_nome">Nome <span class='text-danger'>*</span></label>
-                                <input type="text" class="form-control" placeholder='Exemplo: Gustavo' name='nome' id='id_nome'>
-                            </div>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content m-0 p-0">
+            <div class="modal-body m-0 p-0">
+                <div class="row">
+                    <div class="col-12 col-lg-4 p-0 m-0 fixed">
+                        <div class="img-div d-flex align-items-center p-5">
+                            lorem
                         </div>
-                        <div class="col-12 col-lg-6 mt-2">
-                            <div class="form-group">
-                                <label for="id_sobrenome">Sobrenome</label>
-                                <input type="text" class="form-control" placeholder='Exemplo: De Oliveira' name='sobrenome' id='id_sobrenome'>
-                            </div>
+                    </div>
+                    <div class="col-12 col-lg-8 p-3">
+                        <div class="row">
+                            <span class="d-flex justify-content-between" data-bs-dismiss="modal">
+                                <h5 style="font-family: Arial, Helvetica, sans-serif;"><i class="fas fa-user-edit pe-2"></i>Editar Funcionário</h5>
+
+                                <i class="fas fa-times text-black"></i>
+                            </span>
                         </div>
-                        <div class="col-12 mt-3">
-                            <div class="form-group">
-                                <label for="id_departamento">Departamento <span class='text-danger'>*</span></label>
-                                <select name="departamento" class="form-control" required="" id="id_departamento" name='departamento'>
-                                    <option value="" selected="">---------</option>
-                                  
-                                  </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6 mt-3">
-                            <div class="form-group">
-                                <label for="id_usuario_pc">Usuário PC</label>
-                                <input type="text" class="form-control" placeholder='Exemplo: gustavo.oliveira' name='usuario_pc' id='id_usuario_pc'>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6 mt-3">
-                            <div class="form-group">
-                                <label for="id_senha_pc">Senha PC</label>
-                                <input type="text" class="form-control" placeholder='Exemplo: 123' id='id_senha_pc'>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6 mt-3">
-                            <div class="form-group">
-                                <label for="id_controle_acesso">Acesso Proxy</label>
-                                <select name="controle_acesso" class="form-control" id="id_controle_acesso">
-                                    <option value="Pessimista">Pessimista</option>
-                                    <option value="Otimista">Otimista</option>
-                                  </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6 mt-3">
-                            <div class="form-group">
-                                <label for="id_admin_rede">Admin Rede</label>
-                                <select name="admin_rede" class="form-control" id="id_admin_rede">
-                                    <option value="Não">Não</option>
-                                    <option value="Sim">Sim</option>
-                                  </select>
-                            </div>
-                        </div>
-                        <div class="col-12 mt-3">
-                            <div class="form-group">
-                                <label for="id_descricao">Descrição</label>
-                                <textarea name="descricao" cols="40" rows="3" class="form-control" autocomplete="off" placeholder="Informações complementares sobre o usuário." maxlength="1000" id="id_descricao"></textarea>
+                        <div class="row">
+                            <div class="container-fluid">
+                                <form method='POST' id='form-funcionario'>
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-12 col-lg-6 mt-2">
+                                            <div class="form-group">
+                                                <label for="id_nome">Nome <span class='text-danger'>*</span></label>
+                                                <input type="text" class="form-control" placeholder='Exemplo: Gustavo' name='nome' id='id_nome'>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mt-2">
+                                            <div class="form-group">
+                                                <label for="id_sobrenome">Sobrenome</label>
+                                                <input type="text" class="form-control" placeholder='Exemplo: De Oliveira' name='sobrenome' id='id_sobrenome'>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-3">
+                                            <div class="form-group">
+                                                <label for="id_departamento">Departamento <span class='text-danger'>*</span></label>
+                                                <select name="departamento" class="form-control" required="" id="id_departamento" name='departamento'>
+                                                    <option value="" selected="">---------</option>
+                                                  
+                                                  </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mt-3">
+                                            <div class="form-group">
+                                                <label for="id_usuario_pc">Usuário PC</label>
+                                                <input type="text" class="form-control" placeholder='Exemplo: gustavo.oliveira' name='usuario_pc' id='id_usuario_pc'>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mt-3">
+                                            <div class="form-group">
+                                                <label for="id_senha_pc">Senha PC</label>
+                                                <input type="text" class="form-control" placeholder='Exemplo: 123' id='id_senha_pc'>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mt-3">
+                                            <div class="form-group">
+                                                <label for="id_controle_acesso">Acesso Proxy</label>
+                                                <select name="controle_acesso" class="form-control" id="id_controle_acesso">
+                                                    <option value="Pessimista">Pessimista</option>
+                                                    <option value="Otimista">Otimista</option>
+                                                  </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mt-3">
+                                            <div class="form-group">
+                                                <label for="id_admin_rede">Admin Rede</label>
+                                                <select name="admin_rede" class="form-control" id="id_admin_rede">
+                                                    <option value="Não">Não</option>
+                                                    <option value="Sim">Sim</option>
+                                                  </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-3">
+                                            <div class="form-group">
+                                                <label for="id_descricao">Descrição</label>
+                                                <textarea name="descricao" cols="40" rows="3" class="form-control" autocomplete="off" placeholder="Informações complementares sobre o usuário." maxlength="1000" id="id_descricao"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="col-12 mt-2 d-flex justify-content-end">
+                                    <button class="btn btn-outline-secondary me-2" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
+                                    <button style='font-family: Arial, Helvetica, sans-serif; background-color:#1e0302; color:white;' class="btn ps-3 pe-3" id='EditarFuncionario'>Editar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" style='font-family: Arial, Helvetica, sans-serif; color:black;' data-bs-dismiss='modal'>Cancelar</button>
-                <button style='font-family: Arial, Helvetica, sans-serif; background-color:rgb(184, 106, 106); color:white;' class="btn ps-3 pe-3" id='EditarFuncionario'>Editar</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 
-
-
 {% endblock modals %}
 
 {% block nav_paginacao %}
     {% if funcionarios.has_previous %}
-    <li class="page-item"><a class="page-link" href="{% url 'funcionario' funcionarios.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'funcionario' funcionarios.previous_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Voltar</a></li>
     {% endif %}
     {% if funcionarios.has_other_pages %}
-    <li class="page-item active"><a class="page-link"  href="#">{{ funcionarios.number }}</a></li>
+    <li class="page-item active text-dark fonte-arial text-decoration-none"><a class="page-link"  href="#">{{ funcionarios.number }}</a></li>
     {% endif %}
     {% if funcionarios.has_next %}
-    <li class="page-item"><a class="page-link" href="{% url 'funcionario' funcionarios.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
+    <li class="page-item text-dark fonte-arial text-decoration-none"><a class="page-link" href="{% url 'funcionario' funcionarios.next_page_number %}{% if pesquisa %}?query={{ pesquisa }}{% endif %}">Next</a></li>
     {% endif %}
 {% endblock nav_paginacao %}
