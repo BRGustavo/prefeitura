@@ -90,22 +90,6 @@ class RoteadorForm(forms.ModelForm):
     endereco_ip = forms.GenericIPAddressField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'aria-describedby': 'enderecoiphelp', 'placeholder': 'Exemplo: 192.168.15.20'}))
     endereco_mac = MACAddressFormField(required=False, widget=TextInput(attrs={'class': 'form-control', 'autocomplete':'off', 'placeholder': 'Exemplo: AA-AA-AA-AA-AA-AA'}))
 
-
-class EndereoIpForm(forms.ModelForm):
-    class Meta:
-        model = EnderecoIp
-        fields = ('ip_address',)
-        exclude = ()
-    
-    ip_address = forms.CharField(required=False, widget=TextInput(attrs={'class': 'form-control'}))
-
-
-class MemoriaRamForm(forms.ModelForm):
-    class Meta:
-        model = MemoriaRam
-        fields = ('modelo', 'frequencia', 'descricao')
-
-
 class ComputadorFormDescricao(forms.ModelForm):
     class Meta:
         model = Computador
@@ -236,7 +220,7 @@ class ComputadorFormNovo(forms.Form):
         
         if departamento_formulario is not None:
             if departamento_formulario:
-                print("Sim")
+                pass
             else:
                 raise forms.ValidationError({'departamento': 'Esse departamento informado não existe.'})
 
@@ -373,6 +357,7 @@ class ImpressoraForm(forms.Form):
 
         if endereco_mac is not None:
             if isinstance(endereco_mac, EUI):
+                
                 pass
             else:
                 raise forms.ValidationError({'endereco_mac': 'Endereço MAC informado é inválido.'})
@@ -407,7 +392,7 @@ class ImpressoraForm(forms.Form):
             return self.abortar()
 
     def abortar(self, id=0):
-        raise ValueError('Ocorreu um erro ao salvar o computador. Por favor, tente novamente.')
+        raise ValueError('Ocorreu um erro ao salvar a impressora. Por favor, tente novamente.')
 
     def put_isvalid(self, impressora_id):
         cleaned_data = self.data
@@ -417,6 +402,7 @@ class ImpressoraForm(forms.Form):
         endereco_mac = cleaned_data['endereco_mac']
         impressora = Impressora.objects.filter(id=impressora_id).first()
         enderecos_ip_exclude = [ ip.ip_address for ip in impressora.ip_impressora.all() ]
+        endereco_mac_exclude = [ str(mac.mac_address) for mac in impressora.mac_impressora.all()]
         if nome is None or len(nome) <=1:
             raise forms.ValidationError({'nome': 'Nome informado é inválido! Altere'})
         
@@ -424,14 +410,26 @@ class ImpressoraForm(forms.Form):
             if Departamento.objects.filter(id=departamento).count() <= 0:
                 raise forms.ValidationError({'departamento': 'Esse departamento não existe.'})
         
+
         if ip_endereco is not None and len(ip_endereco) >=1:
             try: 
                 if validate_ipv4_address(ip_endereco) is None:
                     verificador = EnderecoIp.objects.filter(ip_address=ip_endereco).exclude(ip_address__in=enderecos_ip_exclude)
                     if verificador.count() >=1:
                         raise forms.ValidationError({'ip_endereco': 'Esse endereço de IP já está sendo utilizado.'})
+
             except ValidationError as e:
                 raise forms.ValidationError(e)
+
+        if len(str(endereco_mac)) >=1:
+            mac_impressora = EnderecoMac.objects.filter(mac_address=str(endereco_mac))
+            if mac_impressora.count() >=1:
+                mac_impressora = mac_impressora.exclude(mac_address__in=endereco_mac_exclude)
+                if mac_impressora.count() <=0:
+                    pass
+                else:
+                    raise ValueError('Esse endereço MAC já está sendo utilizado.')
+
         return cleaned_data
     
     def put_save(self, impressora_id):
@@ -456,8 +454,24 @@ class ImpressoraForm(forms.Form):
                         if str(ip_antigo.ip_address) != data['ip_endereco']:
                             ip_antigo.ip_address = data['ip_endereco']
                             ip_antigo.save()
-                        
 
+                if data['endereco_mac'] is not None and len(str(data['endereco_mac'])) >=1:
+                    try:
+                        mac = impressora.first().mac_impressora.all()
+                        if mac.count() >=1:
+                            if mac.first().parent_object == impressora.first():
+                                mac.update(mac_address=str(data['endereco_mac']))
+                        else:
+                            mac_impressora = EnderecoMac(mac_address=data['endereco_mac'], content_type=ContentType.objects.get(model='impressora'), parent_object_id=impressora.first().id)
+                            mac_impressora.save()
+                            impressora.first().mac_impressora.add(mac_impressora)
+                    except IntegrityError:
+                        pass
+                
+                elif len(str(data['endereco_mac'])) <=0:
+                    for mac in impressora.first().mac_impressora.all():
+                        mac.delete()
+                    
                 impressora.update(nome=data['nome'], matricula=data['matricula'], descricao=data['descricao'], modelo=data['modelo'])
         except ValidationError:
             pass
@@ -510,6 +524,7 @@ class EnderecoReservadoForm(forms.Form):
             novo_ip_reservado.save()
             tipo = ContentType.objects.filter(model='enderecoipreservado').first().id
             ip_novo = EnderecoIp(ip_address=enderecoip, content_type_id=tipo, parent_object_id=novo_ip_reservado.id)
-
             ip_novo.save()
+            novo_ip_reservado.ip_reservado.add(ip_novo)
+            novo_ip_reservado.save()
         

@@ -51,7 +51,7 @@ def funcionario_view(request, pagina=1):
     if pesquisa != '' and pesquisa is not None:
 
         funcionarios_lista = funcionarios_lista.filter(
-            Q(nome__icontains=pesquisa) | Q(sobrenome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(controle_acesso__icontains=pesquisa) | Q(id__iexact=pesquisa) | Q(usuario_pc__icontains=pesquisa)
+            Q(nome__icontains=pesquisa) | Q(sobrenome__icontains=pesquisa) | Q(departamento__departamento__icontains=pesquisa) | Q(departamento__predio__icontains=pesquisa) | Q(controle_acesso__icontains=pesquisa) | Q(id__iexact=pesquisa) | Q(usuario_pc__icontains=pesquisa) | Q(computador__nome_rede__icontains=pesquisa)
         )
 
     funcionarios = Paginator(funcionarios_lista.order_by('id'), 15).get_page(pagina)

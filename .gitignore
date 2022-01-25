@@ -4,3 +4,4 @@ departamento/migrations/
 dispositivo/migrations/
 inventario/migrations/
 uwsgi_params
+backup.json

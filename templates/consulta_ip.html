@@ -9,6 +9,36 @@ Consulta IP
 <button class="btn btn-success fonte-arial" data-bs-toggle='modal' data-bs-target='#modalReservarIp'>Adicionar</button>
 {% endblock button_adicionar %}
 
+
+{% block scripts %}
+    <script>
+        const forms_urls = {
+            'reservar_ip_ajax': "{% url 'reservar_ip_ajax' %}"
+        }
+        function RemoverIPReservado(id){
+            $('#ModalRemoverIpReservado').modal('show');
+            $('#btnRemoverIP').attr('onclick', `AjaxRemoverIP(${id})`)
+        }
+        function AjaxRemoverIP(id){
+        $.ajax({
+            type: 'GET',
+            url: '{% url "remover_ip_reservado" %}',
+            data: {
+                'ID': id,
+            },
+            success: function(data){
+                $('#ModalRemoverIpReservado').modal('hide');
+                location.reload();
+            },
+            error: function(response, status, error){
+                
+                alert('O IP informado não está reservado.');
+            }
+        }); 
+        }
+    </script>
+{% endblock scripts %}
+
 {% block tabela %}
 
 {% if enderecos %}
@@ -121,7 +151,7 @@ Consulta IP
             </span>
         </div>
         <span class='d-flex align-items-center d-flex me-4 text-dark'>
-            <a href="{% url 'computador_visualizar' endereco.parente.id 'principal' %}"><i class="fas fa-eye"></i></a>
+            <a class='text-dark' href="{% url 'computador_visualizar' endereco.parente.id 'principal' %}"><i class="fas fa-eye"></i></a>
         </span>
     </div>
 </div>
@@ -194,12 +224,27 @@ Consulta IP
             </span>
         </div>
         <span class='d-flex align-items-center d-flex me-4 text-dark'>
-            <a href="{% url 'impressora_view' 1 %}?query={{endereco.ip}}"><i class="fas fa-eye"></i></a>
+            <a class='text-dark' href="{% url 'impressora_view' 1 %}?query={{endereco.ip}}"><i class="fas fa-eye"></i></a>
         </span>
     </div>
 </div>
 {% elif endereco.tipo == 'Reservado' %}
-
+<div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex" style="font-family: Arial, Helvetica, sans-serif;" id='modificar'>
+    <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
+        <i class="fas fa-hdd fa-2x text-danger"></i>
+    </div>
+    <div class="col p-0 m-0 ps-3 d-flex justify-content-between">
+        <div class='item-esconder'>
+            <p class='mb-0 mt-2 '><b>{{endereco.tipo}}</b></p>
+            <span class='d-flex d-flex flex-column flex-lg-row mt-1'>
+                <p class='mb-0 mt-0'>IP: {{endereco.ip}}</p>
+            </span>
+        </div>
+        <span class='d-flex align-items-center d-flex me-4 text-dark'>
+            <i onclick="RemoverIPReservado('{{endereco.parente.id}}')" class="fas fa-trash"></i>
+        </span>
+    </div>
+</div>
 {% else %}
 <div class="row p-1 ps-lg-3 m-0 mt-2 shadow d-flex" style="font-family: Arial, Helvetica, sans-serif;" id='modificar'>
     <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
@@ -220,11 +265,6 @@ Consulta IP
 
 {% endblock tabela %}
 
-
-
-{% block scripts %}
-
-{% endblock scripts %}
 
 {% block modals %}
 <div class="modal fade" tabindex="-1" id='modalReservarIp'>
@@ -260,6 +300,30 @@ Consulta IP
               </div>
             </form>
         </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Remover IP Reservado -->
+  <div class="modal fade" tabindex="-1" id='ModalRemoverIpReservado'>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-light d-flex justify-content-between" style='background-color: rgb(204, 84, 84);'>
+          <h5 style="font-family: Arial, Helvetica, sans-serif;">
+            <i class="far fa-trash-alt text-light fa-1x pe-2"></i>
+            Remover IP Reservado
+          </h5>
+          <span data-bs-dismiss='modal'>
+            <i class="fas fa-times text-light"></i>
+          </span>
+        </div>
+        <div class="modal-body" style='font-family: Arial, Helvetica, sans-serif;'>
+            Você tem certeza que deseja remover esse endereço de IP reservado? Caso você remova, será possivel utiliza-lo por outro dispositivo.
+        </div>
+        <div class="modal-footer">
+          <button data-bs-dismiss='modal' class="btn btn-outline-secondary"style='font-family: Arial, Helvetica, sans-serif; color:black;'>Cancelar</button>
+          <button id='btnRemoverIP' class="btn btn-danger" style='font-family: Arial, Helvetica, sans-serif;'>Remover</button>
         </div>
       </div>
     </div>
