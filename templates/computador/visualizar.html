@@ -61,7 +61,7 @@
                      <div class="col-12 text-center">
                          <h4 class='mb-1'>
                              <b>
-                                 {{computador.nome_rede}} {% if computador.funcionario %} - <span>{{computador.funcionario.nome}}</span> {% endif %}
+                                 {{computador.nome_rede}} {% if computador.funcionario %} - <a class='text-decoration-none text-dark' href='{% url "funcionario" 1 %}?query={{computador.nome_rede}}'>{{computador.funcionario.nome}}</a> {% endif %}
                              </b>
                          </h4>
                          {% if computador.funcionario %}
@@ -637,7 +637,8 @@
                 <div class="row p-0 pt-2 m-0 mt-0 d-flex justify-content-between rounded item-pai" style="font-family: Arial, Helvetica, sans-serif;">
                     <div class="row m-0 p-3 item-esconder shadow hidden">
                         <div class="col-auto d-flex justify-content-center d-flex align-items-center">
-                            <i class="fas fa-print fa-2x"></i>
+                            <!-- <i class="fas fa-print fa-2x"></i> -->
+                            <i class="far fa-file fa-2x"></i>
                         </div>
                         <div class="col d-flex justify-content-between">
                             <span>

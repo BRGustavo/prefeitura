@@ -22,10 +22,12 @@ from netaddr import EUI
 from netaddr.core import AddrFormatError
 from django.urls import reverse
 
-
 @login_required
 @permission_required('dispositivo.view_computador', raise_exception=True)
 def computador_view(request, pagina):
+    """
+    Página responsável por listar os computadores do banco de dados no site.
+    """
     pesquisa = request.GET.get('query')
     computadores = Computador.objects.all()
     if pesquisa != '' and pesquisa is not None:
@@ -42,6 +44,10 @@ def computador_view(request, pagina):
 @login_required
 @permission_required('dispositivo.delete_computador', raise_exception=True)
 def computador_remover(request):
+    """
+    Função chamada para remover um computador do banco de dados.
+    Está como method GET, pois é convocado pelo ajax.
+    """
     if request.method == 'GET':
         computador = get_object_or_404(Computador, pk=request.GET.get('id_computador'))
         for key,value in dict(request.GET).items():
@@ -103,7 +109,7 @@ def computador_remover(request):
                             computador.placa_mae = None
                             computador.save()
                             placa.delete()
-                    
+                
             if key == 'manterProcessador':
                 processadores = Processador.objects.filter(computador=computador)
                 if processadores.count() >=1:
@@ -126,6 +132,9 @@ def computador_remover(request):
 @login_required
 @permission_required('dispositivo.view_computador', raise_exception=True)
 def computador_visualizar(request, id, pagina='principal'):
+    """
+    Função responsável por retornar a página de cada computador individualmente utilizando como identificador o id fornecido pela url.
+    """
     computador = get_object_or_404(Computador, pk=id)
     form = ComputadorForm(instance=computador)
     formInfo = ComputadorFormInfo(instance=computador)
@@ -166,7 +175,7 @@ def computador_visualizar(request, id, pagina='principal'):
             return JsonResponse(status=200, data={'data':'data'}, safe=True)
         else:
             return JsonResponse(status=404, safe=True, data={'erro': 'erro'})
-    if pagina == 'principal':
+    if pagina == 'principal': # Função antigo sistema.
         return render(request, template_name='computador/visualizar.html', context=context)
     else:
         return render(request, template_name='computador/visualizar.html', context=context)
@@ -360,7 +369,6 @@ def roteador_delete(request):
         
     return JsonResponse(status=400, safe=True, data={'data':'data'})
 
-
 def teste_view(request):
     pagina = 1
     pesquisa = request.GET.get('query')
@@ -469,7 +477,6 @@ def patrimonio_view(request):
     return render(request, template_name='patrimonios/patrimonio.html', context={'items':items})
 
 
-
 def pesquisar_endereco_ip(request, pagina):
     pesquisa = request.GET.get('query')
     if request.method == 'GET':
@@ -489,6 +496,8 @@ def pesquisar_endereco_ip(request, pagina):
                 tipo = 'Roteador'
             elif isinstance(endereco.parent_object, EnderecoIpReservado):
                 tipo = 'Reservado'
+            else:
+                tipo = 'Desconhecido'
             items.append({
                 'id': endereco.parent_object.id,
                 'tipo': tipo,

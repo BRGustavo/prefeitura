@@ -12,68 +12,6 @@ from .forms import ComputadorForm, ComputadorFormInfo, ComputadorFormNovo, Ender
 from netaddr import EUI
 
 
-@login_required
-@permission_required('dispositivo.add_computador', raise_exception=True)
-def computador_create_ajax(request):
-    if request.is_ajax():
-        data = []
-        lista_item = []
-        tipo_data = request.GET.get('tipoValue')
-
-        if tipo_data == 'selectFuncionario':
-            lista_item = Funcionario.objects.all().order_by('nome')
-
-        elif tipo_data == 'selectMouse':
-            lista_item = Mouse.objects.all().filter(computador__isnull=True).order_by('criado_data')
-
-        elif tipo_data == 'selectTeclado':
-            lista_item = Teclado.objects.all().filter(computador__isnull=True).order_by('criado_data')
-
-        elif tipo_data == 'selectMonitor':
-            lista_item = Monitor.objects.all().filter(computador__isnull=True).order_by('criado_data')
-
-        elif tipo_data == 'selectGabinete':
-            lista_item = Gabinete.objects.all().filter(computador__isnull=True).order_by('criado_data')
-
-        elif tipo_data == 'selectProcessador':
-            lista_item = Processador.objects.all().filter(computador__isnull=True).order_by('criado_data')
-
-        elif tipo_data == 'selectPlacamae' or tipo_data == 'selectPlaca_mae':
-            lista_item = PlacaMae.objects.all().filter(computador__isnull=True).order_by('criado_data')
-
-        elif tipo_data == 'selectHd':
-            lista_item = Hd.objects.all().filter(computador__isnull=True).order_by('criado_data')
-
-        for item in lista_item:
-            data.append((f'{item.id}', str(item)))
-        return JsonResponse(data, safe=False)
-
-    return render(request, 'base.html')
-
-
-@login_required
-@permission_required('dispositivo.add_computador', raise_exception=True)
-def verificar_ip_ajax(request):
-    if request.is_ajax():
-        ip = request.GET.get('enderecoip')
-        data = {
-            'ip': ip,
-            'valido': False,
-            'mensagem': ''
-        }
-        ip_db = EnderecoIp.objects.filter(ip_address=ip)
-        if ip_db.count() >= 1:
-            data['valido'] = False
-            data['mensagem'] = 'Parece que algo já está usando esse endereço ip.'
-        else:
-            try:
-                validador = validate_ipv4_address(ip)
-                data['valido'] = True
-            except ValidationError: 
-                data['valido'] = False
-                data['mensagem'] = 'Esse endereço não está no padrão IPV4.'
-        return JsonResponse(data, safe=True)
-    return render(request, 'base.html')
 
 @login_required
 @permission_required('dispositivo.view_impressora', raise_exception=True)
@@ -294,8 +232,7 @@ def atualizar_computador_info_ajax(request):
 
 
 @login_required
-@permission_required('dispositivo.change_computador', raise_exception=True)
-@permission_required('dispositivo.change_enderecoip', raise_exception=True)
+@permission_required('dispositivo.change_computador', raise_exception=True) 
 def verificar_endereco_ip(request):
     mensagens = []
     campo_erros = []
@@ -563,42 +500,26 @@ def impressora_atualizar_ajax(request):
                 form.put_save(impressora_id)
                 return JsonResponse(data={'data': 'data'}, safe=True)
         except ValidationError as e:
+            print(form.errors.values())
             for valores in form.errors.values():
                 mensagens.append(valores)
             for campo in form:
                 if campo.errors:
                     campo_erros.append(campo.id_for_label)
+        except ValueError:
+            mensagens.append('Endereço MAC Inválido ou em uso')
+            campo_erros.append('id_endereco_mac')
 
-    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
-
-
-def salvar_ip_reservado(request):
-    mensagens = []
-    campo_erros = []
-    if request.method == 'POST':
-        if request.is_ajax():
-            form = EnderecoReservadoForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return JsonResponse(status=200, data={'data': 'ok'}, safe=True)
-            else:
-                for valores in form.errors.values():
-                    mensagens.append(valores)
-                for campo in form:
-                    if campo.errors:
-                        campo_erros.append(campo.id_for_label)
-        
     return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})
 
 
 @login_required
-@permission_required('dispositivo.change_enderecoip', raise_exception=True)
+@permission_required('dispositivo.change_computador', raise_exception=True)
 def remover_ip_reservado(request):
     if request.method == 'GET':
         if request.is_ajax():
             id_ip_reservado = request.GET.get('ID')
             ip_reservado = get_object_or_404(EnderecoIpReservado, pk=id_ip_reservado)
-            print(ip_reservado)
             if ip_reservado:
                 ip_reservado.delete()
                 return JsonResponse(status=200, data={'mensagem': 'tudo ok!'}, safe=True)
@@ -657,5 +578,39 @@ def view_pc_na_impressora(request):
                     </div>
                 </div>
                 """)
+            if impressora.computador.count() <=0:
+                computadores.append(f"""
+                <div class="row p-1 item-pai">
+                    <div class="col-12 p-1 m-0 ">
+                        <div class="row p-1 m-0">
+                            <div class="col d-flex justify-content-center">
+                                <span class='pt-1'>
+                                    <h5 class="p-0 m-0 fonte-arial">Nada encontrado</h5>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                """)
+
             return JsonResponse(status=200, data={'computadores': computadores}, safe=True)
     return JsonResponse(status=404, data={'mensagem': 'Algo deu errado'}, safe=True)
+
+
+@login_required
+def reservar_ip_ajax(request):
+    mensagens = []
+    campo_erros = []
+    if request.method == 'GET':
+        form = EnderecoReservadoForm(request.GET)
+        if form.is_valid():
+            form.save()
+            return JsonResponse(status=200, data={'mensagem': 'ok'}, safe=True)
+        else:
+            for valores in form.errors.values():
+                mensagens.append(valores)
+            for campo in form:
+                if campo.errors:
+                    campo_erros.append(campo.id_for_label)
+        
+    return JsonResponse(status=404, data={'status':'false','messagem': mensagens, 'field_erros': campo_erros})

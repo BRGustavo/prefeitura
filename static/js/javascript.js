@@ -9,6 +9,7 @@ $('#id_endereco_ip').keyup(function(){
     }
 });
 
+
 function VerificarEnderecoIp(){
     var ip_valor = window.document.querySelector('#id_endereco_ip').value;
     if(ip_valor.length >= 1){
@@ -109,12 +110,17 @@ function AdicionarNovoItem(tipo, requisicao=true){
             location.reload();
         },
         error: function (request, status, error) {
-            let info = $.parseJSON(request.responseText);
-            if(info['status'] == 'false'){
-                alert("Verifique o formulário.");
-                for(let erro_id in info['field_erros']){
-                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+            try {
+                let info = $.parseJSON(request.responseText);
+                if(info['status'] == 'false'){
+                    alert("Verifique o formulário.");
+                    for(let erro_id in info['field_erros']){
+                        $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                    }
                 }
+            }
+            catch(err){
+                alert("Você não tem permissão suficiente.")
             }
         }
     });
@@ -362,22 +368,27 @@ $('#form-computadornovo').submit(function(e){
             location.reload()
         },
         error: function (request, status, error) {
-            $("#novoComputadorButton").html("Adicionar")
+            try {
+                $("#novoComputadorButton").html("Adicionar")
 
-            $(`#form-computadornovo input`).each(function(index){
-                $(this).css('border-color', '#ced4da');
-            });
-            $(`#form-computadornovo label`).each(function(index){
-                $(this).css('color', 'black');
-            });
-            let info = $.parseJSON(request.responseText);
-            
-            if(info['status'] == 'false'){
-                alert(info['messagem']);
-                for(let erro_id in info['field_erros']){
-                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
-                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                $(`#form-computadornovo input`).each(function(index){
+                    $(this).css('border-color', '#ced4da');
+                });
+                $(`#form-computadornovo label`).each(function(index){
+                    $(this).css('color', 'black');
+                });
+                let info = $.parseJSON(request.responseText);
+                
+                if(info['status'] == 'false'){
+                    alert(info['messagem']);
+                    for(let erro_id in info['field_erros']){
+                        $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                        $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                    }
                 }
+            }
+            catch(err){
+                alert("Você não tem permissão suficiente")
             }
         }
     })
@@ -402,22 +413,27 @@ $('#form-impressoranova').submit(function(e){
             location.reload()
         },
         error: function (request, status, error) {
-            $("#novaImpressoraButton").html("Adicionar")
+            try {
+                $("#novaImpressoraButton").html("Adicionar")
 
-            $(`#form-impressoranova input`).each(function(index){
-                $(this).css('border-color', '#ced4da');
-            });
-            $(`#form-impressoranova label`).each(function(index){
-                $(this).css('color', 'black');
-            });
-            let info = $.parseJSON(request.responseText);
-            
-            if(info['status'] == 'false'){
-                alert(info['messagem']);
-                for(let erro_id in info['field_erros']){
-                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
-                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                $(`#form-impressoranova input`).each(function(index){
+                    $(this).css('border-color', '#ced4da');
+                });
+                $(`#form-impressoranova label`).each(function(index){
+                    $(this).css('color', 'black');
+                });
+                let info = $.parseJSON(request.responseText);
+                
+                if(info['status'] == 'false'){
+                    alert(info['messagem']);
+                    for(let erro_id in info['field_erros']){
+                        $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                        $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                    }
                 }
+            }
+            catch(err){
+                alert("Você não tem permissão suficiente.")
             }
         }
     })
@@ -584,22 +600,27 @@ $('#form-roteadornovo').submit(function(e){
             location.reload()
         },
         error: function (request, status, error) {
-            $("#novoRoteadorButton").html("Adicionar")
+            try {
+                $("#novoRoteadorButton").html("Adicionar")
 
-            $(`#form-roteadornovo input`).each(function(index){
-                $(this).css('border-color', '#ced4da');
-            });
-            $(`#form-roteadornovo label`).each(function(index){
-                $(this).css('color', 'black');
-            });
-            let info = $.parseJSON(request.responseText);
-            
-            if(info['status'] == 'false'){
-                alert(info['messagem']);
-                for(let erro_id in info['field_erros']){
-                    $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
-                    $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                $(`#form-roteadornovo input`).each(function(index){
+                    $(this).css('border-color', '#ced4da');
+                });
+                $(`#form-roteadornovo label`).each(function(index){
+                    $(this).css('color', 'black');
+                });
+                let info = $.parseJSON(request.responseText);
+                
+                if(info['status'] == 'false'){
+                    alert(info['messagem']);
+                    for(let erro_id in info['field_erros']){
+                        $(`#${info['field_erros'][erro_id]}`).css('border-color', 'red');
+                        $(`label[for=${info['field_erros'][erro_id]}]`).css('color', 'red');
+                    }
                 }
+            }
+            catch(err){
+                alert("Você não tem permissão suficiente.")
             }
         }
     })
@@ -956,7 +977,23 @@ function ShowPcsVinculadosImpre(id){
         error: function(request, status, error){
             alert('Algo deu errado, tente novamente mais tarde');
         }
-    });
-
-    
+    });    
 }
+$('#form-ReservarIP').submit(function(evento){
+    evento.preventDefault();
+    form = $(this).serialize()
+    $.ajax({
+        type: 'GET',
+        url: forms_urls.reservar_ip_ajax,
+        data: form,
+
+        success: function(data){
+           $('#modalReservarIp').modal('hide');
+           location.reload();
+        },
+        error: function(request, status, error){
+            alert('Algo deu errado, tente novamente mais tarde');
+        }
+    });
+});
+

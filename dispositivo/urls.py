@@ -23,8 +23,7 @@ urlpatterns = [
     path('impressora/ajax/apagarimpressora', views.impressora_delete, name='impressora_delete'),
 
     # Ajax
-    path('computador/add/ajax', ajax.computador_create_ajax, name='computador_add_ajax'),
-    path('ip/verificador/ajax/', ajax.verificar_ip_ajax, name='verificar_ip_ajax'),
+
     path('ip/verificardorip/ajax', ajax.verificar_endereco_ip,name='verificar_enderecoip_ajax'),
     path('impressora/pesquisar/ajax/', ajax.impressora_pesquisa_ajax, name='impressora_pesquisa_ajax'),
     path('impressora/vincular/ajax/', ajax.vincular_impressora_ajax, name='vincular_impressora_ajax'),
@@ -45,6 +44,6 @@ urlpatterns = [
     # URL Patrimônio
     path('patrimonio/pesquisa/', views.patrimonio_view, name='patrimonio_view'),
     path('agulha/<int:pagina>/', views.pesquisar_endereco_ip, name='pesquisar_endereco_ip'),
-    path('agula/ajax_salvar_reservado/', ajax.salvar_ip_reservado, name='salvar_ip_reservado'),
+    path('agula/ajax_salvar_reservado/', ajax.reservar_ip_ajax, name='reservar_ip_ajax'),
     path('agula/ajax_removerip_reservado/', ajax.remover_ip_reservado, name='remover_ip_reservado'),
 ]

@@ -34,7 +34,8 @@
     <div class="col-auto p-0 d-flex align-items-center d-flex justify-content-center ">
 
         <!-- <img class='rounded-circle' style='width:7vh;' src="{% static impressora.url_img %}" alt=""> -->
-        <i class="fas fa-print fa-2x"></i>
+        <!-- <i class="fas fa-print fa-2x"></i> -->
+        <i class="far fa-file fa-2x"></i>
         
     </div>
     <div class="col-10 mt-0 item-filho hidden ms-4 ms-lg-4 p-lg-2">
@@ -63,7 +64,7 @@
                     <li class="list-group-item mt-1  p-0">
                         <b>Endereço IP:</b> 
                         {% if impressora.ip_impressora.count %}
-                        {{impressora.ip_impressora.first.ip_address }}
+                        <a href="http://{{impressora.ip_impressora.first.ip_address }}" target="___blank">{{impressora.ip_impressora.first.ip_address}}</a>
                         {% else %}
                         Indisponível
                         {% endif %}
@@ -88,9 +89,7 @@
                         Não possuo nenhuma informação ;c
                         {% endif %}
                     </li>
-                    <li class="list-group-item mt-1 p-0">
-                        <b>Computadores vinculados <span onclick='ShowPcsVinculadosImpre("{{impressora.id}}")'><i class="fas fa-eye fa-1x pe-2"></i></span></b>
-                    </li>
+                    
                 </ul>
             </div>
         </div>
@@ -105,6 +104,8 @@
         </div>
         <span class='d-flex flex-column d-flex flex-lg-row d-flex align-items-center p-lg-2 d-flex d-flex justify-content-center'>
             <i class="fas fa-edit pe-1  pe-lg-3 mb-2 mb-lg-0" onclick="mostrarImpressoraAtualizar('{{impressora.id}}')"></i>
+            <i onclick='ShowPcsVinculadosImpre("{{impressora.id}}")' class="fas fa-eye fa-1x pe-1  pe-lg-3 mb-2 mb-lg-0"></i>
+            </li>
             <i class="fas fa-trash-alt pe-2" onclick="apagarImpressora('{{impressora.id}}')"></i>
         </span>
     </div>
@@ -285,7 +286,10 @@
         <div class="modal-content p-0 m-0">
             <div class="modal-body p-0 m-0">
                 <div class="row p-0 m-0">
-                    <div class="col-12 d-flex justify-content-end bg-secondary p-2 pe-3">
+                    <div class="col-12 d-flex justify-content-between bg-secondary p-2 pe-3">
+                        <h5 class='fonte-arial text-light'>
+                            <i class="fas fa-link ms-1"></i>
+                            Computadores vinculados.</h5>
                         <span data-bs-dismiss='modal'>
                             <i class="fas fa-times text-light"></i>
                         </span>
@@ -293,7 +297,7 @@
                     <div class="col-12 col-lg-4 pt-4 pb-5 d-flex justify-content-center d-flex align-items-center bg-secondary">
                         <div class="container-fluid fonte-arial">
                             <div class="col-12 d-flex justify-content-between d-flex align-items-center">
-                                <!-- <img style='width:20vw;' src="{% static 'img/impressoras.png' %}" alt=""> -->
+                                <img style='width:20vw;' src="{% static 'img/impressoras.png' %}" alt="">
                             </div>
                         </div>
                     </div>
